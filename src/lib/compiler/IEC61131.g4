@@ -43,7 +43,7 @@ var_decl
     ;
 
 identifier_list : ID (',' ID)* ;
-location : '%' (ID | INT | 'I' | 'Q' | 'M')* ; // Simplified location
+location : '%' (ID | INT)* ; // Simplified location (removed literals I/Q/M to ensure they are parsed as IDs)
 
 data_type
     : elementary_data_type

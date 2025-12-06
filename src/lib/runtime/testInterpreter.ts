@@ -130,4 +130,80 @@ function testError() {
     }
 }
 
-runTest().then(() => testError());
+
+runTest().then(() => testError()).then(() => testTON());
+
+function testTON() {
+    console.log('\n--- Testing TON Timer ---');
+    const interpreter = new Interpreter();
+    const TON_CODE = `
+    PROGRAM TimerTest
+    VAR
+        myTimer : TON;
+        start : BOOL;
+        done : BOOL;
+        elapsed : TIME;
+    END_VAR
+
+    myTimer(IN := start, PT := 200);
+    done := myTimer.Q;
+    elapsed := myTimer.ET;
+    
+    END_PROGRAM
+    `;
+
+    try {
+        interpreter.loadCode(TON_CODE);
+        interpreter.start();
+
+        // 1. Initial State
+        interpreter.symbolTable.set('start', false);
+        interpreter.executeScan();
+
+        let done = interpreter.symbolTable.get('done');
+        let et = interpreter.symbolTable.get('elapsed');
+        console.log(`Scan 1 (IN=0): Done=${done}, ET=${et}`);
+
+        if (!done && et === 0) console.log('✅ Init OK');
+        else console.error('❌ Init Fail');
+
+        // 2. Start Timer
+        interpreter.symbolTable.set('start', true);
+        // Simulate time passing (manual hack or real delay)
+        // Interpreter calculates scan time from Date.now() difference.
+        // We can force sleep or mock scanTime if we want determinism.
+        // But Interpreter.executeScan() uses Date.now().
+
+        // Let's do a small sleep loop to test logic
+    } catch (e) {
+        console.error(e);
+    }
+
+    // Asynchronous test helper
+    const simulate = async () => {
+        // Scan 2: Start trigger
+        await new Promise(r => setTimeout(r, 10)); // 10ms
+        interpreter.executeScan();
+
+        let done = interpreter.symbolTable.get('done');
+        let et = interpreter.symbolTable.get('elapsed');
+        console.log(`Scan 2 (IN=1, 10ms): Done=${done}, ET=${et}`);
+
+        if (!done && et > 0) console.log('✅ Running OK');
+        else console.error('❌ Running Fail');
+
+        // Scan 3: Wait for completion (200ms total)
+        await new Promise(r => setTimeout(r, 200));
+        interpreter.executeScan();
+
+        done = interpreter.symbolTable.get('done');
+        et = interpreter.symbolTable.get('elapsed');
+        console.log(`Scan 3 (IN=1, 210ms): Done=${done}, ET=${et}`);
+
+        if (done && et >= 200) console.log('✅ Helper Done OK');
+        else console.error('❌ Helper Done Fail');
+    };
+
+    return simulate();
+}
+

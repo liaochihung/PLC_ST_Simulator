@@ -1,8 +1,8 @@
 
 import { CharStreams, CommonTokenStream } from 'antlr4ts';
-import { IEC61131Lexer } from '../generated/IEC61131Lexer';
-import { IEC61131Parser } from '../generated/IEC61131Parser';
-import { ASTBuilder } from '../ASTBuilder';
+import { IEC61131Lexer } from './generated/IEC61131Lexer';
+import { IEC61131Parser } from './generated/IEC61131Parser';
+import { ASTBuilder } from './ASTBuilder';
 
 const ST_CODE = `
 VAR_GLOBAL CONSTANT

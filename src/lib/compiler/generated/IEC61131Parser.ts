@@ -106,36 +106,33 @@ export class IEC61131Parser extends Parser {
 	public static readonly T__75 = 76;
 	public static readonly T__76 = 77;
 	public static readonly T__77 = 78;
-	public static readonly T__78 = 79;
-	public static readonly T__79 = 80;
-	public static readonly T__80 = 81;
-	public static readonly ASSIGN = 82;
-	public static readonly EQ = 83;
-	public static readonly NE = 84;
-	public static readonly LT = 85;
-	public static readonly GT = 86;
-	public static readonly LE = 87;
-	public static readonly GE = 88;
-	public static readonly PLUS = 89;
-	public static readonly MINUS = 90;
-	public static readonly MULT = 91;
-	public static readonly DIV = 92;
-	public static readonly MOD = 93;
-	public static readonly POWER = 94;
-	public static readonly OR = 95;
-	public static readonly XOR = 96;
-	public static readonly AND = 97;
-	public static readonly NOT = 98;
-	public static readonly AT = 99;
-	public static readonly ID = 100;
-	public static readonly INT = 101;
-	public static readonly HEX_INT = 102;
-	public static readonly REAL_NUM = 103;
-	public static readonly STRING_LITERAL = 104;
-	public static readonly TIME_LITERAL = 105;
-	public static readonly WS = 106;
-	public static readonly COMMENT = 107;
-	public static readonly LINE_COMMENT = 108;
+	public static readonly ASSIGN = 79;
+	public static readonly EQ = 80;
+	public static readonly NE = 81;
+	public static readonly LT = 82;
+	public static readonly GT = 83;
+	public static readonly LE = 84;
+	public static readonly GE = 85;
+	public static readonly PLUS = 86;
+	public static readonly MINUS = 87;
+	public static readonly MULT = 88;
+	public static readonly DIV = 89;
+	public static readonly MOD = 90;
+	public static readonly POWER = 91;
+	public static readonly OR = 92;
+	public static readonly XOR = 93;
+	public static readonly AND = 94;
+	public static readonly NOT = 95;
+	public static readonly AT = 96;
+	public static readonly ID = 97;
+	public static readonly INT = 98;
+	public static readonly HEX_INT = 99;
+	public static readonly REAL_NUM = 100;
+	public static readonly STRING_LITERAL = 101;
+	public static readonly TIME_LITERAL = 102;
+	public static readonly WS = 103;
+	public static readonly COMMENT = 104;
+	public static readonly LINE_COMMENT = 105;
 	public static readonly RULE_program = 0;
 	public static readonly RULE_library_element = 1;
 	public static readonly RULE_global_var_declarations = 2;
@@ -204,16 +201,15 @@ export class IEC61131Parser extends Parser {
 		"'RESOURCE'", "'ON'", "'END_RESOURCE'", "'TASK'", "'('", "'INTERVAL'", 
 		"','", "'PRIORITY'", "')'", "';'", "'WITH'", "':'", "'VAR_INPUT'", "'VAR_OUTPUT'", 
 		"'VAR_IN_OUT'", "'VAR'", "'VAR_TEMP'", "'CONSTANT'", "'RETAIN'", "'%'", 
-		"'I'", "'Q'", "'M'", "'BOOL'", "'SINT'", "'INT'", "'DINT'", "'LINT'", 
-		"'USINT'", "'UINT'", "'UDINT'", "'ULINT'", "'REAL'", "'LREAL'", "'TIME'", 
-		"'DATE'", "'TIME_OF_DAY'", "'TOD'", "'DATE_AND_TIME'", "'DT'", "'STRING'", 
-		"'BYTE'", "'WORD'", "'DWORD'", "'LWORD'", "'WSTRING'", "'ARRAY'", "'['", 
-		"']'", "'OF'", "'..'", "'RETURN'", "'=>'", "'IF'", "'THEN'", "'ELSIF'", 
-		"'ELSE'", "'END_IF'", "'CASE'", "'END_CASE'", "'FOR'", "'TO'", "'BY'", 
-		"'DO'", "'END_FOR'", "'WHILE'", "'END_WHILE'", "'REPEAT'", "'UNTIL'", 
-		"'END_REPEAT'", "'.'", "'TRUE'", "'FALSE'", "':='", "'='", "'<>'", "'<'", 
-		"'>'", "'<='", "'>='", "'+'", "'-'", "'*'", "'/'", "'MOD'", "'**'", "'OR'", 
-		"'XOR'", "'AND'", "'NOT'", "'AT'",
+		"'BOOL'", "'SINT'", "'INT'", "'DINT'", "'LINT'", "'USINT'", "'UINT'", 
+		"'UDINT'", "'ULINT'", "'REAL'", "'LREAL'", "'TIME'", "'DATE'", "'TIME_OF_DAY'", 
+		"'TOD'", "'DATE_AND_TIME'", "'DT'", "'STRING'", "'BYTE'", "'WORD'", "'DWORD'", 
+		"'LWORD'", "'WSTRING'", "'ARRAY'", "'['", "']'", "'OF'", "'..'", "'RETURN'", 
+		"'=>'", "'IF'", "'THEN'", "'ELSIF'", "'ELSE'", "'END_IF'", "'CASE'", "'END_CASE'", 
+		"'FOR'", "'TO'", "'BY'", "'DO'", "'END_FOR'", "'WHILE'", "'END_WHILE'", 
+		"'REPEAT'", "'UNTIL'", "'END_REPEAT'", "'.'", "'TRUE'", "'FALSE'", "':='", 
+		"'='", "'<>'", "'<'", "'>'", "'<='", "'>='", "'+'", "'-'", "'*'", "'/'", 
+		"'MOD'", "'**'", "'OR'", "'XOR'", "'AND'", "'NOT'", "'AT'",
 	];
 	private static readonly _SYMBOLIC_NAMES: Array<string | undefined> = [
 		undefined, undefined, undefined, undefined, undefined, undefined, undefined, 
@@ -227,10 +223,10 @@ export class IEC61131Parser extends Parser {
 		undefined, undefined, undefined, undefined, undefined, undefined, undefined, 
 		undefined, undefined, undefined, undefined, undefined, undefined, undefined, 
 		undefined, undefined, undefined, undefined, undefined, undefined, undefined, 
-		undefined, undefined, undefined, undefined, undefined, "ASSIGN", "EQ", 
-		"NE", "LT", "GT", "LE", "GE", "PLUS", "MINUS", "MULT", "DIV", "MOD", "POWER", 
-		"OR", "XOR", "AND", "NOT", "AT", "ID", "INT", "HEX_INT", "REAL_NUM", "STRING_LITERAL", 
-		"TIME_LITERAL", "WS", "COMMENT", "LINE_COMMENT",
+		undefined, undefined, "ASSIGN", "EQ", "NE", "LT", "GT", "LE", "GE", "PLUS", 
+		"MINUS", "MULT", "DIV", "MOD", "POWER", "OR", "XOR", "AND", "NOT", "AT", 
+		"ID", "INT", "HEX_INT", "REAL_NUM", "STRING_LITERAL", "TIME_LITERAL", 
+		"WS", "COMMENT", "LINE_COMMENT",
 	];
 	public static readonly VOCABULARY: Vocabulary = new VocabularyImpl(IEC61131Parser._LITERAL_NAMES, IEC61131Parser._SYMBOLIC_NAMES, []);
 
@@ -685,7 +681,7 @@ export class IEC61131Parser extends Parser {
 				this.state = 196;
 				this._errHandler.sync(this);
 				_la = this._input.LA(1);
-				if (_la === IEC61131Parser.T__12 || ((((_la - 80)) & ~0x1F) === 0 && ((1 << (_la - 80)) & ((1 << (IEC61131Parser.T__79 - 80)) | (1 << (IEC61131Parser.T__80 - 80)) | (1 << (IEC61131Parser.PLUS - 80)) | (1 << (IEC61131Parser.MINUS - 80)) | (1 << (IEC61131Parser.NOT - 80)) | (1 << (IEC61131Parser.ID - 80)) | (1 << (IEC61131Parser.INT - 80)) | (1 << (IEC61131Parser.HEX_INT - 80)) | (1 << (IEC61131Parser.REAL_NUM - 80)) | (1 << (IEC61131Parser.STRING_LITERAL - 80)) | (1 << (IEC61131Parser.TIME_LITERAL - 80)))) !== 0)) {
+				if (_la === IEC61131Parser.T__12 || ((((_la - 77)) & ~0x1F) === 0 && ((1 << (_la - 77)) & ((1 << (IEC61131Parser.T__76 - 77)) | (1 << (IEC61131Parser.T__77 - 77)) | (1 << (IEC61131Parser.PLUS - 77)) | (1 << (IEC61131Parser.MINUS - 77)) | (1 << (IEC61131Parser.NOT - 77)) | (1 << (IEC61131Parser.ID - 77)) | (1 << (IEC61131Parser.INT - 77)) | (1 << (IEC61131Parser.HEX_INT - 77)) | (1 << (IEC61131Parser.REAL_NUM - 77)) | (1 << (IEC61131Parser.STRING_LITERAL - 77)) | (1 << (IEC61131Parser.TIME_LITERAL - 77)))) !== 0)) {
 					{
 					this.state = 188;
 					this.param_assignment();
@@ -1032,12 +1028,12 @@ export class IEC61131Parser extends Parser {
 			this.state = 265;
 			this._errHandler.sync(this);
 			_la = this._input.LA(1);
-			while ((((_la) & ~0x1F) === 0 && ((1 << _la) & ((1 << IEC61131Parser.T__28) | (1 << IEC61131Parser.T__29) | (1 << IEC61131Parser.T__30))) !== 0) || _la === IEC61131Parser.ID || _la === IEC61131Parser.INT) {
+			while (_la === IEC61131Parser.ID || _la === IEC61131Parser.INT) {
 				{
 				{
 				this.state = 262;
 				_la = this._input.LA(1);
-				if (!((((_la) & ~0x1F) === 0 && ((1 << _la) & ((1 << IEC61131Parser.T__28) | (1 << IEC61131Parser.T__29) | (1 << IEC61131Parser.T__30))) !== 0) || _la === IEC61131Parser.ID || _la === IEC61131Parser.INT)) {
+				if (!(_la === IEC61131Parser.ID || _la === IEC61131Parser.INT)) {
 				this._errHandler.recoverInline(this);
 				} else {
 					if (this._input.LA(1) === Token.EOF) {
@@ -1077,6 +1073,9 @@ export class IEC61131Parser extends Parser {
 			this.state = 271;
 			this._errHandler.sync(this);
 			switch (this._input.LA(1)) {
+			case IEC61131Parser.T__28:
+			case IEC61131Parser.T__29:
+			case IEC61131Parser.T__30:
 			case IEC61131Parser.T__31:
 			case IEC61131Parser.T__32:
 			case IEC61131Parser.T__33:
@@ -1097,9 +1096,6 @@ export class IEC61131Parser extends Parser {
 			case IEC61131Parser.T__48:
 			case IEC61131Parser.T__49:
 			case IEC61131Parser.T__50:
-			case IEC61131Parser.T__51:
-			case IEC61131Parser.T__52:
-			case IEC61131Parser.T__53:
 				this.enterOuterAlt(_localctx, 1);
 				{
 				this.state = 268;
@@ -1113,7 +1109,7 @@ export class IEC61131Parser extends Parser {
 				this.derived_data_type();
 				}
 				break;
-			case IEC61131Parser.T__54:
+			case IEC61131Parser.T__51:
 				this.enterOuterAlt(_localctx, 3);
 				{
 				this.state = 270;
@@ -1148,7 +1144,7 @@ export class IEC61131Parser extends Parser {
 			{
 			this.state = 273;
 			_la = this._input.LA(1);
-			if (!(((((_la - 32)) & ~0x1F) === 0 && ((1 << (_la - 32)) & ((1 << (IEC61131Parser.T__31 - 32)) | (1 << (IEC61131Parser.T__32 - 32)) | (1 << (IEC61131Parser.T__33 - 32)) | (1 << (IEC61131Parser.T__34 - 32)) | (1 << (IEC61131Parser.T__35 - 32)) | (1 << (IEC61131Parser.T__36 - 32)) | (1 << (IEC61131Parser.T__37 - 32)) | (1 << (IEC61131Parser.T__38 - 32)) | (1 << (IEC61131Parser.T__39 - 32)) | (1 << (IEC61131Parser.T__40 - 32)) | (1 << (IEC61131Parser.T__41 - 32)) | (1 << (IEC61131Parser.T__42 - 32)) | (1 << (IEC61131Parser.T__43 - 32)) | (1 << (IEC61131Parser.T__44 - 32)) | (1 << (IEC61131Parser.T__45 - 32)) | (1 << (IEC61131Parser.T__46 - 32)) | (1 << (IEC61131Parser.T__47 - 32)) | (1 << (IEC61131Parser.T__48 - 32)) | (1 << (IEC61131Parser.T__49 - 32)) | (1 << (IEC61131Parser.T__50 - 32)) | (1 << (IEC61131Parser.T__51 - 32)) | (1 << (IEC61131Parser.T__52 - 32)) | (1 << (IEC61131Parser.T__53 - 32)))) !== 0))) {
+			if (!(((((_la - 29)) & ~0x1F) === 0 && ((1 << (_la - 29)) & ((1 << (IEC61131Parser.T__28 - 29)) | (1 << (IEC61131Parser.T__29 - 29)) | (1 << (IEC61131Parser.T__30 - 29)) | (1 << (IEC61131Parser.T__31 - 29)) | (1 << (IEC61131Parser.T__32 - 29)) | (1 << (IEC61131Parser.T__33 - 29)) | (1 << (IEC61131Parser.T__34 - 29)) | (1 << (IEC61131Parser.T__35 - 29)) | (1 << (IEC61131Parser.T__36 - 29)) | (1 << (IEC61131Parser.T__37 - 29)) | (1 << (IEC61131Parser.T__38 - 29)) | (1 << (IEC61131Parser.T__39 - 29)) | (1 << (IEC61131Parser.T__40 - 29)) | (1 << (IEC61131Parser.T__41 - 29)) | (1 << (IEC61131Parser.T__42 - 29)) | (1 << (IEC61131Parser.T__43 - 29)) | (1 << (IEC61131Parser.T__44 - 29)) | (1 << (IEC61131Parser.T__45 - 29)) | (1 << (IEC61131Parser.T__46 - 29)) | (1 << (IEC61131Parser.T__47 - 29)) | (1 << (IEC61131Parser.T__48 - 29)) | (1 << (IEC61131Parser.T__49 - 29)) | (1 << (IEC61131Parser.T__50 - 29)))) !== 0))) {
 			this._errHandler.recoverInline(this);
 			} else {
 				if (this._input.LA(1) === Token.EOF) {
@@ -1208,9 +1204,9 @@ export class IEC61131Parser extends Parser {
 			this.enterOuterAlt(_localctx, 1);
 			{
 			this.state = 277;
-			this.match(IEC61131Parser.T__54);
+			this.match(IEC61131Parser.T__51);
 			this.state = 278;
-			this.match(IEC61131Parser.T__55);
+			this.match(IEC61131Parser.T__52);
 			this.state = 279;
 			this.subrange();
 			this.state = 284;
@@ -1230,9 +1226,9 @@ export class IEC61131Parser extends Parser {
 				_la = this._input.LA(1);
 			}
 			this.state = 287;
-			this.match(IEC61131Parser.T__56);
+			this.match(IEC61131Parser.T__53);
 			this.state = 288;
-			this.match(IEC61131Parser.T__57);
+			this.match(IEC61131Parser.T__54);
 			this.state = 289;
 			this.data_type();
 			}
@@ -1282,7 +1278,7 @@ export class IEC61131Parser extends Parser {
 			this.state = 294;
 			this.match(IEC61131Parser.INT);
 			this.state = 295;
-			this.match(IEC61131Parser.T__58);
+			this.match(IEC61131Parser.T__55);
 			this.state = 297;
 			this._errHandler.sync(this);
 			switch ( this.interpreter.adaptivePredict(this._input, 24, this._ctx) ) {
@@ -1357,7 +1353,7 @@ export class IEC61131Parser extends Parser {
 			this.state = 308;
 			this._errHandler.sync(this);
 			_la = this._input.LA(1);
-			while (((((_la - 60)) & ~0x1F) === 0 && ((1 << (_la - 60)) & ((1 << (IEC61131Parser.T__59 - 60)) | (1 << (IEC61131Parser.T__61 - 60)) | (1 << (IEC61131Parser.T__66 - 60)) | (1 << (IEC61131Parser.T__68 - 60)) | (1 << (IEC61131Parser.T__73 - 60)) | (1 << (IEC61131Parser.T__75 - 60)))) !== 0) || _la === IEC61131Parser.ID) {
+			while (((((_la - 57)) & ~0x1F) === 0 && ((1 << (_la - 57)) & ((1 << (IEC61131Parser.T__56 - 57)) | (1 << (IEC61131Parser.T__58 - 57)) | (1 << (IEC61131Parser.T__63 - 57)) | (1 << (IEC61131Parser.T__65 - 57)) | (1 << (IEC61131Parser.T__70 - 57)) | (1 << (IEC61131Parser.T__72 - 57)))) !== 0) || _la === IEC61131Parser.ID) {
 				{
 				{
 				this.state = 303;
@@ -1485,11 +1481,11 @@ export class IEC61131Parser extends Parser {
 				this.fb_call();
 				}
 				break;
-			case IEC61131Parser.T__59:
+			case IEC61131Parser.T__56:
 				this.enterOuterAlt(_localctx, 2);
 				{
 				this.state = 322;
-				this.match(IEC61131Parser.T__59);
+				this.match(IEC61131Parser.T__56);
 				}
 				break;
 			default:
@@ -1525,7 +1521,7 @@ export class IEC61131Parser extends Parser {
 			this.state = 335;
 			this._errHandler.sync(this);
 			_la = this._input.LA(1);
-			if (_la === IEC61131Parser.T__12 || ((((_la - 80)) & ~0x1F) === 0 && ((1 << (_la - 80)) & ((1 << (IEC61131Parser.T__79 - 80)) | (1 << (IEC61131Parser.T__80 - 80)) | (1 << (IEC61131Parser.PLUS - 80)) | (1 << (IEC61131Parser.MINUS - 80)) | (1 << (IEC61131Parser.NOT - 80)) | (1 << (IEC61131Parser.ID - 80)) | (1 << (IEC61131Parser.INT - 80)) | (1 << (IEC61131Parser.HEX_INT - 80)) | (1 << (IEC61131Parser.REAL_NUM - 80)) | (1 << (IEC61131Parser.STRING_LITERAL - 80)) | (1 << (IEC61131Parser.TIME_LITERAL - 80)))) !== 0)) {
+			if (_la === IEC61131Parser.T__12 || ((((_la - 77)) & ~0x1F) === 0 && ((1 << (_la - 77)) & ((1 << (IEC61131Parser.T__76 - 77)) | (1 << (IEC61131Parser.T__77 - 77)) | (1 << (IEC61131Parser.PLUS - 77)) | (1 << (IEC61131Parser.MINUS - 77)) | (1 << (IEC61131Parser.NOT - 77)) | (1 << (IEC61131Parser.ID - 77)) | (1 << (IEC61131Parser.INT - 77)) | (1 << (IEC61131Parser.HEX_INT - 77)) | (1 << (IEC61131Parser.REAL_NUM - 77)) | (1 << (IEC61131Parser.STRING_LITERAL - 77)) | (1 << (IEC61131Parser.TIME_LITERAL - 77)))) !== 0)) {
 				{
 				this.state = 327;
 				this.param_assignment();
@@ -1595,7 +1591,7 @@ export class IEC61131Parser extends Parser {
 				this.state = 342;
 				this.match(IEC61131Parser.ID);
 				this.state = 343;
-				this.match(IEC61131Parser.T__60);
+				this.match(IEC61131Parser.T__57);
 				this.state = 344;
 				this.variable();
 				}
@@ -1633,14 +1629,14 @@ export class IEC61131Parser extends Parser {
 			this.state = 350;
 			this._errHandler.sync(this);
 			switch (this._input.LA(1)) {
-			case IEC61131Parser.T__61:
+			case IEC61131Parser.T__58:
 				this.enterOuterAlt(_localctx, 1);
 				{
 				this.state = 348;
 				this.if_statement();
 				}
 				break;
-			case IEC61131Parser.T__66:
+			case IEC61131Parser.T__63:
 				this.enterOuterAlt(_localctx, 2);
 				{
 				this.state = 349;
@@ -1674,25 +1670,25 @@ export class IEC61131Parser extends Parser {
 			this.enterOuterAlt(_localctx, 1);
 			{
 			this.state = 352;
-			this.match(IEC61131Parser.T__61);
+			this.match(IEC61131Parser.T__58);
 			this.state = 353;
 			this.expression(0);
 			this.state = 354;
-			this.match(IEC61131Parser.T__62);
+			this.match(IEC61131Parser.T__59);
 			this.state = 355;
 			this.statement_list();
 			this.state = 363;
 			this._errHandler.sync(this);
 			_la = this._input.LA(1);
-			while (_la === IEC61131Parser.T__63) {
+			while (_la === IEC61131Parser.T__60) {
 				{
 				{
 				this.state = 356;
-				this.match(IEC61131Parser.T__63);
+				this.match(IEC61131Parser.T__60);
 				this.state = 357;
 				this.expression(0);
 				this.state = 358;
-				this.match(IEC61131Parser.T__62);
+				this.match(IEC61131Parser.T__59);
 				this.state = 359;
 				this.statement_list();
 				}
@@ -1704,17 +1700,17 @@ export class IEC61131Parser extends Parser {
 			this.state = 368;
 			this._errHandler.sync(this);
 			_la = this._input.LA(1);
-			if (_la === IEC61131Parser.T__64) {
+			if (_la === IEC61131Parser.T__61) {
 				{
 				this.state = 366;
-				this.match(IEC61131Parser.T__64);
+				this.match(IEC61131Parser.T__61);
 				this.state = 367;
 				this.statement_list();
 				}
 			}
 
 			this.state = 370;
-			this.match(IEC61131Parser.T__65);
+			this.match(IEC61131Parser.T__62);
 			}
 		}
 		catch (re) {
@@ -1740,11 +1736,11 @@ export class IEC61131Parser extends Parser {
 			this.enterOuterAlt(_localctx, 1);
 			{
 			this.state = 372;
-			this.match(IEC61131Parser.T__66);
+			this.match(IEC61131Parser.T__63);
 			this.state = 373;
 			this.expression(0);
 			this.state = 374;
-			this.match(IEC61131Parser.T__57);
+			this.match(IEC61131Parser.T__54);
 			this.state = 376;
 			this._errHandler.sync(this);
 			_la = this._input.LA(1);
@@ -1762,17 +1758,17 @@ export class IEC61131Parser extends Parser {
 			this.state = 382;
 			this._errHandler.sync(this);
 			_la = this._input.LA(1);
-			if (_la === IEC61131Parser.T__64) {
+			if (_la === IEC61131Parser.T__61) {
 				{
 				this.state = 380;
-				this.match(IEC61131Parser.T__64);
+				this.match(IEC61131Parser.T__61);
 				this.state = 381;
 				this.statement_list();
 				}
 			}
 
 			this.state = 384;
-			this.match(IEC61131Parser.T__67);
+			this.match(IEC61131Parser.T__64);
 			}
 		}
 		catch (re) {
@@ -1907,21 +1903,21 @@ export class IEC61131Parser extends Parser {
 			this.state = 405;
 			this._errHandler.sync(this);
 			switch (this._input.LA(1)) {
-			case IEC61131Parser.T__68:
+			case IEC61131Parser.T__65:
 				this.enterOuterAlt(_localctx, 1);
 				{
 				this.state = 402;
 				this.for_statement();
 				}
 				break;
-			case IEC61131Parser.T__73:
+			case IEC61131Parser.T__70:
 				this.enterOuterAlt(_localctx, 2);
 				{
 				this.state = 403;
 				this.while_statement();
 				}
 				break;
-			case IEC61131Parser.T__75:
+			case IEC61131Parser.T__72:
 				this.enterOuterAlt(_localctx, 3);
 				{
 				this.state = 404;
@@ -1955,7 +1951,7 @@ export class IEC61131Parser extends Parser {
 			this.enterOuterAlt(_localctx, 1);
 			{
 			this.state = 407;
-			this.match(IEC61131Parser.T__68);
+			this.match(IEC61131Parser.T__65);
 			this.state = 408;
 			this.match(IEC61131Parser.ID);
 			this.state = 409;
@@ -1963,27 +1959,27 @@ export class IEC61131Parser extends Parser {
 			this.state = 410;
 			this.expression(0);
 			this.state = 411;
-			this.match(IEC61131Parser.T__69);
+			this.match(IEC61131Parser.T__66);
 			this.state = 412;
 			this.expression(0);
 			this.state = 415;
 			this._errHandler.sync(this);
 			_la = this._input.LA(1);
-			if (_la === IEC61131Parser.T__70) {
+			if (_la === IEC61131Parser.T__67) {
 				{
 				this.state = 413;
-				this.match(IEC61131Parser.T__70);
+				this.match(IEC61131Parser.T__67);
 				this.state = 414;
 				this.expression(0);
 				}
 			}
 
 			this.state = 417;
-			this.match(IEC61131Parser.T__71);
+			this.match(IEC61131Parser.T__68);
 			this.state = 418;
 			this.statement_list();
 			this.state = 419;
-			this.match(IEC61131Parser.T__72);
+			this.match(IEC61131Parser.T__69);
 			}
 		}
 		catch (re) {
@@ -2008,15 +2004,15 @@ export class IEC61131Parser extends Parser {
 			this.enterOuterAlt(_localctx, 1);
 			{
 			this.state = 421;
-			this.match(IEC61131Parser.T__73);
+			this.match(IEC61131Parser.T__70);
 			this.state = 422;
 			this.expression(0);
 			this.state = 423;
-			this.match(IEC61131Parser.T__71);
+			this.match(IEC61131Parser.T__68);
 			this.state = 424;
 			this.statement_list();
 			this.state = 425;
-			this.match(IEC61131Parser.T__74);
+			this.match(IEC61131Parser.T__71);
 			}
 		}
 		catch (re) {
@@ -2041,15 +2037,15 @@ export class IEC61131Parser extends Parser {
 			this.enterOuterAlt(_localctx, 1);
 			{
 			this.state = 427;
-			this.match(IEC61131Parser.T__75);
+			this.match(IEC61131Parser.T__72);
 			this.state = 428;
 			this.statement_list();
 			this.state = 429;
-			this.match(IEC61131Parser.T__76);
+			this.match(IEC61131Parser.T__73);
 			this.state = 430;
 			this.expression(0);
 			this.state = 431;
-			this.match(IEC61131Parser.T__77);
+			this.match(IEC61131Parser.T__74);
 			}
 		}
 		catch (re) {
@@ -2228,7 +2224,7 @@ export class IEC61131Parser extends Parser {
 						}
 						this.state = 454;
 						_la = this._input.LA(1);
-						if (!(((((_la - 85)) & ~0x1F) === 0 && ((1 << (_la - 85)) & ((1 << (IEC61131Parser.LT - 85)) | (1 << (IEC61131Parser.GT - 85)) | (1 << (IEC61131Parser.LE - 85)) | (1 << (IEC61131Parser.GE - 85)))) !== 0))) {
+						if (!(((((_la - 82)) & ~0x1F) === 0 && ((1 << (_la - 82)) & ((1 << (IEC61131Parser.LT - 82)) | (1 << (IEC61131Parser.GT - 82)) | (1 << (IEC61131Parser.LE - 82)) | (1 << (IEC61131Parser.GE - 82)))) !== 0))) {
 						this._errHandler.recoverInline(this);
 						} else {
 							if (this._input.LA(1) === Token.EOF) {
@@ -2278,7 +2274,7 @@ export class IEC61131Parser extends Parser {
 						}
 						this.state = 460;
 						_la = this._input.LA(1);
-						if (!(((((_la - 91)) & ~0x1F) === 0 && ((1 << (_la - 91)) & ((1 << (IEC61131Parser.MULT - 91)) | (1 << (IEC61131Parser.DIV - 91)) | (1 << (IEC61131Parser.MOD - 91)))) !== 0))) {
+						if (!(((((_la - 88)) & ~0x1F) === 0 && ((1 << (_la - 88)) & ((1 << (IEC61131Parser.MULT - 88)) | (1 << (IEC61131Parser.DIV - 88)) | (1 << (IEC61131Parser.MOD - 88)))) !== 0))) {
 						this._errHandler.recoverInline(this);
 						} else {
 							if (this._input.LA(1) === Token.EOF) {
@@ -2404,7 +2400,7 @@ export class IEC61131Parser extends Parser {
 			this.state = 489;
 			this._errHandler.sync(this);
 			_la = this._input.LA(1);
-			if (_la === IEC61131Parser.T__12 || ((((_la - 80)) & ~0x1F) === 0 && ((1 << (_la - 80)) & ((1 << (IEC61131Parser.T__79 - 80)) | (1 << (IEC61131Parser.T__80 - 80)) | (1 << (IEC61131Parser.PLUS - 80)) | (1 << (IEC61131Parser.MINUS - 80)) | (1 << (IEC61131Parser.NOT - 80)) | (1 << (IEC61131Parser.ID - 80)) | (1 << (IEC61131Parser.INT - 80)) | (1 << (IEC61131Parser.HEX_INT - 80)) | (1 << (IEC61131Parser.REAL_NUM - 80)) | (1 << (IEC61131Parser.STRING_LITERAL - 80)) | (1 << (IEC61131Parser.TIME_LITERAL - 80)))) !== 0)) {
+			if (_la === IEC61131Parser.T__12 || ((((_la - 77)) & ~0x1F) === 0 && ((1 << (_la - 77)) & ((1 << (IEC61131Parser.T__76 - 77)) | (1 << (IEC61131Parser.T__77 - 77)) | (1 << (IEC61131Parser.PLUS - 77)) | (1 << (IEC61131Parser.MINUS - 77)) | (1 << (IEC61131Parser.NOT - 77)) | (1 << (IEC61131Parser.ID - 77)) | (1 << (IEC61131Parser.INT - 77)) | (1 << (IEC61131Parser.HEX_INT - 77)) | (1 << (IEC61131Parser.REAL_NUM - 77)) | (1 << (IEC61131Parser.STRING_LITERAL - 77)) | (1 << (IEC61131Parser.TIME_LITERAL - 77)))) !== 0)) {
 				{
 				this.state = 481;
 				this.param_assignment();
@@ -2464,7 +2460,7 @@ export class IEC61131Parser extends Parser {
 					{
 					{
 					this.state = 494;
-					this.match(IEC61131Parser.T__78);
+					this.match(IEC61131Parser.T__75);
 					this.state = 495;
 					this.match(IEC61131Parser.ID);
 					}
@@ -2480,7 +2476,7 @@ export class IEC61131Parser extends Parser {
 			case 1:
 				{
 				this.state = 501;
-				this.match(IEC61131Parser.T__55);
+				this.match(IEC61131Parser.T__52);
 				this.state = 502;
 				this.expression(0);
 				this.state = 507;
@@ -2500,7 +2496,7 @@ export class IEC61131Parser extends Parser {
 					_la = this._input.LA(1);
 				}
 				this.state = 510;
-				this.match(IEC61131Parser.T__56);
+				this.match(IEC61131Parser.T__53);
 				}
 				break;
 			}
@@ -2552,8 +2548,8 @@ export class IEC61131Parser extends Parser {
 				this.time_literal();
 				}
 				break;
-			case IEC61131Parser.T__79:
-			case IEC61131Parser.T__80:
+			case IEC61131Parser.T__76:
+			case IEC61131Parser.T__77:
 				this.enterOuterAlt(_localctx, 4);
 				{
 				this.state = 517;
@@ -2598,7 +2594,7 @@ export class IEC61131Parser extends Parser {
 
 			this.state = 523;
 			_la = this._input.LA(1);
-			if (!(((((_la - 101)) & ~0x1F) === 0 && ((1 << (_la - 101)) & ((1 << (IEC61131Parser.INT - 101)) | (1 << (IEC61131Parser.HEX_INT - 101)) | (1 << (IEC61131Parser.REAL_NUM - 101)))) !== 0))) {
+			if (!(((((_la - 98)) & ~0x1F) === 0 && ((1 << (_la - 98)) & ((1 << (IEC61131Parser.INT - 98)) | (1 << (IEC61131Parser.HEX_INT - 98)) | (1 << (IEC61131Parser.REAL_NUM - 98)))) !== 0))) {
 			this._errHandler.recoverInline(this);
 			} else {
 				if (this._input.LA(1) === Token.EOF) {
@@ -2634,7 +2630,7 @@ export class IEC61131Parser extends Parser {
 			{
 			this.state = 525;
 			_la = this._input.LA(1);
-			if (!(_la === IEC61131Parser.T__79 || _la === IEC61131Parser.T__80)) {
+			if (!(_la === IEC61131Parser.T__76 || _la === IEC61131Parser.T__77)) {
 			this._errHandler.recoverInline(this);
 			} else {
 				if (this._input.LA(1) === Token.EOF) {
@@ -2748,7 +2744,7 @@ export class IEC61131Parser extends Parser {
 	}
 
 	public static readonly _serializedATN: string =
-		"\x03\uC91D\uCABA\u058D\uAFBA\u4F53\u0607\uEA8B\uC241\x03n\u0216\x04\x02" +
+		"\x03\uC91D\uCABA\u058D\uAFBA\u4F53\u0607\uEA8B\uC241\x03k\u0216\x04\x02" +
 		"\t\x02\x04\x03\t\x03\x04\x04\t\x04\x04\x05\t\x05\x04\x06\t\x06\x04\x07" +
 		"\t\x07\x04\b\t\b\x04\t\t\t\x04\n\t\n\x04\v\t\v\x04\f\t\f\x04\r\t\r\x04" +
 		"\x0E\t\x0E\x04\x0F\t\x0F\x04\x10\t\x10\x04\x11\t\x11\x04\x12\t\x12\x04" +
@@ -2803,14 +2799,14 @@ export class IEC61131Parser extends Parser {
 		"\b\x02\n\x02\f\x02\x0E\x02\x10\x02\x12\x02\x14\x02\x16\x02\x18\x02\x1A" +
 		"\x02\x1C\x02\x1E\x02 \x02\"\x02$\x02&\x02(\x02*\x02,\x02.\x020\x022\x02" +
 		"4\x026\x028\x02:\x02<\x02>\x02@\x02B\x02D\x02F\x02H\x02J\x02L\x02N\x02" +
-		"P\x02R\x02T\x02V\x02X\x02Z\x02\\\x02^\x02\x02\v\x04\x02\x1F!fg\x03\x02" +
-		"\"8\x04\x02\\\\gg\x03\x02[\\\x03\x02UV\x03\x02WZ\x03\x02]_\x03\x02gi\x03" +
-		"\x02RS\x02\u022E\x02a\x03\x02\x02\x02\x04k\x03\x02\x02\x02\x06m\x03\x02" +
-		"\x02\x02\bw\x03\x02\x02\x02\n\x82\x03\x02\x02\x02\f\x8D\x03\x02\x02\x02" +
-		"\x0E\x96\x03\x02\x02\x02\x10\xA8\x03\x02\x02\x02\x12\xB5\x03\x02\x02\x02" +
-		"\x14\xE7\x03\x02\x02\x02\x16\xE9\x03\x02\x02\x02\x18\xEB\x03\x02\x02\x02" +
-		"\x1A\xF0\x03\x02\x02\x02\x1C\xF4\x03\x02\x02\x02\x1E\xFF\x03\x02\x02\x02" +
-		" \u0107\x03\x02\x02\x02\"\u0111\x03\x02\x02\x02$\u0113\x03\x02\x02\x02" +
+		"P\x02R\x02T\x02V\x02X\x02Z\x02\\\x02^\x02\x02\v\x03\x02cd\x03\x02\x1F" +
+		"5\x04\x02YYdd\x03\x02XY\x03\x02RS\x03\x02TW\x03\x02Z\\\x03\x02df\x03\x02" +
+		"OP\x02\u022E\x02a\x03\x02\x02\x02\x04k\x03\x02\x02\x02\x06m\x03\x02\x02" +
+		"\x02\bw\x03\x02\x02\x02\n\x82\x03\x02\x02\x02\f\x8D\x03\x02\x02\x02\x0E" +
+		"\x96\x03\x02\x02\x02\x10\xA8\x03\x02\x02\x02\x12\xB5\x03\x02\x02\x02\x14" +
+		"\xE7\x03\x02\x02\x02\x16\xE9\x03\x02\x02\x02\x18\xEB\x03\x02\x02\x02\x1A" +
+		"\xF0\x03\x02\x02\x02\x1C\xF4\x03\x02\x02\x02\x1E\xFF\x03\x02\x02\x02 " +
+		"\u0107\x03\x02\x02\x02\"\u0111\x03\x02\x02\x02$\u0113\x03\x02\x02\x02" +
 		"&\u0115\x03\x02\x02\x02(\u0117\x03\x02\x02\x02*\u0126\x03\x02\x02\x02" +
 		",\u012F\x03\x02\x02\x02.\u0136\x03\x02\x02\x020\u013D\x03\x02\x02\x02" +
 		"2\u013F\x03\x02\x02\x024\u0145\x03\x02\x02\x026\u0147\x03\x02\x02\x02" +
@@ -2828,31 +2824,31 @@ export class IEC61131Parser extends Parser {
 		"mo\x07\x03\x02\x02np\x05\x16\f\x02on\x03\x02\x02\x02op\x03\x02\x02\x02" +
 		"pr\x03\x02\x02\x02qs\x05\x18\r\x02rq\x03\x02\x02\x02rs\x03\x02\x02\x02" +
 		"st\x03\x02\x02\x02tu\x05\x1A\x0E\x02uv\x07\x04\x02\x02v\x07\x03\x02\x02" +
-		"\x02wx\x07\x05\x02\x02x|\x07f\x02\x02y{\x05\x14\v\x02zy\x03\x02\x02\x02" +
+		"\x02wx\x07\x05\x02\x02x|\x07c\x02\x02y{\x05\x14\v\x02zy\x03\x02\x02\x02" +
 		"{~\x03\x02\x02\x02|z\x03\x02\x02\x02|}\x03\x02\x02\x02}\x7F\x03\x02\x02" +
 		"\x02~|\x03\x02\x02\x02\x7F\x80\x05,\x17\x02\x80\x81\x07\x06\x02\x02\x81" +
-		"\t\x03\x02\x02\x02\x82\x83\x07\x07\x02\x02\x83\x87\x07f\x02\x02\x84\x86" +
+		"\t\x03\x02\x02\x02\x82\x83\x07\x07\x02\x02\x83\x87\x07c\x02\x02\x84\x86" +
 		"\x05\x14\v\x02\x85\x84\x03\x02\x02\x02\x86\x89\x03\x02\x02\x02\x87\x85" +
 		"\x03\x02\x02\x02\x87\x88\x03\x02\x02\x02\x88\x8A\x03\x02\x02\x02\x89\x87" +
 		"\x03\x02\x02\x02\x8A\x8B\x05,\x17\x02\x8B\x8C\x07\b\x02\x02\x8C\v\x03" +
-		"\x02\x02\x02\x8D\x8E\x07\t\x02\x02\x8E\x90\x07f\x02\x02\x8F\x91\x05\x0E" +
+		"\x02\x02\x02\x8D\x8E\x07\t\x02\x02\x8E\x90\x07c\x02\x02\x8F\x91\x05\x0E" +
 		"\b\x02\x90\x8F\x03\x02\x02\x02\x91\x92\x03\x02\x02\x02\x92\x90\x03\x02" +
 		"\x02\x02\x92\x93\x03\x02\x02\x02\x93\x94\x03\x02\x02\x02\x94\x95\x07\n" +
-		"\x02\x02\x95\r\x03\x02\x02\x02\x96\x97\x07\v\x02\x02\x97\x98\x07f\x02" +
-		"\x02\x98\x99\x07\f\x02\x02\x99\x9D\x07f\x02\x02\x9A\x9C\x05\x10\t\x02" +
+		"\x02\x02\x95\r\x03\x02\x02\x02\x96\x97\x07\v\x02\x02\x97\x98\x07c\x02" +
+		"\x02\x98\x99\x07\f\x02\x02\x99\x9D\x07c\x02\x02\x9A\x9C\x05\x10\t\x02" +
 		"\x9B\x9A\x03\x02\x02\x02\x9C\x9F\x03\x02\x02\x02\x9D\x9B\x03\x02\x02\x02" +
 		"\x9D\x9E\x03\x02\x02\x02\x9E\xA3\x03\x02\x02\x02\x9F\x9D\x03\x02\x02\x02" +
 		"\xA0\xA2\x05\x12\n\x02\xA1\xA0\x03\x02\x02\x02\xA2\xA5\x03\x02\x02\x02" +
 		"\xA3\xA1\x03\x02\x02\x02\xA3\xA4\x03\x02\x02\x02\xA4\xA6\x03\x02\x02\x02" +
 		"\xA5\xA3\x03\x02\x02\x02\xA6\xA7\x07\r\x02\x02\xA7\x0F\x03\x02\x02\x02" +
-		"\xA8\xA9\x07\x0E\x02\x02\xA9\xAA\x07f\x02\x02\xAA\xAB\x07\x0F\x02\x02" +
-		"\xAB\xAC\x07\x10\x02\x02\xAC\xAD\x07T\x02\x02\xAD\xAE\x05^0\x02\xAE\xAF" +
-		"\x07\x11\x02\x02\xAF\xB0\x07\x12\x02\x02\xB0\xB1\x07T\x02\x02\xB1\xB2" +
-		"\x07g\x02\x02\xB2\xB3\x07\x13\x02\x02\xB3\xB4\x07\x14\x02\x02\xB4\x11" +
-		"\x03\x02\x02\x02\xB5\xB6\x07\x05\x02\x02\xB6\xB9\x07f\x02\x02\xB7\xB8" +
-		"\x07\x15\x02\x02\xB8\xBA\x07f\x02\x02\xB9\xB7\x03\x02\x02\x02\xB9\xBA" +
+		"\xA8\xA9\x07\x0E\x02\x02\xA9\xAA\x07c\x02\x02\xAA\xAB\x07\x0F\x02\x02" +
+		"\xAB\xAC\x07\x10\x02\x02\xAC\xAD\x07Q\x02\x02\xAD\xAE\x05^0\x02\xAE\xAF" +
+		"\x07\x11\x02\x02\xAF\xB0\x07\x12\x02\x02\xB0\xB1\x07Q\x02\x02\xB1\xB2" +
+		"\x07d\x02\x02\xB2\xB3\x07\x13\x02\x02\xB3\xB4\x07\x14\x02\x02\xB4\x11" +
+		"\x03\x02\x02\x02\xB5\xB6\x07\x05\x02\x02\xB6\xB9\x07c\x02\x02\xB7\xB8" +
+		"\x07\x15\x02\x02\xB8\xBA\x07c\x02\x02\xB9\xB7\x03\x02\x02\x02\xB9\xBA" +
 		"\x03\x02\x02\x02\xBA\xBB\x03\x02\x02\x02\xBB\xBC\x07\x16\x02\x02\xBC\xC9" +
-		"\x07f\x02\x02\xBD\xC6\x07\x0F\x02\x02\xBE\xC3\x058\x1D\x02\xBF\xC0\x07" +
+		"\x07c\x02\x02\xBD\xC6\x07\x0F\x02\x02\xBE\xC3\x058\x1D\x02\xBF\xC0\x07" +
 		"\x11\x02\x02\xC0\xC2\x058\x1D\x02\xC1\xBF\x03\x02\x02\x02\xC2\xC5\x03" +
 		"\x02\x02\x02\xC3\xC1\x03\x02\x02\x02\xC3\xC4\x03\x02\x02\x02\xC4\xC7\x03" +
 		"\x02\x02\x02\xC5\xC3\x03\x02\x02\x02\xC6\xBE\x03\x02\x02\x02\xC6\xC7\x03" +
@@ -2874,11 +2870,11 @@ export class IEC61131Parser extends Parser {
 		"\x02\x02\x02\xED\xEE\x05\x1C\x0F\x02\xEE\xEF\x07\x14\x02\x02\xEF\xF1\x03" +
 		"\x02\x02\x02\xF0\xED\x03\x02\x02\x02\xF1\xF2\x03\x02\x02\x02\xF2\xF0\x03" +
 		"\x02\x02\x02\xF2\xF3\x03\x02\x02\x02\xF3\x1B\x03\x02\x02\x02\xF4\xF7\x05" +
-		"\x1E\x10\x02\xF5\xF6\x07e\x02\x02\xF6\xF8\x05 \x11\x02\xF7\xF5\x03\x02" +
+		"\x1E\x10\x02\xF5\xF6\x07b\x02\x02\xF6\xF8\x05 \x11\x02\xF7\xF5\x03\x02" +
 		"\x02\x02\xF7\xF8\x03\x02\x02\x02\xF8\xF9\x03\x02\x02\x02\xF9\xFA\x07\x16" +
-		"\x02\x02\xFA\xFD\x05\"\x12\x02\xFB\xFC\x07T\x02\x02\xFC\xFE\x05N(\x02" +
+		"\x02\x02\xFA\xFD\x05\"\x12\x02\xFB\xFC\x07Q\x02\x02\xFC\xFE\x05N(\x02" +
 		"\xFD\xFB\x03\x02\x02\x02\xFD\xFE\x03\x02\x02\x02\xFE\x1D\x03\x02\x02\x02" +
-		"\xFF\u0104\x07f\x02\x02\u0100\u0101\x07\x11\x02\x02\u0101\u0103\x07f\x02" +
+		"\xFF\u0104\x07c\x02\x02\u0100\u0101\x07\x11\x02\x02\u0101\u0103\x07c\x02" +
 		"\x02\u0102\u0100\x03\x02\x02\x02\u0103\u0106\x03\x02\x02\x02\u0104\u0102" +
 		"\x03\x02\x02\x02\u0104\u0105\x03\x02\x02\x02\u0105\x1F\x03\x02\x02\x02" +
 		"\u0106\u0104\x03\x02\x02\x02\u0107\u010B\x07\x1E\x02\x02\u0108\u010A\t" +
@@ -2888,17 +2884,17 @@ export class IEC61131Parser extends Parser {
 		"\x05&\x14\x02\u0110\u0112\x05(\x15\x02\u0111\u010E\x03\x02\x02\x02\u0111" +
 		"\u010F\x03\x02\x02\x02\u0111\u0110\x03\x02\x02\x02\u0112#\x03\x02\x02" +
 		"\x02\u0113\u0114\t\x03\x02\x02\u0114%\x03\x02\x02\x02\u0115\u0116\x07" +
-		"f\x02\x02\u0116\'\x03\x02\x02\x02\u0117\u0118\x079\x02\x02\u0118\u0119" +
-		"\x07:\x02\x02\u0119\u011E\x05*\x16\x02\u011A\u011B\x07\x11\x02\x02\u011B" +
+		"c\x02\x02\u0116\'\x03\x02\x02\x02\u0117\u0118\x076\x02\x02\u0118\u0119" +
+		"\x077\x02\x02\u0119\u011E\x05*\x16\x02\u011A\u011B\x07\x11\x02\x02\u011B" +
 		"\u011D\x05*\x16\x02\u011C\u011A\x03\x02\x02\x02\u011D\u0120\x03\x02\x02" +
 		"\x02\u011E\u011C\x03\x02\x02\x02\u011E\u011F\x03\x02\x02\x02\u011F\u0121" +
-		"\x03\x02\x02\x02\u0120\u011E\x03\x02\x02\x02\u0121\u0122\x07;\x02\x02" +
-		"\u0122\u0123\x07<\x02\x02\u0123\u0124\x05\"\x12\x02\u0124)\x03\x02\x02" +
+		"\x03\x02\x02\x02\u0120\u011E\x03\x02\x02\x02\u0121\u0122\x078\x02\x02" +
+		"\u0122\u0123\x079\x02\x02\u0123\u0124\x05\"\x12\x02\u0124)\x03\x02\x02" +
 		"\x02\u0125\u0127\t\x04\x02\x02\u0126\u0125\x03\x02\x02\x02\u0126\u0127" +
-		"\x03\x02\x02\x02\u0127\u0128\x03\x02\x02\x02\u0128\u0129\x07g\x02\x02" +
-		"\u0129\u012B\x07=\x02\x02\u012A\u012C\t\x04\x02\x02\u012B\u012A\x03\x02" +
+		"\x03\x02\x02\x02\u0127\u0128\x03\x02\x02\x02\u0128\u0129\x07d\x02\x02" +
+		"\u0129\u012B\x07:\x02\x02\u012A\u012C\t\x04\x02\x02\u012B\u012A\x03\x02" +
 		"\x02\x02\u012B\u012C\x03\x02\x02\x02\u012C\u012D\x03\x02\x02\x02\u012D" +
-		"\u012E\x07g\x02\x02\u012E+\x03\x02\x02\x02\u012F\u0130\x05.\x18\x02\u0130" +
+		"\u012E\x07d\x02\x02\u012E+\x03\x02\x02\x02\u012F\u0130\x05.\x18\x02\u0130" +
 		"-\x03\x02\x02\x02\u0131\u0132\x050\x19\x02\u0132\u0133\x07\x14\x02\x02" +
 		"\u0133\u0135\x03\x02\x02\x02\u0134\u0131\x03\x02\x02\x02\u0135\u0138\x03" +
 		"\x02\x02\x02\u0136\u0134\x03\x02\x02\x02\u0136\u0137\x03\x02\x02\x02\u0137" +
@@ -2906,65 +2902,65 @@ export class IEC61131Parser extends Parser {
 		"\u013A\u013E\x054\x1B\x02\u013B\u013E\x05:\x1E\x02\u013C\u013E\x05F$\x02" +
 		"\u013D\u0139\x03\x02\x02\x02\u013D\u013A\x03\x02\x02\x02\u013D\u013B\x03" +
 		"\x02\x02\x02\u013D\u013C\x03\x02\x02\x02\u013E1\x03\x02\x02\x02\u013F" +
-		"\u0140\x05T+\x02\u0140\u0141\x07T\x02\x02\u0141\u0142\x05N(\x02\u0142" +
-		"3\x03\x02\x02\x02\u0143\u0146\x056\x1C\x02\u0144\u0146\x07>\x02\x02\u0145" +
+		"\u0140\x05T+\x02\u0140\u0141\x07Q\x02\x02\u0141\u0142\x05N(\x02\u0142" +
+		"3\x03\x02\x02\x02\u0143\u0146\x056\x1C\x02\u0144\u0146\x07;\x02\x02\u0145" +
 		"\u0143\x03\x02\x02\x02\u0145\u0144\x03\x02\x02\x02\u01465\x03\x02\x02" +
-		"\x02\u0147\u0148\x07f\x02\x02\u0148\u0151\x07\x0F\x02\x02\u0149\u014E" +
+		"\x02\u0147\u0148\x07c\x02\x02\u0148\u0151\x07\x0F\x02\x02\u0149\u014E" +
 		"\x058\x1D\x02\u014A\u014B\x07\x11\x02\x02\u014B\u014D\x058\x1D\x02\u014C" +
 		"\u014A\x03\x02\x02\x02\u014D\u0150\x03\x02\x02\x02\u014E\u014C\x03\x02" +
 		"\x02\x02\u014E\u014F\x03\x02\x02\x02\u014F\u0152\x03\x02\x02\x02\u0150" +
 		"\u014E\x03\x02\x02\x02\u0151\u0149\x03\x02\x02\x02\u0151\u0152\x03\x02" +
 		"\x02\x02\u0152\u0153\x03\x02\x02\x02\u0153\u0154\x07\x13\x02\x02\u0154" +
-		"7\x03\x02\x02\x02\u0155\u0156\x07f\x02\x02\u0156\u0157\x07T\x02\x02\u0157" +
-		"\u015D\x05N(\x02\u0158\u0159\x07f\x02\x02\u0159\u015A\x07?\x02\x02\u015A" +
+		"7\x03\x02\x02\x02\u0155\u0156\x07c\x02\x02\u0156\u0157\x07Q\x02\x02\u0157" +
+		"\u015D\x05N(\x02\u0158\u0159\x07c\x02\x02\u0159\u015A\x07<\x02\x02\u015A" +
 		"\u015D\x05T+\x02\u015B\u015D\x05N(\x02\u015C\u0155\x03\x02\x02\x02\u015C" +
 		"\u0158\x03\x02\x02\x02\u015C\u015B\x03\x02\x02\x02\u015D9\x03\x02\x02" +
 		"\x02\u015E\u0161\x05<\x1F\x02\u015F\u0161\x05> \x02\u0160\u015E\x03\x02" +
 		"\x02\x02\u0160\u015F\x03\x02\x02\x02\u0161;\x03\x02\x02\x02\u0162\u0163" +
-		"\x07@\x02\x02\u0163\u0164\x05N(\x02\u0164\u0165\x07A\x02\x02\u0165\u016D" +
-		"\x05.\x18\x02\u0166\u0167\x07B\x02\x02\u0167\u0168\x05N(\x02\u0168\u0169" +
-		"\x07A\x02\x02\u0169\u016A\x05.\x18\x02\u016A\u016C\x03\x02\x02\x02\u016B" +
+		"\x07=\x02\x02\u0163\u0164\x05N(\x02\u0164\u0165\x07>\x02\x02\u0165\u016D" +
+		"\x05.\x18\x02\u0166\u0167\x07?\x02\x02\u0167\u0168\x05N(\x02\u0168\u0169" +
+		"\x07>\x02\x02\u0169\u016A\x05.\x18\x02\u016A\u016C\x03\x02\x02\x02\u016B" +
 		"\u0166\x03\x02\x02\x02\u016C\u016F\x03\x02\x02\x02\u016D\u016B\x03\x02" +
 		"\x02\x02\u016D\u016E\x03\x02\x02\x02\u016E\u0172\x03\x02\x02\x02\u016F" +
-		"\u016D\x03\x02\x02\x02\u0170\u0171\x07C\x02\x02\u0171\u0173\x05.\x18\x02" +
+		"\u016D\x03\x02\x02\x02\u0170\u0171\x07@\x02\x02\u0171\u0173\x05.\x18\x02" +
 		"\u0172\u0170\x03\x02\x02\x02\u0172\u0173\x03\x02\x02\x02\u0173\u0174\x03" +
-		"\x02\x02\x02\u0174\u0175\x07D\x02\x02\u0175=\x03\x02\x02\x02\u0176\u0177" +
-		"\x07E\x02\x02\u0177\u0178\x05N(\x02\u0178\u017A\x07<\x02\x02\u0179\u017B" +
+		"\x02\x02\x02\u0174\u0175\x07A\x02\x02\u0175=\x03\x02\x02\x02\u0176\u0177" +
+		"\x07B\x02\x02\u0177\u0178\x05N(\x02\u0178\u017A\x079\x02\x02\u0179\u017B" +
 		"\x05@!\x02\u017A\u0179\x03\x02\x02\x02\u017B\u017C\x03\x02\x02\x02\u017C" +
 		"\u017A\x03\x02\x02\x02\u017C\u017D\x03\x02\x02\x02\u017D\u0180\x03\x02" +
-		"\x02\x02\u017E\u017F\x07C\x02\x02\u017F\u0181\x05.\x18\x02\u0180\u017E" +
+		"\x02\x02\u017E\u017F\x07@\x02\x02\u017F\u0181\x05.\x18\x02\u0180\u017E" +
 		"\x03\x02\x02\x02\u0180\u0181\x03\x02\x02\x02\u0181\u0182\x03\x02\x02\x02" +
-		"\u0182\u0183\x07F\x02\x02\u0183?\x03\x02\x02\x02\u0184\u0185\x05B\"\x02" +
+		"\u0182\u0183\x07C\x02\x02\u0183?\x03\x02\x02\x02\u0184\u0185\x05B\"\x02" +
 		"\u0185\u0186\x07\x16\x02\x02\u0186\u0187\x05.\x18\x02\u0187A\x03\x02\x02" +
 		"\x02\u0188\u018D\x05D#\x02\u0189\u018A\x07\x11\x02\x02\u018A\u018C\x05" +
 		"D#\x02\u018B\u0189\x03\x02\x02\x02\u018C\u018F\x03\x02\x02\x02\u018D\u018B" +
 		"\x03\x02\x02\x02\u018D\u018E\x03\x02\x02\x02\u018EC\x03\x02\x02\x02\u018F" +
-		"\u018D\x03\x02\x02\x02\u0190\u0193\x05*\x16\x02\u0191\u0193\x07g\x02\x02" +
+		"\u018D\x03\x02\x02\x02\u0190\u0193\x05*\x16\x02\u0191\u0193\x07d\x02\x02" +
 		"\u0192\u0190\x03\x02\x02\x02\u0192\u0191\x03\x02\x02\x02\u0193E\x03\x02" +
 		"\x02\x02\u0194\u0198\x05H%\x02\u0195\u0198\x05J&\x02\u0196\u0198\x05L" +
 		"\'\x02\u0197\u0194\x03\x02\x02\x02\u0197\u0195\x03\x02\x02\x02\u0197\u0196" +
-		"\x03\x02\x02\x02\u0198G\x03\x02\x02\x02\u0199\u019A\x07G\x02\x02\u019A" +
-		"\u019B\x07f\x02\x02\u019B\u019C\x07T\x02\x02\u019C\u019D\x05N(\x02\u019D" +
-		"\u019E\x07H\x02\x02\u019E\u01A1\x05N(\x02\u019F\u01A0\x07I\x02\x02\u01A0" +
+		"\x03\x02\x02\x02\u0198G\x03\x02\x02\x02\u0199\u019A\x07D\x02\x02\u019A" +
+		"\u019B\x07c\x02\x02\u019B\u019C\x07Q\x02\x02\u019C\u019D\x05N(\x02\u019D" +
+		"\u019E\x07E\x02\x02\u019E\u01A1\x05N(\x02\u019F\u01A0\x07F\x02\x02\u01A0" +
 		"\u01A2\x05N(\x02\u01A1\u019F\x03\x02\x02\x02\u01A1\u01A2\x03\x02\x02\x02" +
-		"\u01A2\u01A3\x03\x02\x02\x02\u01A3\u01A4\x07J\x02\x02\u01A4\u01A5\x05" +
-		".\x18\x02\u01A5\u01A6\x07K\x02\x02\u01A6I\x03\x02\x02\x02\u01A7\u01A8" +
-		"\x07L\x02\x02\u01A8\u01A9\x05N(\x02\u01A9\u01AA\x07J\x02\x02\u01AA\u01AB" +
-		"\x05.\x18\x02\u01AB\u01AC\x07M\x02\x02\u01ACK\x03\x02\x02\x02\u01AD\u01AE" +
-		"\x07N\x02\x02\u01AE\u01AF\x05.\x18\x02\u01AF\u01B0\x07O\x02\x02\u01B0" +
-		"\u01B1\x05N(\x02\u01B1\u01B2\x07P\x02\x02\u01B2M\x03\x02\x02\x02\u01B3" +
-		"\u01B4\b(\x01\x02\u01B4\u01B5\x07d\x02\x02\u01B5\u01BA\x05N(\n\u01B6\u01B7" +
+		"\u01A2\u01A3\x03\x02\x02\x02\u01A3\u01A4\x07G\x02\x02\u01A4\u01A5\x05" +
+		".\x18\x02\u01A5\u01A6\x07H\x02\x02\u01A6I\x03\x02\x02\x02\u01A7\u01A8" +
+		"\x07I\x02\x02\u01A8\u01A9\x05N(\x02\u01A9\u01AA\x07G\x02\x02\u01AA\u01AB" +
+		"\x05.\x18\x02\u01AB\u01AC\x07J\x02\x02\u01ACK\x03\x02\x02\x02\u01AD\u01AE" +
+		"\x07K\x02\x02\u01AE\u01AF\x05.\x18\x02\u01AF\u01B0\x07L\x02\x02\u01B0" +
+		"\u01B1\x05N(\x02\u01B1\u01B2\x07M\x02\x02\u01B2M\x03\x02\x02\x02\u01B3" +
+		"\u01B4\b(\x01\x02\u01B4\u01B5\x07a\x02\x02\u01B5\u01BA\x05N(\n\u01B6\u01B7" +
 		"\t\x05\x02\x02\u01B7\u01BA\x05N(\x04\u01B8\u01BA\x05P)\x02\u01B9\u01B3" +
 		"\x03\x02\x02\x02\u01B9\u01B6\x03\x02\x02\x02\u01B9\u01B8\x03\x02\x02\x02" +
-		"\u01BA\u01D5\x03\x02\x02\x02\u01BB\u01BC\f\r\x02\x02\u01BC\u01BD\x07a" +
+		"\u01BA\u01D5\x03\x02\x02\x02\u01BB\u01BC\f\r\x02\x02\u01BC\u01BD\x07^" +
 		"\x02\x02\u01BD\u01D4\x05N(\x0E\u01BE\u01BF\f\f\x02\x02\u01BF\u01C0\x07" +
-		"b\x02\x02\u01C0\u01D4\x05N(\r\u01C1\u01C2\f\v\x02\x02\u01C2\u01C3\x07" +
-		"c\x02\x02\u01C3\u01D4\x05N(\f\u01C4\u01C5\f\t\x02\x02\u01C5\u01C6\t\x06" +
+		"_\x02\x02\u01C0\u01D4\x05N(\r\u01C1\u01C2\f\v\x02\x02\u01C2\u01C3\x07" +
+		"`\x02\x02\u01C3\u01D4\x05N(\f\u01C4\u01C5\f\t\x02\x02\u01C5\u01C6\t\x06" +
 		"\x02\x02\u01C6\u01D4\x05N(\n\u01C7\u01C8\f\b\x02\x02\u01C8\u01C9\t\x07" +
 		"\x02\x02\u01C9\u01D4\x05N(\t\u01CA\u01CB\f\x07\x02\x02\u01CB\u01CC\t\x05" +
 		"\x02\x02\u01CC\u01D4\x05N(\b\u01CD\u01CE\f\x06\x02\x02\u01CE\u01CF\t\b" +
 		"\x02\x02\u01CF\u01D4\x05N(\x07\u01D0\u01D1\f\x05\x02\x02\u01D1\u01D2\x07" +
-		"`\x02\x02\u01D2\u01D4\x05N(\x06\u01D3\u01BB\x03\x02\x02\x02\u01D3\u01BE" +
+		"]\x02\x02\u01D2\u01D4\x05N(\x06\u01D3\u01BB\x03\x02\x02\x02\u01D3\u01BE" +
 		"\x03\x02\x02\x02\u01D3\u01C1\x03\x02\x02\x02\u01D3\u01C4\x03\x02\x02\x02" +
 		"\u01D3\u01C7\x03\x02\x02\x02\u01D3\u01CA\x03\x02\x02\x02\u01D3\u01CD\x03" +
 		"\x02\x02\x02\u01D3\u01D0\x03\x02\x02\x02\u01D4\u01D7\x03\x02\x02\x02\u01D5" +
@@ -2973,29 +2969,29 @@ export class IEC61131Parser extends Parser {
 		"T+\x02\u01DA\u01DB\x07\x0F\x02\x02\u01DB\u01DC\x05N(\x02\u01DC\u01DD\x07" +
 		"\x13\x02\x02\u01DD\u01E0\x03\x02\x02\x02\u01DE\u01E0\x05R*\x02\u01DF\u01D8" +
 		"\x03\x02\x02\x02\u01DF\u01D9\x03\x02\x02\x02\u01DF\u01DA\x03\x02\x02\x02" +
-		"\u01DF\u01DE\x03\x02\x02\x02\u01E0Q\x03\x02\x02\x02\u01E1\u01E2\x07f\x02" +
+		"\u01DF\u01DE\x03\x02\x02\x02\u01E0Q\x03\x02\x02\x02\u01E1\u01E2\x07c\x02" +
 		"\x02\u01E2\u01EB\x07\x0F\x02\x02\u01E3\u01E8\x058\x1D\x02\u01E4\u01E5" +
 		"\x07\x11\x02\x02\u01E5\u01E7\x058\x1D\x02\u01E6\u01E4\x03\x02\x02\x02" +
 		"\u01E7\u01EA\x03\x02\x02\x02\u01E8\u01E6\x03\x02\x02\x02\u01E8\u01E9\x03" +
 		"\x02\x02\x02\u01E9\u01EC\x03\x02\x02\x02\u01EA\u01E8\x03\x02\x02\x02\u01EB" +
 		"\u01E3\x03\x02\x02\x02\u01EB\u01EC\x03\x02\x02\x02\u01EC\u01ED\x03\x02" +
 		"\x02\x02\u01ED\u01EE\x07\x13\x02\x02\u01EES\x03\x02\x02\x02\u01EF\u01F4" +
-		"\x07f\x02\x02\u01F0\u01F1\x07Q\x02\x02\u01F1\u01F3\x07f\x02\x02\u01F2" +
+		"\x07c\x02\x02\u01F0\u01F1\x07N\x02\x02\u01F1\u01F3\x07c\x02\x02\u01F2" +
 		"\u01F0\x03\x02\x02\x02\u01F3\u01F6\x03\x02\x02\x02\u01F4\u01F2\x03\x02" +
 		"\x02\x02\u01F4\u01F5\x03\x02\x02\x02\u01F5\u0202\x03\x02\x02\x02\u01F6" +
-		"\u01F4\x03\x02\x02\x02\u01F7\u01F8\x07:\x02\x02\u01F8\u01FD\x05N(\x02" +
+		"\u01F4\x03\x02\x02\x02\u01F7\u01F8\x077\x02\x02\u01F8\u01FD\x05N(\x02" +
 		"\u01F9\u01FA\x07\x11\x02\x02\u01FA\u01FC\x05N(\x02\u01FB\u01F9\x03\x02" +
 		"\x02\x02\u01FC\u01FF\x03\x02\x02\x02\u01FD\u01FB\x03\x02\x02\x02\u01FD" +
 		"\u01FE\x03\x02\x02\x02\u01FE\u0200\x03\x02\x02\x02\u01FF\u01FD\x03\x02" +
-		"\x02\x02\u0200\u0201\x07;\x02\x02\u0201\u0203\x03\x02\x02\x02\u0202\u01F7" +
+		"\x02\x02\u0200\u0201\x078\x02\x02\u0201\u0203\x03\x02\x02\x02\u0202\u01F7" +
 		"\x03\x02\x02\x02\u0202\u0203\x03\x02\x02\x02\u0203U\x03\x02\x02\x02\u0204" +
 		"\u0209\x05X-\x02\u0205\u0209\x05\\/\x02\u0206\u0209\x05^0\x02\u0207\u0209" +
 		"\x05Z.\x02\u0208\u0204\x03\x02\x02\x02\u0208\u0205\x03\x02\x02\x02\u0208" +
 		"\u0206\x03\x02\x02\x02\u0208\u0207\x03\x02\x02\x02\u0209W\x03\x02\x02" +
-		"\x02\u020A\u020C\x07\\\x02\x02\u020B\u020A\x03\x02\x02\x02\u020B\u020C" +
+		"\x02\u020A\u020C\x07Y\x02\x02\u020B\u020A\x03\x02\x02\x02\u020B\u020C" +
 		"\x03\x02\x02\x02\u020C\u020D\x03\x02\x02\x02\u020D\u020E\t\t\x02\x02\u020E" +
 		"Y\x03\x02\x02\x02\u020F\u0210\t\n\x02\x02\u0210[\x03\x02\x02\x02\u0211" +
-		"\u0212\x07j\x02\x02\u0212]\x03\x02\x02\x02\u0213\u0214\x07k\x02\x02\u0214" +
+		"\u0212\x07g\x02\x02\u0212]\x03\x02\x02\x02\u0213\u0214\x07h\x02\x02\u0214" +
 		"_\x03\x02\x02\x025ckor|\x87\x92\x9D\xA3\xB9\xC3\xC6\xC9\xDB\xDE\xE7\xF2" +
 		"\xF7\xFD\u0104\u010B\u0111\u011E\u0126\u012B\u0136\u013D\u0145\u014E\u0151" +
 		"\u015C\u0160\u016D\u0172\u017C\u0180\u018D\u0192\u0197\u01A1\u01B9\u01D3" +

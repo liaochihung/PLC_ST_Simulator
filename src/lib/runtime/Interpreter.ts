@@ -1,11 +1,12 @@
 
 import { MemoryMap } from './MemoryMap';
-import { SymbolTable } from './SymbolTable';
+import { SymbolTable, ValueType } from './SymbolTable';
 import * as AST from '../compiler/AST';
 import * as Compiler from '../compiler/ASTBuilder';
 import { CharStreams, CommonTokenStream, ConsoleErrorListener } from 'antlr4ts';
 import { IEC61131Lexer } from '../compiler/generated/IEC61131Lexer';
 import { IEC61131Parser } from '../compiler/generated/IEC61131Parser';
+import { createStandardFB, FunctionBlock } from './StandardFBs';
 
 export class Interpreter {
     memory: MemoryMap;
@@ -14,10 +15,6 @@ export class Interpreter {
     isRunning: boolean = false;
     scanTime: number = 0;
     lastScanTime: number = 0;
-
-    // Standard FBs (simplified registry)
-    // In Phase 3 we will make this a proper library
-    standardFBs: Map<string, any> = new Map();
 
     constructor() {
         this.memory = new MemoryMap();
@@ -53,19 +50,50 @@ export class Interpreter {
     }
 
     private initializeSymbols(prog: AST.Program) {
-        // Reset Symbol Table? Maybe not if we want to keep values?
-        // For now, simple reset
+        // Reset Symbol Table logic if needed
+        // For now, we assume global scope is fresh or we clear it? 
+        // Ideally we should reset symbolTable if reloading.
         // this.symbolTable = new SymbolTable(this.memory); 
 
         // Register Global Vars
         if (prog.variables) {
             for (const decl of prog.variables) {
-                this.symbolTable.declare(decl.name, decl.dataType as any, decl.address);
-                // Handle Init Value
-                if (decl.initialValue && decl.initialValue.type === 'Literal') {
-                    this.symbolTable.set(decl.name, decl.initialValue.value);
+                // Determine initial value
+                let initVal: any = undefined;
+
+                // Function Block instantiation
+                const fbInstance = createStandardFB(decl.dataType);
+                if (fbInstance) {
+                    initVal = fbInstance;
                 }
+                else if (decl.initialValue && decl.initialValue.type === 'Literal') {
+                    initVal = decl.initialValue.value;
+                } else {
+                    initVal = this.getDefaultValue(decl.dataType as ValueType);
+                }
+
+                this.symbolTable.define(
+                    decl.name,
+                    decl.dataType as ValueType,
+                    initVal,
+                    false,
+                    decl.address
+                );
             }
+        }
+    }
+
+    private getDefaultValue(type: ValueType): any {
+        switch (type) {
+            case 'BOOL': return false;
+            case 'INT':
+            case 'DINT':
+            case 'WORD':
+            case 'DWORD': return 0;
+            case 'REAL': return 0.0;
+            case 'TIME': return 0;
+            case 'STRING': return '';
+            default: return 0;
         }
     }
 
@@ -81,6 +109,7 @@ export class Interpreter {
     reset(): void {
         this.memory.reset();
         this.isRunning = false;
+        // Re-init symbols?
     }
 
     executeScan(): void {
@@ -88,6 +117,7 @@ export class Interpreter {
 
         const now = Date.now();
         this.scanTime = now - this.lastScanTime;
+        if (this.scanTime <= 0) this.scanTime = 1; // Sanity check
         this.lastScanTime = now;
 
         // 1. Input Scan (handled externally or checking inputs)
@@ -130,12 +160,51 @@ export class Interpreter {
     private executeAssignment(stmt: AST.Assignment) {
         const value = this.evaluate(stmt.expression);
 
-        // Validate variable existence
-        if (!this.symbolTable.has(stmt.variable.name)) {
-            throw new Error(`Runtime Error: Variable '${stmt.variable.name}' not defined.`);
+        try {
+            // Handle Dot Notation for FB outputs? 
+            // Usually we assign TO variables. 
+            // Evaluating ST: MyTimer.IN := TRUE
+            // My Parser might handle this as Assignment to valid Variable AST
+            // Variable name is "MyTimer.IN"
+
+            // Check if name has dot
+            if (stmt.variable.name.includes('.')) {
+                this.setDotVariable(stmt.variable.name, value);
+            } else {
+                this.symbolTable.set(stmt.variable.name, value);
+            }
+
+        } catch (e: any) {
+            throw new Error(`Runtime Error: ${e.message}`);
+        }
+    }
+
+    private setDotVariable(accessPath: string, value: any) {
+        const parts = accessPath.split('.');
+        const rootName = parts[0];
+        const root = this.symbolTable.get(rootName);
+
+        if (!root) throw new Error(`Variable ${rootName} not found`);
+
+        // Assume it's an FB
+        if (root && typeof root === 'object' && 'inputs' in root) {
+            const fb = root as FunctionBlock;
+            const param = parts[1];
+
+            // Allow setting inputs
+            if (param in fb.inputs) {
+                fb.inputs[param] = value;
+                return;
+            }
+            // Forcing output? Usually read-only but simulators might allow
+            // For strictness we might block, but here we allow
+            if (param in fb.outputs) {
+                fb.outputs[param] = value;
+                return;
+            }
         }
 
-        this.symbolTable.set(stmt.variable.name, value);
+        throw new Error(`Cannot write to property ${accessPath}`);
     }
 
     private executeIf(stmt: AST.IfStatement) {
@@ -167,10 +236,11 @@ export class Interpreter {
         this.symbolTable.set(varName, start);
 
         let loopCount = 0;
-        const MAX_LOOP = 1000;
+        const MAX_LOOP = 5000;
 
         while (true) {
             const current = this.symbolTable.get(varName);
+
             if (by > 0) {
                 if (current > to) break;
             } else {
@@ -178,7 +248,7 @@ export class Interpreter {
             }
 
             if (loopCount++ > MAX_LOOP) {
-                console.warn("Infinite Loop detected");
+                console.warn("Infinite Loop detected in FOR");
                 break;
             }
 
@@ -190,7 +260,7 @@ export class Interpreter {
     }
 
     private executeWhile(stmt: AST.WhileStatement) {
-        const MAX_LOOP = 1000;
+        const MAX_LOOP = 5000;
         let loopCount = 0;
 
         while (this.evaluate(stmt.condition)) {
@@ -203,7 +273,7 @@ export class Interpreter {
     }
 
     private executeRepeat(stmt: AST.RepeatStatement) {
-        const MAX_LOOP = 1000;
+        const MAX_LOOP = 5000;
         let loopCount = 0;
 
         do {
@@ -216,39 +286,30 @@ export class Interpreter {
     }
 
     private executeFbCall(stmt: AST.FbCall) {
-        // TODO: Implement actual FB lookup and execution
-        // For now, handling basics or mock
-        const fbName = stmt.fbName;
+        const result = this.symbolTable.resolve(stmt.fbName);
+        if (!result || !result.value) {
+            console.warn(`Function Block ${stmt.fbName} not found or undefined.`);
+            return;
+        }
+
+        const fbInstance = result.value as FunctionBlock;
 
         // 1. Evaluate Input Params
-        const inputs: Record<string, any> = {};
         for (const param of stmt.params) {
-            // If value is expression, evaluate it
             if (param.value && (param.value as AST.Expression).type) {
-                // If it's a simple assignment :=
-                // Params can be positional or named. 
-                // AST FbCall params has name? and value.
                 if (param.name) {
-                    inputs[param.name] = this.evaluate(param.value as AST.Expression);
-                } else {
-                    // Positional - logic depends on FB definition
+                    const val = this.evaluate(param.value as AST.Expression);
+                    if (param.name in fbInstance.inputs) {
+                        fbInstance.inputs[param.name] = val;
+                    }
                 }
             }
         }
 
-        // 2. Execute FB (Mock)
-        if (this.standardFBs.has(fbName)) {
-            const fbFunc = this.standardFBs.get(fbName);
-            // fbFunc(inputs)? Logic needs state. 
-            // Phase 3 will handle this properly.
-        }
+        // 2. Execute FB
+        fbInstance.execute(this.scanTime);
 
-        // 3. Output mapping => (Handled in step 1 if we parsed => specifically?)
-        // In ST: MyFB(In1:=10, Out1=>MyVar);
-        // My Param parser puts this in params list.
-        // We need to distinguish IN vs OUT in AST params?
-        // Current AST structure: { name?: string, value: Expression | Identifier }
-        // We might need 'direction' or 'operator' in AST param to distinguish := and =>
+        // 3. Outputs are updated inside FB instance
     }
 
     private evaluate(expr: AST.Expression): any {
@@ -256,6 +317,9 @@ export class Interpreter {
             case 'Literal':
                 return expr.value;
             case 'Identifier':
+                if (expr.name.includes('.')) {
+                    return this.evaluateDot(expr.name);
+                }
                 const val = this.symbolTable.get(expr.name);
                 if (val === undefined) {
                     throw new Error(`Runtime Error: Variable '${expr.name}' not defined.`);
@@ -265,13 +329,28 @@ export class Interpreter {
                 return this.evaluateBinary(expr);
             case 'UnaryOp':
                 return this.evaluateUnary(expr);
-            case 'FbCall':
-                // Function execution
-                // TODO: Return actual value
-                return 0;
+            case 'FbCall': // Function call as expression
+                return 0; // TODO impl
             default:
                 return 0;
         }
+    }
+
+    private evaluateDot(accessPath: string): any {
+        const parts = accessPath.split('.');
+        const rootName = parts[0];
+        const val = this.symbolTable.get(rootName);
+
+        if (!val) throw new Error(`Variable ${rootName} not found`);
+
+        if (typeof val === 'object' && 'outputs' in val && 'inputs' in val) {
+            const fb = val as FunctionBlock;
+            const prop = parts[1];
+            if (prop in fb.outputs) return fb.outputs[prop];
+            if (prop in fb.inputs) return fb.inputs[prop];
+        }
+
+        return undefined; // Or throw
     }
 
     private evaluateBinary(expr: AST.BinaryOp): any {
@@ -282,11 +361,17 @@ export class Interpreter {
             case '+': return left + right;
             case '-': return left - right;
             case '*': return left * right;
-            case '/': return left / right; // Float?
+            case '/': return left / right;
             case 'MOD': return left % right;
-            case 'AND': return left && right; // Boolean or Bitwise? ST is typed. Assume logic for now.
-            case 'OR': return left || right;
-            case 'XOR': return !!left !== !!right;
+            case 'AND':
+                if (typeof left === 'boolean') return left && right;
+                return left & right;
+            case 'OR':
+                if (typeof left === 'boolean') return left || right;
+                return left | right;
+            case 'XOR':
+                if (typeof left === 'boolean') return !!left !== !!right;
+                return left ^ right;
             case '=': return left === right;
             case '<>': return left !== right;
             case '<': return left < right;
