@@ -15,13 +15,14 @@ interface Product {
   status: 'pending' | 'ok' | 'ng';
 }
 
+// 逆時針順序：站別角度遞減
 const DEFAULT_STATIONS: Station[] = [
   { id: 1, name: '進料', type: 'feed', angle: 0, active: false, hasProduct: false },
-  { id: 2, name: '組裝1', type: 'assembly', angle: 60, active: false, hasProduct: false },
-  { id: 3, name: '組裝2', type: 'assembly', angle: 120, active: false, hasProduct: false },
+  { id: 2, name: '組裝1', type: 'assembly', angle: 300, active: false, hasProduct: false },
+  { id: 3, name: '組裝2', type: 'assembly', angle: 240, active: false, hasProduct: false },
   { id: 4, name: '檢測', type: 'assembly', angle: 180, active: false, hasProduct: false },
-  { id: 5, name: 'OK出料', type: 'ok', angle: 240, active: false, hasProduct: false },
-  { id: 6, name: 'NG出料', type: 'ng', angle: 300, active: false, hasProduct: false },
+  { id: 5, name: 'OK出料', type: 'ok', angle: 120, active: false, hasProduct: false },
+  { id: 6, name: 'NG出料', type: 'ng', angle: 60, active: false, hasProduct: false },
 ];
 
 export function useSimulator() {
@@ -74,9 +75,9 @@ export function useSimulator() {
                 interpreter.getVariable(`Station${station.id}Active`) === true
       })));
 
-      // Handle disc rotation when indexing
+      // Handle disc rotation when indexing (逆時針旋轉)
       if (indexing) {
-        setDiscAngle(prev => (prev + 1) % 360);
+        setDiscAngle(prev => (prev - 1 + 360) % 360);
       }
 
       // Check for errors
