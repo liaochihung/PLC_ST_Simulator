@@ -1,17 +1,7 @@
 
-export interface ProgramBlock {
-    id: string;
-    name: string;
-    type: 'program' | 'function_block' | 'function' | 'init' | 'scan';
-    code: string;
-    scanInterval?: number; // For cyclical tasks
-}
+import { ProgramProject } from '@/types/program-blocks';
 
-export interface Project {
-    name: string;
-    blocks: ProgramBlock[];
-}
-
+// Constants for default code
 const GLOBAL_VARS = `VAR_GLOBAL CONSTANT
     OK_STEP : INT := 10000;
     NG_STEP : INT := -1;
@@ -914,21 +904,32 @@ END_FUNCTION_BLOCK`
     }
 ];
 
-export const DEFAULT_PROJECT: Project = {
-    name: 'Fx5u - Sample',
+
+export const DEFAULT_PROJECT: ProgramProject = {
+    id: 'project-default',
+    name: '圓盤分度機',
+    activeBlockId: 'main-program',
     blocks: [
         {
-            id: 'global_vars',
-            name: 'Global Variables',
+            id: 'global-vars',
+            name: '全域變數',
             type: 'init',
-            code: GLOBAL_VARS + '\n\n' + GLOBAL_IO
+            code: GLOBAL_VARS + '\n\n' + GLOBAL_IO,
+            enabled: true
         },
-        ...FBS,
+        ...FBS.map(fb => ({
+            ...fb,
+            type: 'function-block' as const,
+            enabled: true,
+            parentId: undefined
+        })),
         {
-            id: 'main',
-            name: 'Main',
-            type: 'program',
-            code: MAIN_PROGRAM
+            id: 'main-program',
+            name: '主程式',
+            type: 'scan',
+            code: MAIN_PROGRAM,
+            scanInterval: 10,
+            enabled: true
         }
     ]
 };

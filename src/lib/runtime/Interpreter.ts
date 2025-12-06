@@ -3,7 +3,8 @@ import { MemoryMap } from './MemoryMap';
 import { SymbolTable, ValueType } from './SymbolTable';
 import * as AST from '../compiler/AST';
 import * as Compiler from '../compiler/ASTBuilder';
-import { CharStreams, CommonTokenStream, ConsoleErrorListener } from 'antlr4ts';
+import { CharStreams, CommonTokenStream } from 'antlr4ts';
+import { SimpleErrorListener } from './SimpleErrorListener';
 import { IEC61131Lexer } from '../compiler/generated/IEC61131Lexer';
 import { IEC61131Parser } from '../compiler/generated/IEC61131Parser';
 import { createStandardFB, FunctionBlock } from './StandardFBs';
@@ -31,7 +32,7 @@ export class Interpreter {
 
             // Error listeners should be added here
             parser.removeErrorListeners();
-            parser.addErrorListener(ConsoleErrorListener.INSTANCE);
+            parser.addErrorListener(SimpleErrorListener.INSTANCE);
 
             const tree = parser.program();
 

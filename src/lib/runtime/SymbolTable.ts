@@ -1,7 +1,7 @@
 
 import { MemoryMap } from './MemoryMap';
 
-export type ValueType = 'BOOL' | 'INT' | 'DINT' | 'REAL' | 'STRING' | 'TIME' | 'WORD' | 'DWORD' | 'TON' | 'TOF' | 'UNKNOWN';
+export type ValueType = 'BOOL' | 'INT' | 'DINT' | 'REAL' | 'STRING' | 'TIME' | 'WORD' | 'DWORD' | 'TON' | 'TOF' | 'TP' | 'CTU' | 'CTD' | 'CTUD' | 'R_TRIG' | 'F_TRIG' | 'UNKNOWN';
 
 export interface VariableSymbol {
     name: string;
@@ -30,6 +30,13 @@ export class SymbolTable {
         } else {
             console.warn('Cannot pop global scope');
         }
+    }
+
+    /**
+     * Get all variables in the global scope (for UI monitoring)
+     */
+    getGlobalVariables(): Map<string, VariableSymbol> {
+        return this.scopes[0];
     }
 
     /**

@@ -12,7 +12,10 @@ import { Button } from '@/components/ui/button';
 
 const Index: React.FC = () => {
   const {
-    interpreter,
+    interpreter, // Keep for debugging if needed, or remove if unused
+    variables,
+    timers,
+    counters,
     isRunning,
     scanTime,
     cycleCount,
@@ -85,7 +88,7 @@ const Index: React.FC = () => {
             <p className="text-xs text-muted-foreground">IEC 61131-3 結構化文本</p>
           </div>
         </div>
-        
+
         <div className="flex items-center gap-4 text-sm text-muted-foreground">
           <span className="hidden md:inline">週期: {cycleCount}</span>
           <span>|</span>
@@ -115,7 +118,7 @@ const Index: React.FC = () => {
       {/* Main Content */}
       <div className="flex-1 flex overflow-hidden">
         {/* Left Sidebar - Program Block Tree */}
-        <div 
+        <div
           className={cn(
             "border-r border-border transition-all duration-300 overflow-hidden",
             sidebarOpen ? "w-64" : "w-0"
@@ -150,9 +153,9 @@ const Index: React.FC = () => {
             </div>
             {activeBlock && (
               <span className="text-xs text-muted-foreground">
-                {activeBlock.type === 'init' ? '初始化區塊' : 
-                 activeBlock.type === 'scan' ? '掃描區塊' : 
-                 activeBlock.type === 'subroutine' ? '子程式' : '功能塊'}
+                {activeBlock.type === 'init' ? '初始化區塊' :
+                  activeBlock.type === 'scan' ? '掃描區塊' :
+                    activeBlock.type === 'subroutine' ? '子程式' : '功能塊'}
               </span>
             )}
           </div>
@@ -215,9 +218,9 @@ const Index: React.FC = () => {
               </div>
             ) : (
               <VariableMonitor
-                variables={interpreter.state.variables}
-                timers={interpreter.state.timers}
-                counters={interpreter.state.counters}
+                variables={variables}
+                timers={timers}
+                counters={counters}
                 onVariableChange={setVariable}
               />
             )}
@@ -230,9 +233,9 @@ const Index: React.FC = () => {
         <div className="flex items-center gap-4">
           <span>掃描週期: {scanTime}ms</span>
           <span>|</span>
-          <span>變數: {interpreter.state.variables.size}</span>
+          <span>變數: {variables.size}</span>
           <span>|</span>
-          <span>計時器: {interpreter.state.timers.size}</span>
+          <span>計時器: {timers.size}</span>
         </div>
         <span>IEC 61131-3 ST Simulator v1.0</span>
       </footer>
