@@ -71,3 +71,13 @@ Yes, you can!
 To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
 
 Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+
+---
+
+## Code Samples
+
+The `doc/sample` directory contains a complete and realistic sample project for a Mitsubishi FX5U PLC, written in Structured Text (ST). These files are exported as HTML and serve as excellent reference material.
+
+- **`function-block-libaray(fx5u).html`**: This file is a reusable **Function Block library**. It defines the low-level components for controlling specific hardware, such as different types of cylinders (`FbCylinder...`), a rotary table (`FbRotateTable`), feeders (`FbFeeder`), and motor axes (`FbAxis...`). It acts as the hardware abstraction layer for the main program.
+
+- **`fx5u-sample.html`**: This is the **main program** that orchestrates the entire machine logic. It uses the function blocks from the library to control a complex, multi-station automated machine. The code is well-structured into an initialization area, a main scan loop (with auto and manual modes), error handling, and detailed logic for each station's sequence.

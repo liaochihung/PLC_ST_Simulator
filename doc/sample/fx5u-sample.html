@@ -1,0 +1,1976 @@
+<!DOCTYPE html> <html lang="zh-tw"><head>
+<title>Fx5u - Sample</title>
+<base href=".">
+<meta name="pathname" content="fx5u-sample.html">
+<meta name="description" content="MyKM - Fx5u - Sample">
+<meta property="og:title" content="Fx5u - Sample">
+<meta property="og:description" content="MyKM - Fx5u - Sample">
+<meta property="og:type" content="website">
+<meta property="og:url" content="fx5u-sample.html">
+<meta property="og:image" content="assets/pasted-image-20251206153353.png">
+<meta charset="UTF-8"><meta property="og:site_name" content="MyKM"><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, minimum-scale=1.0, maximum-scale=5.0"><link rel="alternate" type="application/rss+xml" title="RSS Feed" href="site-lib/rss.xml"><script async="" id="webpage-script" src="site-lib/scripts/webpage.js" onload="this.onload=null;this.setAttribute(&quot;loaded&quot;, &quot;true&quot;)"></script><script async="" id="graph-wasm-script" src="site-lib/scripts/graph-wasm.js" onload="this.onload=null;this.setAttribute(&quot;loaded&quot;, &quot;true&quot;)"></script><script async="" id="graph-render-worker-script" src="site-lib/scripts/graph-render-worker.js" onload="this.onload=null;this.setAttribute(&quot;loaded&quot;, &quot;true&quot;)"></script><link rel="icon" href="site-lib/media/favicon.png"><link rel="stylesheet" href="site-lib/styles/obsidian.css"><link rel="preload" href="site-lib/styles/global-variable-styles.css" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel="stylesheet" href="site-lib/styles/global-variable-styles.css"></noscript><link rel="preload" href="site-lib/styles/main-styles.css" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel="stylesheet" href="site-lib/styles/main-styles.css"></noscript><style>body{--line-width:40em;--line-width-adaptive:40em;--file-line-width:40em;--sidebar-width:min(20em, 80vw);--collapse-arrow-size:11px;--tree-vertical-spacing:1.3em;--sidebar-margin:12px}:root{background-color:#202124}.sidebar{height:100%;font-size:14px;z-index:10;min-width:calc(var(--sidebar-width) + var(--divider-width-hover));max-width:calc(var(--sidebar-width) + var(--divider-width-hover));position:relative;overflow:hidden;overflow:clip;transition:min-width ease-in-out,max-width ease-in-out;transition-duration:.2s;contain:size}#left-sidebar{left:0}#right-sidebar{right:0}.sidebar.is-collapsed{min-width:0;max-width:0}.sidebar.floating{position:absolute}.sidebar .leaf-content{height:100%;min-width:calc(var(--sidebar-width) - var(--divider-width-hover));top:0;padding:var(--sidebar-margin);padding-top:4em;line-height:var(--line-height-tight);background-color:var(--background-secondary);transition:background-color,border-right,border-left,box-shadow;transition-duration:var(--color-fade-speed);transition-timing-function:ease-in-out;position:absolute;display:flex;flex-direction:column}.sidebar:not(.is-collapsed) .leaf-content{min-width:calc(max(100%,var(--sidebar-width)) - 3px);max-width:calc(max(100%,var(--sidebar-width)) - 3px)}#left-sidebar-content{left:0;border-top-right-radius:var(--radius-l);border-bottom-right-radius:var(--radius-l)}#right-sidebar-content{right:0;border-top-left-radius:var(--radius-l);border-bottom-left-radius:var(--radius-l)}.sidebar #left-sidebar-content,.sidebar #right-sidebar-content{contain:none!important;container-type:normal!important;animation:none!important}.sidebar:has(.leaf-content:empty):has(.topbar-content:empty){display:none}.sidebar-topbar{height:calc(2.3em + 2 * var(--sidebar-margin));width:var(--sidebar-width);padding:var(--sidebar-margin);z-index:1;position:fixed;display:flex;align-items:center;transition:width ease-in-out;transition-duration:inherit}.sidebar.is-collapsed .sidebar-topbar{width:calc(2.3em + var(--sidebar-margin) * 2)}.sidebar .sidebar-topbar.is-collapsed{width:0}#left-sidebar .sidebar-topbar{left:0;flex-direction:row;border-top-right-radius:var(--radius-l)}#right-sidebar .sidebar-topbar{right:0;flex-direction:row-reverse;border-top-left-radius:var(--radius-l)}#left-sidebar .topbar-content{margin-right:calc(2.3em + var(--sidebar-margin));flex-direction:row}#right-sidebar .topbar-content{margin-left:calc(2.3em + var(--sidebar-margin));flex-direction:row-reverse}.topbar-content{overflow:hidden visible;overflow:clip visible;width:100%;height:100%;display:flex;align-items:center;transition:inherit}.sidebar.is-collapsed .topbar-content{width:0;transition:inherit}.clickable-icon.sidebar-collapse-icon{background-color:transparent;color:var(--icon-color-focused);padding:2px!important;margin:0!important;height:100%!important;width:2.3em!important;margin-inline:0.14em!important;position:absolute}#left-sidebar .clickable-icon.sidebar-collapse-icon{transform:rotateY(180deg);right:var(--sidebar-margin)}#right-sidebar .clickable-icon.sidebar-collapse-icon{transform:rotateY(180deg);left:var(--sidebar-margin)}.clickable-icon.sidebar-collapse-icon svg.svg-icon{width:100%;height:100%}.feature-title{margin-left:1px;text-transform:uppercase;letter-spacing:.06em;margin-top:.75em;margin-bottom:.75em}.feature-header{display:flex;align-items:center;padding-top:0;font-size:1em;padding-left:0}body.floating-sidebars .sidebar{position:absolute}body{transition:background-color var(--color-fade-speed) ease-in-out}#navbar:not(:empty){display:flex;align-items:center;justify-content:space-between;padding:.5em 1em;width:100%}#main{display:flex;flex-direction:column;height:100%;width:100%;align-items:stretch;justify-content:center}#main-horizontal{display:flex;flex-direction:row;flex-grow:1;width:100%;align-items:stretch;justify-content:center}#center-content{flex-basis:100%;max-width:100%;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;transition:opacity .2s ease-in-out;contain:inline-size}.hide{opacity:0!important;transition:opacity .2s ease-in-out;pointer-events:none}#center-content>.obsidian-document{padding-left:2em;padding-right:1em;margin-bottom:0;width:100%;width:-webkit-fill-available;width:-moz-available;width:fill-available;transition:background-color var(--color-fade-speed) ease-in-out;border-top-right-radius:var(--window-radius,var(--radius-m));border-top-left-radius:var(--window-radius,var(--radius-m));overflow-x:hidden!important;overflow-y:auto!important;display:flex!important;flex-direction:column!important;align-items:center!important;contain:inline-size}body #center-content>.obsidian-document>.markdown-preview-sizer{padding-bottom:80vh;width:100%;max-width:var(--line-width);flex-basis:var(--line-width);transition:background-color var(--color-fade-speed) ease-in-out;contain:inline-size}#center-content>.obsidian-document>div{width:100%!important;transition:background-color var(--color-fade-speed) ease-in-out;contain:inline-size}#center-content>.obsidian-document:not([data-type=markdown]).embed{display:flex;padding:1em;height:100%;width:100%;align-items:center;justify-content:center}#center-content>.obsidian-document:not([data-type=markdown]).embed>*{max-width:100%;max-height:100%;object-fit:contain}:not(h1,h2,h3,h4,h5,h6,li):has(> :is(.math,table)){overflow-x:auto!important}#center-content>.obsidian-document:not([data-type=markdown]){overflow-x:auto;contain:content;padding:0;margin:0;height:100%}.obsidian-document[data-type=attachment]{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;width:100%}.obsidian-document[data-type=attachment]>*{outline:0;border:none;box-shadow:none}.obsidian-document[data-type=attachment] :is(img){max-width:90%;max-height:90%;object-fit:contain}.obsidian-document[data-type=attachment]>:is(audio){width:100%;max-width:min(90%,var(--line-width))}.obsidian-document[data-type=attachment]>:is(embed,iframe,video){width:100%;height:100%;max-width:100%;max-height:100%;object-fit:contain}.canvas-wrapper>:is(.header,.footer){z-index:100;position:absolute;display:flex;justify-content:center;flex-direction:column;width:100%;align-items:center}.scroll-highlight{position:absolute;width:100%;height:100%;pointer-events:none;z-index:1000;background-color:hsla(var(--color-accent-hsl),.25);opacity:0;padding:1em;inset:50%;translate:-50% -50%;border-radius:var(--radius-s)}</style><script defer="">async function loadIncludes(){let e=document.querySelectorAll("link[itemprop='include']");for(const t of e){let e=t.getAttribute("href");try{let o="";if(e.startsWith("https:")||e.startsWith("http:")||"file:"!=window.location.protocol){const n=await fetch(e);if(!n.ok){console.log("Could not include file: "+e),t?.remove();continue}o=await n.text()}else{const t=document.getElementById(btoa(encodeURI(e)));if(t){const e=JSON.parse(decodeURI(atob(t.getAttribute("value")??"")));o=e?.data??""}}let n=document.createRange().createContextualFragment(o);t.before(n),t.remove(),console.log("Included text: "+o),console.log("Included file: "+e)}catch(o){t?.remove(),console.log("Could not include file: "+e,o);continue}}}document.addEventListener("DOMContentLoaded",(()=>{loadIncludes()}));let isFileProtocol="file:"==location.protocol;function waitLoadScripts(e,t){let o=e.map((e=>document.getElementById(e+"-script")));!function e(n){let l=o[n],c=n+1;l?(l&&"true"!=l.getAttribute("loaded")||n<o.length&&e(c),n<o.length&&l.addEventListener("load",(()=>e(c)))):n<o.length?e(c):t()}(0)}</script></head><body class="publish css-settings-manager styled-scrollbars show-inline-title show-ribbon is-focused"><script defer="">let theme=localStorage.getItem("theme")||(window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");"dark"==theme?(document.body.classList.add("theme-dark"),document.body.classList.remove("theme-light")):(document.body.classList.add("theme-light"),document.body.classList.remove("theme-dark")),window.innerWidth<480?document.body.classList.add("is-phone"):window.innerWidth<768?document.body.classList.add("is-tablet"):window.innerWidth<1024?document.body.classList.add("is-small-screen"):document.body.classList.add("is-large-screen")</script><div class="parsed-feature-container" style="display: contents;"><link itemprop="include" href="site-lib/html/custom-head-content-content.html"></div><div id="main"><div id="navbar"></div><div id="main-horizontal"><div id="left-content" class="leaf" style="--sidebar-width: var(--sidebar-width-left);"><div id="left-sidebar" class="sidebar"><div class="sidebar-handle"></div><div class="sidebar-topbar"><div class="topbar-content"><div id="search-container"><div id="search-wrapper"><input enterkeyhint="search" type="search" spellcheck="false" placeholder="Search..."><div aria-label="Clear search" id="search-clear-button"></div></div></div></div><div class="clickable-icon sidebar-collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="svg-icon"><path d="M21 3H3C1.89543 3 1 3.89543 1 5V19C1 20.1046 1.89543 21 3 21H21C22.1046 21 23 20.1046 23 19V5C23 3.89543 22.1046 3 21 3Z"></path><path d="M10 4V20"></path><path d="M4 7H7"></path><path d="M4 10H7"></path><path d="M4 13H7"></path></svg></div></div><div class="sidebar-content-wrapper"><div id="left-sidebar-content" class="leaf-content"><link itemprop="include" href="site-lib/html/file-tree-content.html"></div></div><script defer="">let ls = document.querySelector("#left-sidebar"); ls.classList.toggle("is-collapsed", window.innerWidth < 768); ls.style.setProperty("--sidebar-width", localStorage.getItem("sidebar-left-width"));</script></div></div><div id="center-content" class="leaf"><div class="obsidian-document markdown-preview-view markdown-rendered node-insert-event is-readable-line-width allow-fold-headings allow-fold-lists show-indentation-guide show-properties" data-type="markdown"><style id="MJX-CHTML-styles"></style><div class="markdown-preview-sizer markdown-preview-section"><div class="header"><h1 class="page-title heading inline-title" id="Fx5u_-_Sample_0">Fx5u - Sample</h1><div class="data-bar"></div></div><div class="markdown-preview-pusher" style="width: 1px; height: 0.1px; margin-bottom: 0px;"></div><div class="el-p"><p dir="auto">State Machine Diagram<br>
+<span src="assets/pasted-image-20251206153353.png" class="internal-embed media-embed image-embed is-loaded" target="_self"><img src="assets/pasted-image-20251206153353.png" target="_self"></span></p></div><div class="el-h1"><h1 data-heading="Init Area" dir="auto" class="heading" id="Init_Area_0"><span class="heading-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span>Init Area</h1></div><div class="el-p"><p dir="auto">run only onece, when system starting up</p></div><div class="el-pre"><pre class="language-st"><code data-line="0" class="language-st is-loaded">;
+yLight := TRUE;
+
+sys.ManMode := TRUE;
+//gCanChangePage := TRUE;
+
+ySt3ServoServoBrake := TRUE;
+ySt3ServoServoOn := TRUE;
+
+IF dwSt3Seperation = 0 THEN
+	dwSt3Seperation := 4;
+END_IF;
+
+SM8049 := TRUE;
+</code><button class="copy-code-button"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon lucide-copy"><rect x="8" y="8" width="14" height="14" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></pre></div><div class="el-h1"><h1 data-heading="Global Var" dir="auto" class="heading" id="Global_Var_0"><span class="heading-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span>Global Var</h1></div><div class="el-pre"><pre><code data-line="0">OK_STEP	字[有符号]	VAR_GLOBAL_CONSTANT			10000							0
+NG_STEP	字[有符号]	VAR_GLOBAL_CONSTANT			-1							0
+START_STEP	字[有符号]	VAR_GLOBAL_CONSTANT			10							0
+TOOL_NG	字[有符号]	VAR_GLOBAL_CONSTANT			900							0
+ErrCyOn	字[无符号]/位串[16位]	VAR_GLOBAL_CONSTANT			10	Cylinder On Err						0
+ErrCyOff	字[无符号]/位串[16位]	VAR_GLOBAL_CONSTANT			20	Cylinder Off Err						0
+ErrCyBoth	字[无符号]/位串[16位]	VAR_GLOBAL_CONSTANT			30	Cylinder Both On Err						0
+CONTINUS_NG_TARGET	字[有符号]	VAR_GLOBAL_CONSTANT			3							0
+STEP_BUSY	字[有符号]	VAR_GLOBAL_CONSTANT			1							0
+STEP_OK	字[有符号]	VAR_GLOBAL_CONSTANT			2							0
+gLight	dsTowerLight	VAR_GLOBAL	详细设置									0
+sys	dsSysStatus	VAR_GLOBAL	详细设置									0
+dwAxis1Pos	双字[有符号]	VAR_GLOBAL	SD5500									0
+dwAxis2Pos	双字[有符号]	VAR_GLOBAL	SD5540									0
+uiSt1Down	位	VAR_GLOBAL	M10									0
+uiSt1Forward	位	VAR_GLOBAL	M11									0
+uiSt1Clamp	位	VAR_GLOBAL	M12									0
+uiSt1ClampRotate	位	VAR_GLOBAL	M13									0
+uiSt1Seperate	位	VAR_GLOBAL	M14									0
+uiSt1PF	位	VAR_GLOBAL	M15									0
+uiSt1LF	位	VAR_GLOBAL	M16									0
+uiSt3Down	位	VAR_GLOBAL	M30									0
+uiSt3Forward	位	VAR_GLOBAL	M31									0
+uiSt3Suck	位	VAR_GLOBAL	M32									0
+uiSt3StepUp	位	VAR_GLOBAL	M33									0
+uiSt3StepDown	位	VAR_GLOBAL	M34									0
+uiSt3NextPos	位	VAR_GLOBAL	M35									0
+uiSt5Down	位	VAR_GLOBAL	M50									0
+uiSt5Forward	位	VAR_GLOBAL	M51									0
+uiSt5Suck	位	VAR_GLOBAL	M52									0
+uiSt5Seperate	位	VAR_GLOBAL	M53									0
+uiSt5PF	位	VAR_GLOBAL	M54									0
+uiSt5LF	位	VAR_GLOBAL	M55									0
+uiSt6Down	位	VAR_GLOBAL	M60									0
+uiSt7Down	位	VAR_GLOBAL	M70									0
+uiSt8Down	位	VAR_GLOBAL	M80									0
+uiSt8Forward	位	VAR_GLOBAL	M81									0
+uiSt8Clamp	位	VAR_GLOBAL	M82									0
+uiSt9Up	位	VAR_GLOBAL	M90									
+uiSt9BlowAir	位	VAR_GLOBAL	M91									
+cySt1Down	FbCylinder2x1y	VAR_GLOBAL										
+cySt1Forward	FbCylinder2x1y	VAR_GLOBAL										
+cySt1Clamp	FbCylinder0x1y	VAR_GLOBAL										
+cySt1ClampRotate	FbCylinder2x1y	VAR_GLOBAL										
+cySt1Seperate	FbCylinder2x1y	VAR_GLOBAL										
+cySt3Down	FbCylinder2x1y	VAR_GLOBAL										
+cySt3Forward	FbCylinder2x1y	VAR_GLOBAL										
+cySt3Suck	FbCylinder1x1y	VAR_GLOBAL										
+cySt5Down	FbCylinder2x1y	VAR_GLOBAL										
+cySt5Forward	FbCylinder2x1y	VAR_GLOBAL										
+cySt5Suck	FbCylinder1x1y	VAR_GLOBAL										
+cySt5Seperate	FbCylinder2x1y	VAR_GLOBAL										
+cySt6Down	FbCylinder2x1y	VAR_GLOBAL										
+cySt7Down	FbCylinder2x1y	VAR_GLOBAL										
+cySt8Down	FbCylinder2x1y	VAR_GLOBAL										0
+cySt8Forward	FbCylinder2x1y	VAR_GLOBAL										0
+cySt8Clamp	FbCylinder0x1y	VAR_GLOBAL										0
+cySt9Up	FbCylinder2x1y	VAR_GLOBAL										0
+cySt9BlowAir	FbCylinder0x1y	VAR_GLOBAL										0
+rfSt1	FbFeeder	VAR_GLOBAL										0
+rfSt5	FbFeeder	VAR_GLOBAL										
+RotateTable	FbRotateTable	VAR_GLOBAL										
+Axis1Zero	FbAxisZero	VAR_GLOBAL										
+Axis2Zero	FbAxisZero	VAR_GLOBAL										
+wSt1ClampOffT	字[有符号]	VAR_GLOBAL_RETAIN	D1000									
+wSt1ClampOnT	字[有符号]	VAR_GLOBAL_RETAIN	D1001									
+wSt1ClampRotateOffT	字[有符号]	VAR_GLOBAL_RETAIN	D1002									
+wSt1ClampRotateOnT	字[有符号]	VAR_GLOBAL_RETAIN	D1003									
+wSt1ClampRotateTO	字[有符号]	VAR_GLOBAL_RETAIN	D1004									
+wSt1DownOffT	字[有符号]	VAR_GLOBAL_RETAIN	D1005									
+wSt1DownOnT	字[有符号]	VAR_GLOBAL_RETAIN	D1006									
+wSt1DownTO	字[有符号]	VAR_GLOBAL_RETAIN	D1007									
+wSt1ForwardOffT	字[有符号]	VAR_GLOBAL_RETAIN	D1008									
+wSt1ForwardOnT	字[有符号]	VAR_GLOBAL_RETAIN	D1009									
+wSt1ForwardTO	字[有符号]	VAR_GLOBAL_RETAIN	D1010									
+wSt1SeperateOffT	字[有符号]	VAR_GLOBAL_RETAIN	D1011									
+wSt1SeperateOnT	字[有符号]	VAR_GLOBAL_RETAIN	D1012									
+wSt1SeperateTO	字[有符号]	VAR_GLOBAL_RETAIN	D1013									
+wSt3DownOffT	字[有符号]	VAR_GLOBAL_RETAIN	D1014									
+wSt3DownOnT	字[有符号]	VAR_GLOBAL_RETAIN	D1015									
+wSt3DownTO	字[有符号]	VAR_GLOBAL_RETAIN	D1016									
+wSt3ForwardOffT	字[有符号]	VAR_GLOBAL_RETAIN	D1017									
+wSt3ForwardOnT	字[有符号]	VAR_GLOBAL_RETAIN	D1018									
+wSt3ForwardTO	字[有符号]	VAR_GLOBAL_RETAIN	D1019									
+wSt3SuckOffT	字[有符号]	VAR_GLOBAL_RETAIN	D1020									
+wSt3SuckOnT	字[有符号]	VAR_GLOBAL_RETAIN	D1021									
+wSt3SuckTO	字[有符号]	VAR_GLOBAL_RETAIN	D1022									
+wSt5DownOffT	字[有符号]	VAR_GLOBAL_RETAIN	D1023									
+wSt5DownOnT	字[有符号]	VAR_GLOBAL_RETAIN	D1024									
+wSt5DownTO	字[有符号]	VAR_GLOBAL_RETAIN	D1025									
+wSt5ForwardOffT	字[有符号]	VAR_GLOBAL_RETAIN	D1026									
+wSt5ForwardOnT	字[有符号]	VAR_GLOBAL_RETAIN	D1027									
+wSt5ForwardTO	字[有符号]	VAR_GLOBAL_RETAIN	D1028									
+wSt5SeperateOffT	字[有符号]	VAR_GLOBAL_RETAIN	D1029									
+wSt5SeperateOnT	字[有符号]	VAR_GLOBAL_RETAIN	D1030									
+wSt5SeperateTO	字[有符号]	VAR_GLOBAL_RETAIN	D1031									
+wSt5SuckOffT	字[有符号]	VAR_GLOBAL_RETAIN	D1032									
+wSt5SuckOnT	字[有符号]	VAR_GLOBAL_RETAIN	D1033									
+wSt5SuckTO	字[有符号]	VAR_GLOBAL_RETAIN	D1034									
+wSt6DownOffT	字[有符号]	VAR_GLOBAL_RETAIN	D1035									
+wSt6DownOnT	字[有符号]	VAR_GLOBAL_RETAIN	D1036									
+wSt6DownTO	字[有符号]	VAR_GLOBAL_RETAIN	D1037									
+wSt7DownOffT	字[有符号]	VAR_GLOBAL_RETAIN	D1038									
+wSt7DownOnT	字[有符号]	VAR_GLOBAL_RETAIN	D1039									
+wSt7DownTO	字[有符号]	VAR_GLOBAL_RETAIN	D1040									
+wSt8ClampOffT	字[有符号]	VAR_GLOBAL_RETAIN	D1041									
+wSt8ClampOnT	字[有符号]	VAR_GLOBAL_RETAIN	D1042									
+wSt8DownOffT	字[有符号]	VAR_GLOBAL_RETAIN	D1043									
+wSt8DownOnT	字[有符号]	VAR_GLOBAL_RETAIN	D1044									
+wSt8DownTO	字[有符号]	VAR_GLOBAL_RETAIN	D1045									
+wSt8ForwardOffT	字[有符号]	VAR_GLOBAL_RETAIN	D1046									
+wSt8ForwardOnT	字[有符号]	VAR_GLOBAL_RETAIN	D1047									
+wSt8ForwardTO	字[有符号]	VAR_GLOBAL_RETAIN	D1048									
+wSt9BlowAirOffT	字[有符号]	VAR_GLOBAL_RETAIN	D1049									
+wSt9BlowAirOnT	字[有符号]	VAR_GLOBAL_RETAIN	D1050									
+wSt9UpOffT	字[有符号]	VAR_GLOBAL_RETAIN	D1051									
+wSt9UpOnT	字[有符号]	VAR_GLOBAL_RETAIN	D1052									
+wSt9UpTO	字[有符号]	VAR_GLOBAL_RETAIN	D1053									
+wSt7WaitChk	字[有符号]	VAR_GLOBAL_RETAIN	D1054									
+wSt6DownWait	字[有符号]	VAR_GLOBAL_RETAIN	D1055									
+wSt1FeedInOnT	字[有符号]	VAR_GLOBAL_RETAIN	D1060									
+wSt1FeedInTO	字[有符号]	VAR_GLOBAL_RETAIN	D1061									
+wSt1FullOnT	字[有符号]	VAR_GLOBAL_RETAIN	D1062									
+wSt1FullOffT	字[有符号]	VAR_GLOBAL_RETAIN	D1063									
+wSt1FullTO	字[有符号]	VAR_GLOBAL_RETAIN	D1064									
+wSt5FeedInOnT	字[有符号]	VAR_GLOBAL_RETAIN	D1065									
+wSt5FeedInTO	字[有符号]	VAR_GLOBAL_RETAIN	D1066									
+wSt5FullOnT	字[有符号]	VAR_GLOBAL_RETAIN	D1067									
+wSt5FullOffT	字[有符号]	VAR_GLOBAL_RETAIN	D1068									
+wSt5FullTO	字[有符号]	VAR_GLOBAL_RETAIN	D1069									
+wSt7AbsNUL	字[有符号]	VAR_GLOBAL_RETAIN	D1070									
+wSt7AbsPUL	字[有符号]	VAR_GLOBAL_RETAIN	D1072									
+wSt7RelNUL	字[有符号]	VAR_GLOBAL_RETAIN	D1074									
+wSt7RelPUL	字[有符号]	VAR_GLOBAL_RETAIN	D1076									
+wRotateOnPosWaitT	字[有符号]	VAR_GLOBAL_RETAIN	D1077									
+wRotateTO	字[有符号]	VAR_GLOBAL_RETAIN	D1078									
+dwA1AbsSpeed	双字[有符号]	VAR_GLOBAL_RETAIN	D1080									
+dwA2AbsSpeed	双字[有符号]	VAR_GLOBAL_RETAIN	D1082									
+dwA1JogSpeed	双字[有符号]	VAR_GLOBAL_RETAIN	D1084									
+dwA2JogSpeed	双字[有符号]	VAR_GLOBAL_RETAIN	D1086									
+dwSt3ShiftAngle	双字[有符号]	VAR_GLOBAL_RETAIN	D1090									
+dwSt3SafeHeight	双字[有符号]	VAR_GLOBAL_RETAIN	D1092									
+dwSt3ToolCheck	双字[有符号]	VAR_GLOBAL_RETAIN	D1094				空料檢查高度					
+dwAxis2GoUp	双字[有符号]	VAR_GLOBAL_RETAIN	D1096									
+wTotalOkCnt	双字[无符号]/位串[32位]	VAR_GLOBAL_RETAIN	D1100									
+wProductOkCount	双字[无符号]/位串[32位]	VAR_GLOBAL_RETAIN	D1102									
+wProductNgCount	双字[无符号]/位串[32位]	VAR_GLOBAL_RETAIN	D1104									
+wStopMachineNumber	双字[无符号]/位串[32位]	VAR_GLOBAL_RETAIN	D1106									
+dwSt3Seperation	双字[无符号]/位串[32位]	VAR_GLOBAL_RETAIN	D1110				分割數設定					
+wSt3ToolChkT	字[有符号]	VAR_GLOBAL_RETAIN	D1112									
+wSt3NoToolChkTO	字[有符号]	VAR_GLOBAL_RETAIN	D1113									
+dwSt3FeedUpSpeed	双字[有符号]	VAR_GLOBAL_RETAIN	D1114									
+uiSt1Cycle	位	VAR_GLOBAL	M100									
+uiSt3Cycle	位	VAR_GLOBAL	M101									
+uiSt5Cycle	位	VAR_GLOBAL	M102									
+uiSt6Cycle	位	VAR_GLOBAL	M103									
+uiSt7Cycle	位	VAR_GLOBAL	M104									
+uiSt8Cycle	位	VAR_GLOBAL	M105									
+uiSt9Cycle	位	VAR_GLOBAL	M106									
+St1Cycle	位	VAR_GLOBAL	M107									
+St3Cycle	位	VAR_GLOBAL	M108									
+St5Cycle	位	VAR_GLOBAL	M109									
+St6Cycle	位	VAR_GLOBAL	M110									
+St7Cycle	位	VAR_GLOBAL	M111									
+St8Cycle	位	VAR_GLOBAL	M112									
+St9Cycle	位	VAR_GLOBAL	M113									
+autoSt1Cycle	位	VAR_GLOBAL	M114									
+autoSt3Cycle	位	VAR_GLOBAL	M115									
+autoSt5Cycle	位	VAR_GLOBAL	M116									
+autoSt6Cycle	位	VAR_GLOBAL	M117									
+autoSt7Cycle	位	VAR_GLOBAL	M118									
+autoSt8Cycle	位	VAR_GLOBAL	M119									
+autoSt9Cycle	位	VAR_GLOBAL	M120									
+uiSt1Reset	位	VAR_GLOBAL	M121									
+uiSt3Reset	位	VAR_GLOBAL	M122									
+uiSt5Reset	位	VAR_GLOBAL	M123									
+uiSt6Reset	位	VAR_GLOBAL	M124									
+uiSt7Reset	位	VAR_GLOBAL	M125									
+uiSt8Reset	位	VAR_GLOBAL	M126									
+uiSt9Reset	位	VAR_GLOBAL	M127									
+St1InOrg	位	VAR_GLOBAL	M128									
+St3InOrg	位	VAR_GLOBAL	M129									
+St5InOrg	位	VAR_GLOBAL	M130									
+St6InOrg	位	VAR_GLOBAL	M131									
+St7InOrg	位	VAR_GLOBAL	M132									
+St8InOrg	位	VAR_GLOBAL	M133									
+St9InOrg	位	VAR_GLOBAL	M134									
+St6CanGoNext	位	VAR_GLOBAL	M138									
+St7CanGoNext	位	VAR_GLOBAL	M139									
+St8CanGoNext	位	VAR_GLOBAL	M140									
+St9CanGoNext	位	VAR_GLOBAL	M141									
+St6GoNext	位	VAR_GLOBAL	M145									
+St7GoNext	位	VAR_GLOBAL	M146									
+St8GoNext	位	VAR_GLOBAL	M147									
+St9GoNext	位	VAR_GLOBAL	M148									
+gSt1Down	位	VAR_GLOBAL	M149									
+gSt1Forward	位	VAR_GLOBAL	M150									
+gSt1Clamp	位	VAR_GLOBAL	M151									
+gSt1ClampRotate	位	VAR_GLOBAL	M152									
+gSt1Seperate	位	VAR_GLOBAL	M153									
+gSt3Down	位	VAR_GLOBAL	M154									
+gSt3Forward	位	VAR_GLOBAL	M155									
+gSt3Suck	位	VAR_GLOBAL	M156									
+gSt5Down	位	VAR_GLOBAL	M157									
+gSt5Forward	位	VAR_GLOBAL	M158									
+gSt5Suck	位	VAR_GLOBAL	M159									
+gSt5Seperate	位	VAR_GLOBAL	M160									
+gSt6Down	位	VAR_GLOBAL	M161									
+gSt7Down	位	VAR_GLOBAL	M162									
+gSt8Down	位	VAR_GLOBAL	M163									
+gSt8Forward	位	VAR_GLOBAL	M164									
+gSt8Clamp	位	VAR_GLOBAL	M165									
+gSt9Up	位	VAR_GLOBAL	M166									
+gSt9BlowAir	位	VAR_GLOBAL	M167									
+uiIndexRotate	位	VAR_GLOBAL	M170									
+gRotate	位	VAR_GLOBAL	M171									
+uiResetAlarm	位	VAR_GLOBAL	M172									
+ResetAlarm	位	VAR_GLOBAL	M173									
+uiEnBuzzer	位	VAR_GLOBAL	M174									
+uiRstTotalOkCnt	位	VAR_GLOBAL	M175									
+uiRstOkCnt	位	VAR_GLOBAL	M176									
+uiRstNgCnt	位	VAR_GLOBAL	M177									
+gCanChangePage	位	VAR_GLOBAL	M178									
+gSt7Result	位	VAR_GLOBAL	M179									
+gSt7ResetZero	位	VAR_GLOBAL	M180									
+uiStartAuto	位	VAR_GLOBAL	M210									
+uiStopAuto	位	VAR_GLOBAL	M211									
+uiClearTool	位	VAR_GLOBAL	M212									
+uiFeeder	位	VAR_GLOBAL	M213									
+gA1Zero	位	VAR_GLOBAL	M214				伺服旋轉					
+gA2Zero	位	VAR_GLOBAL	M215				步進上下					
+uiA1Zero	位	VAR_GLOBAL	M216									
+uiA2Zero	位	VAR_GLOBAL	M217									
+gCurrentPage	字[有符号]	VAR_GLOBAL	D10									
+wSt1Index	字[有符号]	VAR_GLOBAL	D30									
+wSt3Index	字[有符号]	VAR_GLOBAL	D31									
+wSt5Index	字[有符号]	VAR_GLOBAL	D32									
+wSt6Index	字[有符号]	VAR_GLOBAL	D33									
+wSt7Index	字[有符号]	VAR_GLOBAL	D34									
+wSt8Index	字[有符号]	VAR_GLOBAL	D35									
+wSt9Index	字[有符号]	VAR_GLOBAL	D36									
+wSt1LastIndex	字[有符号]	VAR_GLOBAL	D37									
+wSt3LastIndex	字[有符号]	VAR_GLOBAL	D38									
+wSt5LastIndex	字[有符号]	VAR_GLOBAL	D39									
+wSt6LastIndex	字[有符号]	VAR_GLOBAL	D40									
+wSt7LastIndex	字[有符号]	VAR_GLOBAL	D41									
+wSt8LastIndex	字[有符号]	VAR_GLOBAL	D42									
+wSt9LastIndex	字[有符号]	VAR_GLOBAL	D43									
+wSt7AbsValue	字[有符号]	VAR_GLOBAL	D50									
+wSt7RelValue	字[有符号]	VAR_GLOBAL	D52									
+wSt7Base	字[有符号]	VAR_GLOBAL	D54									
+dwA1MoveDist	双字[有符号]	VAR_GLOBAL										
+dwA1MoveSpeed	双字[有符号]	VAR_GLOBAL										
+dwA1Step	双字[有符号]	VAR_GLOBAL	D62									
+dwA2MoveDist	双字[有符号]	VAR_GLOBAL										
+dwA2MoveSpeed	双字[有符号]	VAR_GLOBAL										
+dwA2Step	双字[有符号]	VAR_GLOBAL	D66									
+wA1MoveT	字[有符号]	VAR_GLOBAL	D68				軸1位移時間					
+wA2MoveT	字[有符号]	VAR_GLOBAL	D69				軸2位移時間					
+gA1IO	dsAxisIO	VAR_GLOBAL										
+gA2IO	dsAxisIO	VAR_GLOBAL										
+gSt1RotatoryFeeder	位	VAR_GLOBAL										0
+gSt5RotatoryFeeder	位	VAR_GLOBAL										0
+gEnStopCount	位	VAR_GLOBAL_RETAIN	M1000					Enable stop machine count				
+UseSt2	位	VAR_GLOBAL_RETAIN	M1002									
+UseSt3	位	VAR_GLOBAL_RETAIN	M1003									
+UseSt4	位	VAR_GLOBAL_RETAIN	M1004									
+UseSt5	位	VAR_GLOBAL_RETAIN	M1005									
+UseSt6	位	VAR_GLOBAL_RETAIN	M1006									
+UseSt7	位	VAR_GLOBAL_RETAIN	M1007									
+UseSt8	位	VAR_GLOBAL_RETAIN	M1008									
+UseSt9	位	VAR_GLOBAL_RETAIN	M1009									
+gA1ZeroDone	位	VAR_GLOBAL										
+gA2ZeroDone	位	VAR_GLOBAL										
+gAllCylinderOff	位	VAR_GLOBAL										
+gA1InPos1	位	VAR_GLOBAL										
+gA2InPos1	位	VAR_GLOBAL										
+gAllHomeDone	位	VAR_GLOBAL	M76									
+gCanHomeInit	位	VAR_GLOBAL										
+gA1Abs	位	VAR_GLOBAL										
+gA1CanMove	位	VAR_GLOBAL										
+gA1InPos	位	VAR_GLOBAL										
+gA1Jog	位	VAR_GLOBAL										
+gA1JogDone	位	VAR_GLOBAL										
+gA1Move	位	VAR_GLOBAL										
+gA1MoveDone	位	VAR_GLOBAL				2bit						
+gA2Abs	位	VAR_GLOBAL										
+gA2CanMove	位	VAR_GLOBAL										
+gA2InPos	位	VAR_GLOBAL										
+gA2JogDone	位	VAR_GLOBAL										
+gA2Move	位	VAR_GLOBAL										
+gA2MoveDone	位	VAR_GLOBAL				2bit						
+gStopA1	位	VAR_GLOBAL										
+gStopA2	位	VAR_GLOBAL										
+gA1TouchLimit	位	VAR_GLOBAL										
+gA2TouchLimit	位	VAR_GLOBAL										
+gMoveA1Abs	位	VAR_GLOBAL										
+gMoveA2Abs	位	VAR_GLOBAL										
+uiA1StepP	位	VAR_GLOBAL	M218									
+uiA1StepN	位	VAR_GLOBAL	M219									
+uiA2StepP	位	VAR_GLOBAL	M220									
+uiA2StepN	位	VAR_GLOBAL	M221									
+uiA1JogP	位	VAR_GLOBAL	M222									
+uiA1JogN	位	VAR_GLOBAL	M223									
+uiA2JogP	位	VAR_GLOBAL	M224									
+uiA2JogN	位	VAR_GLOBAL	M225									
+uiA1MoveAbs	位	VAR_GLOBAL	M226									
+uiA2MoveAbs	位	VAR_GLOBAL	M227									
+uiLight	位	VAR_GLOBAL	M228									
+uiStopA1	位	VAR_GLOBAL	M229									
+uiStopA2	位	VAR_GLOBAL	M230									
+uiAllAxisZero	位	VAR_GLOBAL	M231									
+gAllAxisZero	位	VAR_GLOBAL	M232									
+gAllAxisZeroDone	位	VAR_GLOBAL	M233									
+gAllStCanCycle	位	VAR_GLOBAL	M234									
+uiGetSt3Angle	位	VAR_GLOBAL	M235									
+uiGetSt3Height	位	VAR_GLOBAL	M236									
+gSt3RotateSafe	位	VAR_GLOBAL	M237									
+manA1Zero	位	VAR_GLOBAL	M238				Servo Rotate					
+manA2Zero	位	VAR_GLOBAL	M239				Step Up					
+uiSt3ServoHome	位	VAR_GLOBAL	M240									
+uiSt3StepHome	位	VAR_GLOBAL	M241									
+gSt3StepSafe	位	VAR_GLOBAL	M242									
+uiSt3Feed	位	VAR_GLOBAL	M243									
+gSt3Feed	位	VAR_GLOBAL	M244									
+gSt3NextPos	位	VAR_GLOBAL	M245									
+uiGetSt3ToolChk	位	VAR_GLOBAL	M246									
+gWaitStopAuto	位	VAR_GLOBAL	M247									
+uiSt1Vacuum	位	VAR_GLOBAL	M248									
+uiSt5Air2	位	VAR_GLOBAL	M249									
+gSt1Vacuum	位	VAR_GLOBAL	M250									
+gSt5Air2	位	VAR_GLOBAL	M251									
+gSimulate	位	VAR_GLOBAL	M252									
+uiSt3GoSafeHeight	位	VAR_GLOBAL	M253									
+gSt3GoSafeHeight	位	VAR_GLOBAL	M254									
+uiResetAllSt	位	VAR_GLOBAL	M255									
+St3CanPick	位	VAR_GLOBAL	M256									
+gSt1CanPick	位	VAR_GLOBAL	M258									
+gSt5CanPick	位	VAR_GLOBAL	M259									
+gAllAxisCanMove	位	VAR_GLOBAL	M260									
+gRotateArrived	位	VAR_GLOBAL	M261					Rotate Table Arrived				
+gBuzzerEnable	位	VAR_GLOBAL	M262									
+gClearTool	位	VAR_GLOBAL	M263									
+gAllStCycleDone	位	VAR_GLOBAL	M264									
+gCalcCycleTime	位	VAR_GLOBAL	M265									
+gTargetCounted	位	VAR_GLOBAL	M266									
+gAutoCanGoNext	位	VAR_GLOBAL	M267									
+manRotate	位	VAR_GLOBAL	M268									
+gSt1PF	位	VAR_GLOBAL	M269									
+gSt1LF	位	VAR_GLOBAL	M270									
+gSt5PF	位	VAR_GLOBAL	M271									
+gSt5LF	位	VAR_GLOBAL	M272									
+uiSt5VacuumBreak	位	VAR_GLOBAL	M273									
+gSt5VacuumBreak	位	VAR_GLOBAL	M274									
+St7ResultOK	位	VAR_GLOBAL	M275									
+uiSt5SquareVacuum	位	VAR_GLOBAL	M276			Zebra Square Vacuum						
+gSt5SquareVacuum	位	VAR_GLOBAL	M277									
+St8NeedGet	位	VAR_GLOBAL										
+St8GetDone	位	VAR_GLOBAL										
+a1Speed	双字[有符号]	VAR_GLOBAL										
+a2Speed	双字[有符号]	VAR_GLOBAL										
+wAutoIdx	字[有符号]	VAR_GLOBAL										0
+wCycleTime	双字[无符号]/位串[32位]	VAR_GLOBAL	D150									
+wLastCycleTime	双字[无符号]/位串[32位]	VAR_GLOBAL	D152									
+wDataArray	字[有符号](0..9)	VAR_GLOBAL	D100									
+wAxisZeroIdx	字[有符号]	VAR_GLOBAL										0
+tmrSysInit	TON	VAR_GLOBAL										0
+gSt3NoTool	位	VAR_GLOBAL										0
+gSt3NoToolTO	位	VAR_GLOBAL										0
+tmrSt10Chk	TON	VAR_GLOBAL										0
+gSt2HasTool	位	VAR_GLOBAL										0
+gSt4HasTool	位	VAR_GLOBAL										0
+tmrSt7WaitChk	TON	VAR_GLOBAL										
+gSt3NextSide	字[有符号]	VAR_GLOBAL	D56					St3下一個工件是1-正或2-反或0-還沒檢查				
+gSt3CurIsBackSide	位	VAR_GLOBAL										
+St8GoNg	位	VAR_GLOBAL										0
+gSt3StepGoPos	位	VAR_GLOBAL										0
+gClearDataArray	位	VAR_GLOBAL										0
+st7HasTool	位	VAR_GLOBAL										0
+st7ToolOk	位	VAR_GLOBAL										0
+St1PutDone	位	VAR_GLOBAL										0
+St3PutDone	位	VAR_GLOBAL										0
+St5PutDone	位	VAR_GLOBAL										0
+errDoorOpen	位	VAR_GLOBAL	F2									
+St2ContNG	位	VAR_GLOBAL										
+St3ContNG	位	VAR_GLOBAL										
+St4ContNG	位	VAR_GLOBAL										
+St7ContNG	位	VAR_GLOBAL										
+wSt2CountNG	字[有符号]	VAR_GLOBAL										
+wSt3CountNG	字[有符号]	VAR_GLOBAL										
+wSt4CountNG	字[有符号]	VAR_GLOBAL										
+wSt7CountNG	字[有符号]	VAR_GLOBAL										
+St3Done	位	VAR_GLOBAL										0
+St6Done	位	VAR_GLOBAL										0
+St7Done	位	VAR_GLOBAL										0
+St9Done	位	VAR_GLOBAL										0
+gSt3NeedCheck	位	VAR_GLOBAL										0
+gA2JogN	位	VAR_GLOBAL										0
+gA2JogP	位	VAR_GLOBAL										0
+St3NextPosCount	字[有符号]	VAR_GLOBAL										0
+wPageIndex	字[有符号]	VAR_GLOBAL										
+uiStReset	位	VAR_GLOBAL										0
+manSt1PF	位	VAR_GLOBAL										0
+manSt1LF	位	VAR_GLOBAL										0
+
+</code><button class="copy-code-button"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon lucide-copy"><rect x="8" y="8" width="14" height="14" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></pre></div><div class="el-h1"><h1 data-heading="Global IO var" dir="auto" class="heading" id="Global_IO_var_0"><span class="heading-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span>Global IO var</h1></div><div class="el-pre"><pre><code data-line="0">xSt3ServoOrg	位	VAR_GLOBAL	X0									0
+xSt3StepPL	位	VAR_GLOBAL	X1									0
+xSt3StepOrg	位	VAR_GLOBAL	X2									0
+xSt3StepNL	位	VAR_GLOBAL	X3									0
+xSt3ServoReady	位	VAR_GLOBAL	X6									0
+xSt3ServoALM	位	VAR_GLOBAL	X7									0
+xIndexOrg	位	VAR_GLOBAL	X10									0
+xIndexAct	位	VAR_GLOBAL	X11									0
+xEmg	位	VAR_GLOBAL	X12									0
+xSt1LF_FeedIn	位	VAR_GLOBAL	X13									0
+xSt1LF_Full	位	VAR_GLOBAL	X14									0
+xSt1DownOrg	位	VAR_GLOBAL	X15									0
+xSt1DownAct	位	VAR_GLOBAL	X16									0
+xSt1ForwardOrg	位	VAR_GLOBAL	X17									0
+xSt1ForwardAct	位	VAR_GLOBAL	X20									0
+xSt1ClampRotateAct	位	VAR_GLOBAL	X21									0
+xSt1ClampRotateOrg	位	VAR_GLOBAL	X22									0
+xSt1SeperateOrg	位	VAR_GLOBAL	X23									0
+xSt1SeperateAct	位	VAR_GLOBAL	X24									0
+xSt2Check	位	VAR_GLOBAL	X25									0
+xSt3FeedIn	位	VAR_GLOBAL	X27									0
+xSt3CheckUpDown	位	VAR_GLOBAL	X30					Check front and back of workpiece				0
+xSt3DownOrg	位	VAR_GLOBAL	X31									0
+xSt3DownAct	位	VAR_GLOBAL	X32									0
+xSt3ForwardOrg	位	VAR_GLOBAL	X33									0
+xSt3ForwardAct	位	VAR_GLOBAL	X34									0
+xSt3SuckOrg	位	VAR_GLOBAL	X35									0
+xSt4Check	位	VAR_GLOBAL	X36									0
+xSt5LF_FeedIn	位	VAR_GLOBAL	X37									0
+xSt5LF_Full	位	VAR_GLOBAL	X40									0
+xSt5CCDTrig	位	VAR_GLOBAL	X41									0
+xSt7KeyenceOut1	位	VAR_GLOBAL	X42				有料	有料				0
+xSt7KeyenceOut2	位	VAR_GLOBAL	X43				正面(ok)	正面(ok)				0
+xSt5DownOrg	位	VAR_GLOBAL	X44									0
+xSt5DownAct	位	VAR_GLOBAL	X45									0
+xSt5ForwardOrg	位	VAR_GLOBAL	X46									0
+xSt5ForwardAct	位	VAR_GLOBAL	X47									0
+xSt5SeperateOrg	位	VAR_GLOBAL	X50									0
+xSt5SeperateAct	位	VAR_GLOBAL	X51									
+xSt6DownOrg	位	VAR_GLOBAL	X52									
+xSt6DownAct	位	VAR_GLOBAL	X53									
+xSt7DownOrg	位	VAR_GLOBAL	X54									
+xSt7DownAct	位	VAR_GLOBAL	X55									
+xSt8DownOrg	位	VAR_GLOBAL	X56									
+xSt8DownAct	位	VAR_GLOBAL	X57									
+xSt8ForwardOrg	位	VAR_GLOBAL	X60									
+xSt8ForwardAct	位	VAR_GLOBAL	X61									
+xSt9UpOrg	位	VAR_GLOBAL	X62									
+xSt9UpAct	位	VAR_GLOBAL	X63									
+xSt10Check	位	VAR_GLOBAL	X64									
+xFrontDoor	位	VAR_GLOBAL	X65									
+xBackDoor	位	VAR_GLOBAL	X66									
+xSt5SuckOrg	位	VAR_GLOBAL	X67									
+ySt3ServoPulse	位	VAR_GLOBAL	Y0									
+ySt3StepPulse	位	VAR_GLOBAL	Y1									
+ySt3ServoDir	位	VAR_GLOBAL	Y4									
+ySt3StepDir	位	VAR_GLOBAL	Y5									
+yIndex	位	VAR_GLOBAL	Y10									
+ySt1PF	位	VAR_GLOBAL	Y11									
+ySt1LF	位	VAR_GLOBAL	Y12									
+ySt1Down	位	VAR_GLOBAL	Y13									
+ySt1Forward	位	VAR_GLOBAL	Y14									
+ySt1Clamp	位	VAR_GLOBAL	Y15									
+ySt1ClampRotate	位	VAR_GLOBAL	Y16									
+ySt1Seperate	位	VAR_GLOBAL	Y17									
+ySt3Down	位	VAR_GLOBAL	Y20									
+ySt3Forward	位	VAR_GLOBAL	Y21									
+ySt3Suck	位	VAR_GLOBAL	Y22									
+ySt5PF	位	VAR_GLOBAL	Y23									
+ySt5LF	位	VAR_GLOBAL	Y24									
+ySt5Down	位	VAR_GLOBAL	Y25									
+ySt5Forward	位	VAR_GLOBAL	Y26									
+ySt5SquareVacuum	位	VAR_GLOBAL	Y27									
+ySt5Seperate	位	VAR_GLOBAL	Y30									
+ySt6Down	位	VAR_GLOBAL	Y31									
+ySt7Down	位	VAR_GLOBAL	Y32									
+ySt8Down	位	VAR_GLOBAL	Y33									
+ySt8Forward	位	VAR_GLOBAL	Y34									
+ySt8Clamp	位	VAR_GLOBAL	Y35									
+ySt9Up	位	VAR_GLOBAL	Y36									
+ySt9BlowAir	位	VAR_GLOBAL	Y37									
+ySt3Ccd1	位	VAR_GLOBAL	Y44									
+ySt3Ccd2	位	VAR_GLOBAL	Y45									
+yLight	位	VAR_GLOBAL	Y46									
+ySt3ServoServoOn	位	VAR_GLOBAL	Y52									
+ySt3ServoServoBrake	位	VAR_GLOBAL	Y53									
+ySt1Vacuum	位	VAR_GLOBAL	Y54									
+ySt5VacuumBreak	位	VAR_GLOBAL	Y55									
+ySt5Vacuum	位	VAR_GLOBAL	Y56								
+</code><button class="copy-code-button"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon lucide-copy"><rect x="8" y="8" width="14" height="14" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></pre></div><div class="el-h1"><h1 data-heading="Scan Area" dir="auto" class="heading" id="Scan_Area_0"><span class="heading-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span>Scan Area</h1></div><div class="el-h2"><h2 data-heading="Local Area" dir="auto" class="heading" id="Local_Area_0"><span class="heading-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span>Local Area</h2></div><div class="el-h3"><h3 data-heading="Always" dir="auto" class="heading" id="Always_0"><span class="heading-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span>Always</h3></div><div class="el-ul"><ul class="has-list-bullet">
+<li data-line="0" dir="auto"><span class="list-bullet"></span>Declare</li>
+</ul></div><div class="el-pre"><pre><code data-line="0">calcA1Speed	位	VAR				
+calcA2Speed	位	VAR				
+a2HadDone	位	VAR				
+axis2ZeroIdx	字[有符号]	VAR				
+axis1ZeroIdx	字[有符号]	VAR				
+tmpBool	位	VAR				
+st3NextPosIdx	字[有符号]	VAR				
+manSt5PF	位	VAR				
+manSt5LF	位	VAR				
+st3StepGoPosIdx	字[有符号]	VAR				
+idx	字[有符号]	VAR				
+tmrWaitLetAxis2Down	TON	VAR				
+</code><button class="copy-code-button"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon lucide-copy"><rect x="8" y="8" width="14" height="14" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></pre></div><div class="el-ul"><ul class="has-list-bullet">
+<li data-line="0" dir="auto"><span class="list-bullet"></span>Code</li>
+</ul></div><div class="el-pre"><pre class="language-pascal"><code data-line="0" class="language-pascal is-loaded">tmrSysInit<span class="token punctuation">(</span>IN <span class="token operator">:=</span> SM8000<span class="token punctuation">,</span> PT<span class="token operator">:=</span> t<span class="token string">#10</span>s<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+sys<span class="token punctuation">.</span>EMG <span class="token operator">:=</span> NOT xEmg OR F0<span class="token punctuation">;</span>
+
+<span class="token keyword">IF</span> NOT tmrSysInit<span class="token punctuation">.</span>Q <span class="token keyword">THEN</span>
+	RETURN<span class="token punctuation">;</span>
+END_IF<span class="token punctuation">;</span>
+ 
+<span class="token keyword">IF</span> sys<span class="token punctuation">.</span>EMG <span class="token keyword">THEN</span>
+	gSt3NextSide <span class="token operator">:=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+	<span class="token keyword">SET</span><span class="token punctuation">(</span><span class="token keyword">TRUE</span><span class="token punctuation">,</span> gSt3NeedCheck<span class="token punctuation">)</span><span class="token punctuation">;</span>
+END_IF<span class="token punctuation">;</span>
+
+<span class="token keyword">IF</span> LDP<span class="token punctuation">(</span><span class="token keyword">TRUE</span><span class="token punctuation">,</span> sys<span class="token punctuation">.</span>ManMode<span class="token punctuation">)</span> <span class="token keyword">THEN</span>		
+	RST<span class="token punctuation">(</span><span class="token keyword">TRUE</span><span class="token punctuation">,</span> St1PutDone<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	RST<span class="token punctuation">(</span><span class="token keyword">TRUE</span><span class="token punctuation">,</span> St3Done<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	RST<span class="token punctuation">(</span><span class="token keyword">TRUE</span><span class="token punctuation">,</span> St5PutDone<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	RST<span class="token punctuation">(</span><span class="token keyword">TRUE</span><span class="token punctuation">,</span> St6Done<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	RST<span class="token punctuation">(</span><span class="token keyword">TRUE</span><span class="token punctuation">,</span> St7Done<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	RST<span class="token punctuation">(</span><span class="token keyword">TRUE</span><span class="token punctuation">,</span> St8GetDone<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	RST<span class="token punctuation">(</span><span class="token keyword">TRUE</span><span class="token punctuation">,</span> St8NeedGet<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	
+	RST<span class="token punctuation">(</span><span class="token keyword">TRUE</span><span class="token punctuation">,</span> gSt1Seperate<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	RST<span class="token punctuation">(</span><span class="token keyword">TRUE</span><span class="token punctuation">,</span> gSt5Seperate<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	
+	RST<span class="token punctuation">(</span><span class="token keyword">TRUE</span><span class="token punctuation">,</span> St8GetDone<span class="token punctuation">)</span><span class="token punctuation">;</span>
+END_IF<span class="token punctuation">;</span>
+
+ALTP<span class="token punctuation">(</span>uiLight<span class="token punctuation">,</span> yLight<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+gAutoCanGoNext <span class="token operator">:=</span> NOT sys<span class="token punctuation">.</span>HasError<span class="token punctuation">;</span>
+
+gCanChangePage <span class="token operator">:=</span> gAllStCanCycle<span class="token punctuation">;</span>
+
+tmrSt10Chk<span class="token punctuation">(</span>IN<span class="token operator">:=</span>xSt10Check AND gRotateArrived<span class="token punctuation">,</span> PT<span class="token operator">:=</span>T<span class="token string">#0</span><span class="token punctuation">.</span><span class="token number">5</span>s<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">IF</span> gRotateArrived <span class="token keyword">THEN</span>
+	<span class="token keyword">IF</span> tmrSt10Chk<span class="token punctuation">.</span>Q <span class="token keyword">THEN</span>
+		<span class="token keyword">SET</span><span class="token punctuation">(</span><span class="token keyword">TRUE</span><span class="token punctuation">,</span> F3<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	END_IF<span class="token punctuation">;</span>
+END_IF<span class="token punctuation">;</span>
+
+<span class="token keyword">IF</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>uiStartAuto AND <span class="token punctuation">(</span>NOT sys<span class="token punctuation">.</span>AutoMode<span class="token punctuation">)</span><span class="token punctuation">)</span> OR gClearTool<span class="token punctuation">)</span> AND 
+	NOT F3 <span class="token keyword">THEN</span>
+	
+	<span class="token keyword">IF</span> NOT sys<span class="token punctuation">.</span>HasError AND 
+		NOT gWaitStopAuto AND gAllStCanCycle AND 
+		NOT F6 AND 
+		NOT F7 <span class="token keyword">THEN</span>
+		<span class="token keyword">SET</span><span class="token punctuation">(</span><span class="token keyword">TRUE</span><span class="token punctuation">,</span> sys<span class="token punctuation">.</span>AutoMode<span class="token punctuation">)</span><span class="token punctuation">;</span>
+		RST<span class="token punctuation">(</span><span class="token keyword">TRUE</span><span class="token punctuation">,</span> sys<span class="token punctuation">.</span>ManMode<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	END_IF<span class="token punctuation">;</span>
+END_IF<span class="token punctuation">;</span>
+
+<span class="token keyword">SET</span><span class="token punctuation">(</span>sys<span class="token punctuation">.</span>AutoMode AND uiStopAuto AND NOT gWaitStopAuto<span class="token punctuation">,</span> gWaitStopAuto<span class="token punctuation">)</span><span class="token punctuation">;</span>
+RST<span class="token punctuation">(</span>sys<span class="token punctuation">.</span>AutoMode AND uiStopAuto AND gClearTool<span class="token punctuation">,</span> gClearTool<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword">IF</span> uiClearTool AND NOT F3 <span class="token keyword">THEN</span>
+	<span class="token keyword">IF</span> CheckHasTool<span class="token punctuation">(</span>wDataArray<span class="token punctuation">)</span> <span class="token keyword">THEN</span>
+		<span class="token keyword">SET</span><span class="token punctuation">(</span><span class="token keyword">TRUE</span><span class="token punctuation">,</span>  gClearTool<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	END_IF<span class="token punctuation">;</span>
+END_IF<span class="token punctuation">;</span>
+
+gAllStCycleDone <span class="token operator">:=</span> 
+	<span class="token punctuation">(</span>NOT St1Cycle OR St1PutDone<span class="token punctuation">)</span> AND 
+	<span class="token punctuation">(</span>NOT St3Cycle<span class="token comment">(* OR St3Done*)</span><span class="token punctuation">)</span> AND
+	<span class="token punctuation">(</span>NOT St5Cycle OR St5PutDone<span class="token punctuation">)</span> AND
+	
+	<span class="token punctuation">(</span><span class="token punctuation">(</span>NOT UseSt6<span class="token punctuation">)</span> OR 
+	<span class="token punctuation">(</span>UseSt6 AND NOT St6Cycle<span class="token punctuation">)</span><span class="token punctuation">)</span> AND 
+	
+	NOT St7Cycle AND 
+	<span class="token punctuation">(</span>NOT St8NeedGet OR <span class="token punctuation">(</span>St8NeedGet AND St8GetDone<span class="token punctuation">)</span><span class="token punctuation">)</span> AND 
+	NOT St9Cycle<span class="token punctuation">;</span>
+
+gAllStCanCycle <span class="token operator">:=</span> 
+	St1InOrg AND 
+	St3InOrg AND 
+	St5InOrg AND 
+	
+	<span class="token punctuation">(</span><span class="token punctuation">(</span>NOT UseSt6<span class="token punctuation">)</span> OR 
+	<span class="token punctuation">(</span>UseSt6 AND St6InOrg<span class="token punctuation">)</span><span class="token punctuation">)</span> AND 
+	
+	<span class="token comment">//St7InOrg AND </span>
+	St8InOrg AND 
+	St9InOrg<span class="token punctuation">;</span>
+
+gLight<span class="token punctuation">.</span>Yellow <span class="token operator">:=</span> 
+	F54 OR 
+	F55 OR
+	F56 OR
+	F57<span class="token punctuation">;</span>
+
+gLight<span class="token punctuation">.</span>Green <span class="token operator">:=</span> 
+	<span class="token punctuation">(</span>sys<span class="token punctuation">.</span>ManMode AND SM8013<span class="token punctuation">)</span> OR 
+	<span class="token punctuation">(</span>sys<span class="token punctuation">.</span>AutoMode<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+gLight<span class="token punctuation">.</span>Red <span class="token operator">:=</span> 
+	SM8013 AND <span class="token punctuation">(</span>sys<span class="token punctuation">.</span>EMG OR sys<span class="token punctuation">.</span>HasError OR sys<span class="token punctuation">.</span>HasWarning<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+gBuzzerEnable <span class="token operator">:=</span> NOT uiEnBuzzer<span class="token punctuation">;</span>
+gLight<span class="token punctuation">.</span>Buzzer <span class="token operator">:=</span> gBuzzerEnable AND 
+	SM8013 AND <span class="token punctuation">(</span>sys<span class="token punctuation">.</span>HasWarning OR sys<span class="token punctuation">.</span>HasError<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword">IF</span> manRotate <span class="token keyword">THEN</span>
+	<span class="token keyword">SET</span><span class="token punctuation">(</span><span class="token keyword">TRUE</span><span class="token punctuation">,</span> gRotate<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	RST<span class="token punctuation">(</span><span class="token keyword">TRUE</span><span class="token punctuation">,</span> manRotate<span class="token punctuation">)</span><span class="token punctuation">;</span>
+END_IF<span class="token punctuation">;</span>
+
+<span class="token keyword">IF</span> LDP<span class="token punctuation">(</span><span class="token keyword">TRUE</span><span class="token punctuation">,</span> uiFeeder<span class="token punctuation">)</span> <span class="token keyword">THEN</span>
+	<span class="token keyword">SET</span><span class="token punctuation">(</span><span class="token keyword">TRUE</span><span class="token punctuation">,</span> gSt1RotatoryFeeder<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token keyword">SET</span><span class="token punctuation">(</span><span class="token keyword">TRUE</span><span class="token punctuation">,</span> gSt5RotatoryFeeder<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	
+	<span class="token keyword">SET</span><span class="token punctuation">(</span>gAllAxisZeroDone AND gA1IO<span class="token punctuation">.</span>xReady<span class="token punctuation">,</span> gSt3Feed<span class="token punctuation">)</span><span class="token punctuation">;</span>
+END_IF<span class="token punctuation">;</span>
+
+<span class="token keyword">IF</span> LDF<span class="token punctuation">(</span><span class="token keyword">TRUE</span><span class="token punctuation">,</span> uiFeeder<span class="token punctuation">)</span> <span class="token keyword">THEN</span>
+	RST<span class="token punctuation">(</span><span class="token keyword">TRUE</span><span class="token punctuation">,</span> gSt1RotatoryFeeder<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	RST<span class="token punctuation">(</span><span class="token keyword">TRUE</span><span class="token punctuation">,</span> gSt5RotatoryFeeder<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	RST<span class="token punctuation">(</span><span class="token keyword">TRUE</span><span class="token punctuation">,</span> gSt3Feed<span class="token punctuation">)</span><span class="token punctuation">;</span>
+		
+	RST<span class="token punctuation">(</span><span class="token keyword">TRUE</span><span class="token punctuation">,</span> gSt1Vacuum<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	RST<span class="token punctuation">(</span><span class="token keyword">TRUE</span><span class="token punctuation">,</span> gSt5SquareVacuum<span class="token punctuation">)</span><span class="token punctuation">;</span>
+END_IF<span class="token punctuation">;</span>
+
+<span class="token keyword">IF</span> gClearDataArray <span class="token keyword">THEN</span>
+	<span class="token keyword">FOR</span> idx <span class="token operator">:=</span> <span class="token number">0</span> <span class="token keyword">TO</span> <span class="token number">9</span> BY <span class="token number">1</span> <span class="token keyword">DO</span>
+		wDataArray<span class="token punctuation">[</span>idx<span class="token punctuation">]</span> <span class="token operator">:=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+	END_FOR<span class="token punctuation">;</span>
+	RST<span class="token punctuation">(</span><span class="token keyword">TRUE</span><span class="token punctuation">,</span> gClearDataArray<span class="token punctuation">)</span><span class="token punctuation">;</span>
+END_IF<span class="token punctuation">;</span>
+
+RotateTable<span class="token punctuation">(</span>
+	iOrigPos<span class="token operator">:=</span> xIndexOrg<span class="token punctuation">,</span>
+	iActPos<span class="token operator">:=</span> xIndexAct<span class="token punctuation">,</span>
+	iRun<span class="token operator">:=</span> gRotate AND <span class="token punctuation">(</span>NOT sys<span class="token punctuation">.</span>Error<span class="token punctuation">)</span><span class="token punctuation">,</span>
+	iRotateTO<span class="token operator">:=</span> wRotateTO<span class="token punctuation">,</span>
+	iInPosWaitTime<span class="token operator">:=</span> wRotateOnPosWaitT<span class="token punctuation">,</span>
+	iReset <span class="token operator">:=</span> ResetAlarm<span class="token punctuation">,</span>
+	oDevice <span class="token operator">=</span><span class="token operator">&gt;</span> yIndex<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	
+RST<span class="token punctuation">(</span>RotateTable<span class="token punctuation">.</span>oBusy<span class="token punctuation">,</span> gRotate<span class="token punctuation">)</span><span class="token punctuation">;</span>	
+<span class="token keyword">SET</span><span class="token punctuation">(</span>LDP<span class="token punctuation">(</span><span class="token keyword">TRUE</span><span class="token punctuation">,</span> RotateTable<span class="token punctuation">.</span>oArrived<span class="token punctuation">)</span><span class="token punctuation">,</span> gRotateArrived<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token comment">// cylinder function block control</span>
+cySt1Down<span class="token punctuation">(</span>
+    iAct <span class="token operator">:=</span> gSt1Down<span class="token punctuation">,</span>
+    iRst <span class="token operator">:=</span> ResetAlarm<span class="token punctuation">,</span>
+    iLimit1 <span class="token operator">:=</span> xSt1DownOrg<span class="token punctuation">,</span>
+    iLimit2 <span class="token operator">:=</span> xSt1DownAct<span class="token punctuation">,</span>
+    oDevice <span class="token operator">=</span><span class="token operator">&gt;</span>ySt1Down<span class="token punctuation">,</span>
+    iOnTO <span class="token operator">:=</span> wSt1DownTO<span class="token punctuation">,</span>
+    iOffTO <span class="token operator">:=</span> wSt1DownTO<span class="token punctuation">,</span>
+    iOnDelay <span class="token operator">:=</span> wSt1DownOnT<span class="token punctuation">,</span>
+    iOffDelay <span class="token operator">:=</span> wSt1DownOffT<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+cySt1Forward<span class="token punctuation">(</span>
+    iAct <span class="token operator">:=</span> gSt1Forward<span class="token punctuation">,</span>
+    iRst <span class="token operator">:=</span> ResetAlarm<span class="token punctuation">,</span>
+    iLimit1 <span class="token operator">:=</span> xSt1ForwardOrg<span class="token punctuation">,</span>
+    iLimit2 <span class="token operator">:=</span> xSt1ForwardAct<span class="token punctuation">,</span>
+    oDevice <span class="token operator">=</span><span class="token operator">&gt;</span>ySt1Forward<span class="token punctuation">,</span>
+    iOnTO <span class="token operator">:=</span> wSt1ForwardTO<span class="token punctuation">,</span>
+    iOffTO <span class="token operator">:=</span> wSt1ForwardTO<span class="token punctuation">,</span>
+    iOnDelay <span class="token operator">:=</span> wSt1ForwardOnT<span class="token punctuation">,</span>
+    iOffDelay <span class="token operator">:=</span> wSt1ForwardOffT<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+cySt1Clamp<span class="token punctuation">(</span>
+    iAct <span class="token operator">:=</span> gSt1Clamp<span class="token punctuation">,</span>
+    oDevice <span class="token operator">=</span><span class="token operator">&gt;</span>ySt1Clamp<span class="token punctuation">,</span>
+    iOnDelay <span class="token operator">:=</span> wSt1ClampOnT<span class="token punctuation">,</span>
+    iOffDelay <span class="token operator">:=</span> wSt1ClampOffT<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+cySt1ClampRotate<span class="token punctuation">(</span>
+    iAct <span class="token operator">:=</span> gSt1ClampRotate<span class="token punctuation">,</span>
+    iRst <span class="token operator">:=</span> ResetAlarm<span class="token punctuation">,</span>
+    iLimit1 <span class="token operator">:=</span> xSt1ClampRotateOrg<span class="token punctuation">,</span>
+    iLimit2 <span class="token operator">:=</span> xSt1ClampRotateAct<span class="token punctuation">,</span>
+    oDevice <span class="token operator">=</span><span class="token operator">&gt;</span>ySt1ClampRotate<span class="token punctuation">,</span>
+    iOnTO <span class="token operator">:=</span> wSt1ClampRotateTO<span class="token punctuation">,</span>
+    iOffTO <span class="token operator">:=</span> wSt1ClampRotateTO<span class="token punctuation">,</span>
+    iOnDelay <span class="token operator">:=</span> wSt1ClampRotateOnT<span class="token punctuation">,</span>
+    iOffDelay <span class="token operator">:=</span> wSt1ClampRotateOffT<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+cySt1Seperate<span class="token punctuation">(</span>
+    iAct <span class="token operator">:=</span> gSt1Seperate<span class="token punctuation">,</span>
+    iRst <span class="token operator">:=</span> ResetAlarm<span class="token punctuation">,</span>
+    iLimit1 <span class="token operator">:=</span> xSt1SeperateOrg<span class="token punctuation">,</span>
+    iLimit2 <span class="token operator">:=</span> xSt1SeperateAct<span class="token punctuation">,</span>
+    oDevice <span class="token operator">=</span><span class="token operator">&gt;</span>ySt1Seperate<span class="token punctuation">,</span>
+    iOnTO <span class="token operator">:=</span> wSt1SeperateTO<span class="token punctuation">,</span>
+    iOffTO <span class="token operator">:=</span> wSt1SeperateTO<span class="token punctuation">,</span>
+    iOnDelay <span class="token operator">:=</span> wSt1SeperateOnT<span class="token punctuation">,</span>
+    iOffDelay <span class="token operator">:=</span> wSt1SeperateOffT<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+cySt3Down<span class="token punctuation">(</span>
+    iAct <span class="token operator">:=</span> gSt3Down<span class="token punctuation">,</span>
+    iRst <span class="token operator">:=</span> ResetAlarm<span class="token punctuation">,</span>
+    iLimit1 <span class="token operator">:=</span> xSt3DownOrg<span class="token punctuation">,</span>
+    iLimit2 <span class="token operator">:=</span> xSt3DownAct<span class="token punctuation">,</span>
+    oDevice <span class="token operator">=</span><span class="token operator">&gt;</span>ySt3Down<span class="token punctuation">,</span>
+    iOnTO <span class="token operator">:=</span> wSt3DownTO<span class="token punctuation">,</span>
+    iOffTO <span class="token operator">:=</span> wSt3DownTO<span class="token punctuation">,</span>
+    iOnDelay <span class="token operator">:=</span> wSt3DownOnT<span class="token punctuation">,</span>
+    iOffDelay <span class="token operator">:=</span> wSt3DownOffT<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+cySt3Forward<span class="token punctuation">(</span>
+    iAct <span class="token operator">:=</span> gSt3Forward<span class="token punctuation">,</span>
+    iRst <span class="token operator">:=</span> ResetAlarm<span class="token punctuation">,</span>
+    iLimit1 <span class="token operator">:=</span> xSt3ForwardOrg<span class="token punctuation">,</span>
+    iLimit2 <span class="token operator">:=</span> xSt3ForwardAct<span class="token punctuation">,</span>
+    oDevice <span class="token operator">=</span><span class="token operator">&gt;</span>ySt3Forward<span class="token punctuation">,</span>
+    iOnTO <span class="token operator">:=</span> wSt3ForwardTO<span class="token punctuation">,</span>
+    iOffTO <span class="token operator">:=</span> wSt3ForwardTO<span class="token punctuation">,</span>
+    iOnDelay <span class="token operator">:=</span> wSt3ForwardOnT<span class="token punctuation">,</span>
+    iOffDelay <span class="token operator">:=</span> wSt3ForwardOffT<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	
+cySt3Suck<span class="token punctuation">(</span>
+	iAct <span class="token operator">:=</span> gSt3Suck<span class="token punctuation">,</span>
+	iRst <span class="token operator">:=</span> ResetAlarm<span class="token punctuation">,</span>
+	iLimit1 <span class="token operator">:=</span> xSt3SuckOrg<span class="token punctuation">,</span>
+	oDevice <span class="token operator">=</span><span class="token operator">&gt;</span> ySt3Suck<span class="token punctuation">,</span>
+	iOnDelay <span class="token operator">:=</span> wSt3SuckOnT<span class="token punctuation">,</span>
+	iOffDelay <span class="token operator">:=</span> wSt3SuckOffT<span class="token punctuation">,</span>
+	iOnTO <span class="token operator">:=</span> wSt3SuckTO<span class="token punctuation">,</span>
+	iOffTO <span class="token operator">:=</span> wSt3SuckTO<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+cySt5Suck<span class="token punctuation">(</span>
+	iAct <span class="token operator">:=</span> gSt5Suck<span class="token punctuation">,</span>
+	iRst <span class="token operator">:=</span> ResetAlarm<span class="token punctuation">,</span>
+	iLimit1 <span class="token operator">:=</span> xSt5SuckOrg<span class="token punctuation">,</span>
+	<span class="token comment">//oDevice =&gt; ySt5Suck,</span>
+	oDevice <span class="token operator">=</span><span class="token operator">&gt;</span> ySt5Vacuum<span class="token punctuation">,</span>
+	iOnDelay <span class="token operator">:=</span> wSt5SuckOnT<span class="token punctuation">,</span>
+	iOffDelay <span class="token operator">:=</span> wSt5SuckOffT<span class="token punctuation">,</span>
+	iOnTO <span class="token operator">:=</span> wSt5SuckTO<span class="token punctuation">,</span>
+	iOffTO <span class="token operator">:=</span> wSt5SuckTO<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+cySt5Down<span class="token punctuation">(</span>
+    iAct <span class="token operator">:=</span> gSt5Down<span class="token punctuation">,</span>
+    iRst <span class="token operator">:=</span> ResetAlarm<span class="token punctuation">,</span>
+    iLimit1 <span class="token operator">:=</span> xSt5DownOrg<span class="token punctuation">,</span>
+    iLimit2 <span class="token operator">:=</span> xSt5DownAct<span class="token punctuation">,</span>
+    oDevice <span class="token operator">=</span><span class="token operator">&gt;</span>ySt5Down<span class="token punctuation">,</span>
+    iOnTO <span class="token operator">:=</span> wSt5DownTO<span class="token punctuation">,</span>
+    iOffTO <span class="token operator">:=</span> wSt5DownTO<span class="token punctuation">,</span>
+    iOnDelay <span class="token operator">:=</span> wSt5DownOnT<span class="token punctuation">,</span>
+    iOffDelay <span class="token operator">:=</span> wSt5DownOffT<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+cySt5Forward<span class="token punctuation">(</span>
+    iAct <span class="token operator">:=</span> gSt5Forward<span class="token punctuation">,</span>
+    iRst <span class="token operator">:=</span> ResetAlarm<span class="token punctuation">,</span>
+    iLimit1 <span class="token operator">:=</span> xSt5ForwardOrg<span class="token punctuation">,</span>
+    iLimit2 <span class="token operator">:=</span> xSt5ForwardAct<span class="token punctuation">,</span>
+    oDevice <span class="token operator">=</span><span class="token operator">&gt;</span>ySt5Forward<span class="token punctuation">,</span>
+    iOnTO <span class="token operator">:=</span> wSt5ForwardTO<span class="token punctuation">,</span>
+    iOffTO <span class="token operator">:=</span> wSt5ForwardTO<span class="token punctuation">,</span>
+    iOnDelay <span class="token operator">:=</span> wSt5ForwardOnT<span class="token punctuation">,</span>
+    iOffDelay <span class="token operator">:=</span> wSt5ForwardOffT<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+
+cySt5Seperate<span class="token punctuation">(</span>
+    iAct <span class="token operator">:=</span> gSt5Seperate<span class="token punctuation">,</span>
+    iRst <span class="token operator">:=</span> ResetAlarm<span class="token punctuation">,</span>
+    iLimit1 <span class="token operator">:=</span> xSt5SeperateOrg<span class="token punctuation">,</span>
+    iLimit2 <span class="token operator">:=</span> xSt5SeperateAct<span class="token punctuation">,</span>
+    oDevice <span class="token operator">=</span><span class="token operator">&gt;</span>ySt5Seperate<span class="token punctuation">,</span>
+    iOnTO <span class="token operator">:=</span> wSt5SeperateTO<span class="token punctuation">,</span>
+    iOffTO <span class="token operator">:=</span> wSt5SeperateTO<span class="token punctuation">,</span>
+    iOnDelay <span class="token operator">:=</span> wSt5SeperateOnT<span class="token punctuation">,</span>
+    iOffDelay <span class="token operator">:=</span> wSt5SeperateOffT<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+cySt6Down<span class="token punctuation">(</span>
+    iAct <span class="token operator">:=</span> gSt6Down<span class="token punctuation">,</span>
+    iRst <span class="token operator">:=</span> ResetAlarm<span class="token punctuation">,</span>
+    iLimit1 <span class="token operator">:=</span> xSt6DownOrg<span class="token punctuation">,</span>
+    iLimit2 <span class="token operator">:=</span> xSt6DownAct<span class="token punctuation">,</span>
+    oDevice <span class="token operator">=</span><span class="token operator">&gt;</span>ySt6Down<span class="token punctuation">,</span>
+    iOnTO <span class="token operator">:=</span> wSt6DownTO<span class="token punctuation">,</span>
+    iOffTO <span class="token operator">:=</span> wSt6DownTO<span class="token punctuation">,</span>
+    iOnDelay <span class="token operator">:=</span> wSt6DownOnT<span class="token punctuation">,</span>
+    iOffDelay <span class="token operator">:=</span> wSt6DownOffT<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token comment">(*cySt7Down(
+    iAct := gSt7Down,
+    iRst := gResetAlarm,
+    iLimit1 := xSt7DownOrg,
+    iLimit2 := xSt7DownAct,
+    oDevice =&gt;ySt7Down,
+    iOnTO := wSt7DownTO,
+    iOffTO := wSt7DownTO,
+    iOnDelay := wSt7DownOnT,
+    iOffDelay := wSt7DownOffT);*)</span>
+
+cySt8Down<span class="token punctuation">(</span>
+    iAct <span class="token operator">:=</span> gSt8Down<span class="token punctuation">,</span>
+    iRst <span class="token operator">:=</span> ResetAlarm<span class="token punctuation">,</span>
+    iLimit1 <span class="token operator">:=</span> xSt8DownOrg<span class="token punctuation">,</span>
+    iLimit2 <span class="token operator">:=</span> xSt8DownAct<span class="token punctuation">,</span>
+    oDevice <span class="token operator">=</span><span class="token operator">&gt;</span>ySt8Down<span class="token punctuation">,</span>
+    iOnTO <span class="token operator">:=</span> wSt8DownTO<span class="token punctuation">,</span>
+    iOffTO <span class="token operator">:=</span> wSt8DownTO<span class="token punctuation">,</span>
+    iOnDelay <span class="token operator">:=</span> wSt8DownOnT<span class="token punctuation">,</span>
+    iOffDelay <span class="token operator">:=</span> wSt8DownOffT<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+cySt8Forward<span class="token punctuation">(</span>
+    iAct <span class="token operator">:=</span> gSt8Forward<span class="token punctuation">,</span>
+    iRst <span class="token operator">:=</span> ResetAlarm<span class="token punctuation">,</span>
+    iLimit1 <span class="token operator">:=</span> xSt8ForwardOrg<span class="token punctuation">,</span>
+    iLimit2 <span class="token operator">:=</span> xSt8ForwardAct<span class="token punctuation">,</span>
+    oDevice <span class="token operator">=</span><span class="token operator">&gt;</span>ySt8Forward<span class="token punctuation">,</span>
+    iOnTO <span class="token operator">:=</span> wSt8ForwardTO<span class="token punctuation">,</span>
+    iOffTO <span class="token operator">:=</span> wSt8ForwardTO<span class="token punctuation">,</span>
+    iOnDelay <span class="token operator">:=</span> wSt8ForwardOnT<span class="token punctuation">,</span>
+    iOffDelay <span class="token operator">:=</span> wSt8ForwardOffT<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+cySt8Clamp<span class="token punctuation">(</span>
+    iAct <span class="token operator">:=</span> gSt8Clamp<span class="token punctuation">,</span>
+    oDevice <span class="token operator">=</span><span class="token operator">&gt;</span>ySt8Clamp<span class="token punctuation">,</span>
+    iOnDelay <span class="token operator">:=</span> wSt8ClampOnT<span class="token punctuation">,</span>
+    iOffDelay <span class="token operator">:=</span> wSt8ClampOffT<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+cySt9Up<span class="token punctuation">(</span>
+    iAct <span class="token operator">:=</span> gSt9Up<span class="token punctuation">,</span>
+    iRst <span class="token operator">:=</span> ResetAlarm<span class="token punctuation">,</span>
+    iLimit1 <span class="token operator">:=</span> xSt9UpOrg<span class="token punctuation">,</span>
+    iLimit2 <span class="token operator">:=</span> xSt9UpAct<span class="token punctuation">,</span>
+    oDevice <span class="token operator">=</span><span class="token operator">&gt;</span>ySt9Up<span class="token punctuation">,</span>
+    iOnTO <span class="token operator">:=</span> wSt9UpTO<span class="token punctuation">,</span>
+    iOffTO <span class="token operator">:=</span> wSt9UpTO<span class="token punctuation">,</span>
+    iOnDelay <span class="token operator">:=</span> wSt9UpOnT<span class="token punctuation">,</span>
+    iOffDelay <span class="token operator">:=</span> wSt9UpOffT<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+cySt9BlowAir<span class="token punctuation">(</span>
+    iAct <span class="token operator">:=</span> gSt9BlowAir<span class="token punctuation">,</span>
+    oDevice <span class="token operator">=</span><span class="token operator">&gt;</span>ySt9BlowAir<span class="token punctuation">,</span>
+    iOnDelay <span class="token operator">:=</span> wSt9BlowAirOnT<span class="token punctuation">,</span>
+    iOffDelay <span class="token operator">:=</span> wSt9BlowAirOffT<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+rfSt1<span class="token punctuation">(</span>
+	iAct<span class="token operator">:=</span> gSt1RotatoryFeeder AND NOT ResetAlarm<span class="token punctuation">,</span>	<span class="token comment">(* 當送料逾時時，重置可重新計數時間 *)</span>
+	iFull<span class="token operator">:=</span> xSt1LF_Full<span class="token punctuation">,</span>
+	iArrived<span class="token operator">:=</span> xSt1LF_FeedIn<span class="token punctuation">,</span>
+	iFullOnT<span class="token operator">:=</span> wSt1FullOnT<span class="token punctuation">,</span>
+	iFullOffT<span class="token operator">:=</span> wSt1FullOffT<span class="token punctuation">,</span>
+	iArrivedOnT<span class="token operator">:=</span> wSt1FeedInOnT<span class="token punctuation">,</span>
+	oCanPick <span class="token operator">=</span><span class="token operator">&gt;</span> gSt1CanPick<span class="token punctuation">,</span>
+	oFeeder <span class="token operator">=</span><span class="token operator">&gt;</span> gSt1PF<span class="token punctuation">,</span>
+	oLinearFeeder <span class="token operator">=</span><span class="token operator">&gt;</span> gSt1LF<span class="token punctuation">,</span>
+	iSupplyTO<span class="token operator">:=</span> wSt1FullTO<span class="token punctuation">,</span>
+	iArriveTO<span class="token operator">:=</span> wSt1FeedInTO<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	
+	<span class="token keyword">IF</span> LDP<span class="token punctuation">(</span><span class="token keyword">TRUE</span><span class="token punctuation">,</span> gSt1CanPick<span class="token punctuation">)</span> <span class="token keyword">THEN</span>
+		<span class="token keyword">SET</span><span class="token punctuation">(</span><span class="token keyword">TRUE</span><span class="token punctuation">,</span> gSt1Vacuum<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	END_IF<span class="token punctuation">;</span>
+	
+	ySt1PF <span class="token operator">:=</span> gSt1PF OR <span class="token punctuation">(</span>manSt1PF AND sys<span class="token punctuation">.</span>ManMode<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	ySt1LF <span class="token operator">:=</span> gSt1LF OR <span class="token punctuation">(</span>manSt1LF AND sys<span class="token punctuation">.</span>ManMode<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+rfSt5<span class="token punctuation">(</span>
+	iAct<span class="token operator">:=</span> gSt5RotatoryFeeder AND NOT ResetAlarm<span class="token punctuation">,</span>
+	iFull<span class="token operator">:=</span> xSt5LF_Full<span class="token punctuation">,</span>
+	iArrived<span class="token operator">:=</span> xSt5LF_FeedIn<span class="token punctuation">,</span>
+	iFullOnT<span class="token operator">:=</span> wSt5FullOnT<span class="token punctuation">,</span>
+	iFullOffT<span class="token operator">:=</span> wSt5FullOffT<span class="token punctuation">,</span>
+	iArrivedOnT<span class="token operator">:=</span> wSt5FeedInOnT<span class="token punctuation">,</span>
+	oCanPick <span class="token operator">=</span><span class="token operator">&gt;</span> gSt5CanPick<span class="token punctuation">,</span>
+	oFeeder <span class="token operator">=</span><span class="token operator">&gt;</span> gSt5PF<span class="token punctuation">,</span>
+	oLinearFeeder <span class="token operator">=</span><span class="token operator">&gt;</span> gSt5LF<span class="token punctuation">,</span>
+	iSupplyTO<span class="token operator">:=</span> wSt5FullTO<span class="token punctuation">,</span>
+	iArriveTO<span class="token operator">:=</span> wSt5FeedInTO<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+ySt5PF <span class="token operator">:=</span> gSt5PF OR <span class="token punctuation">(</span>manSt5PF AND sys<span class="token punctuation">.</span>ManMode<span class="token punctuation">)</span><span class="token punctuation">;</span>
+ySt5LF <span class="token operator">:=</span> gSt5LF OR <span class="token punctuation">(</span>manSt5LF AND sys<span class="token punctuation">.</span>ManMode<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+ySt1Vacuum <span class="token operator">:=</span> gSt1Vacuum<span class="token punctuation">;</span>
+ySt5VacuumBreak <span class="token operator">:=</span> gSt5VacuumBreak<span class="token punctuation">;</span>
+
+ySt5SquareVacuum <span class="token operator">:=</span> gSt5SquareVacuum<span class="token punctuation">;</span>
+
+</code><button class="copy-code-button"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon lucide-copy"><rect x="8" y="8" width="14" height="14" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></pre></div><div class="el-h3"><h3 data-heading="Auto" dir="auto" class="heading" id="Auto_0"><span class="heading-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span>Auto</h3></div><div class="el-ul"><ul class="has-list-bullet">
+<li data-line="0" dir="auto"><span class="list-bullet"></span>Declare</li>
+</ul></div><div class="el-pre"><pre><code data-line="0">autoGoNext	位	
+idx	字[有符号]	
+</code><button class="copy-code-button"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon lucide-copy"><rect x="8" y="8" width="14" height="14" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></pre></div><div class="el-ul"><ul class="has-list-bullet">
+<li data-line="0" dir="auto"><span class="list-bullet"></span>Code</li>
+</ul></div><div class="el-pre"><pre><code data-line="0">
+IF NOT tmrSysInit.Q THEN
+	RETURN;
+END_IF; 
+
+SET(NOT xBackDoor AND NOT ResetAlarm, errDoorOpen);
+
+IF LDP(TRUE, sys.AutoMode) THEN
+	wAutoIdx := 10;
+	SET(TRUE, uiFeeder);
+END_IF;
+
+IF NOT sys.AutoMode THEN
+	RETURN;
+END_IF;
+
+IF NOT errDoorOpen THEN
+	IF gCalcCycleTime AND LDP(TRUE, SM8012) THEN
+		wCycleTime := wCycleTime + 1;
+	END_IF;
+END_IF;
+
+CASE wAutoIdx OF
+10:
+	(* rotate plate *)
+	SET(TRUE, gRotate);
+	RST(TRUE, gRotateArrived);
+	
+	SET(TRUE, autoGoNext);
+20:
+	IF RotateTable.oBusy THEN
+		RST(TRUE, gRotate);
+		
+		// shift data
+		FOR idx := 1 TO 9 BY 1 DO
+			wDataArray[10-idx] := wDataArray[9-idx];
+		END_FOR;
+		
+		wDataArray[0] := 0;
+		
+		SET(TRUE, autoGoNext);
+	ELSIF RotateTable.oErr THEN
+		wAutoIdx := NG_STEP;
+	END_IF;
+30:
+	// index table rotating, check which station should act.
+	// station 1
+	IF NOT gClearTool THEN
+		wDataArray[0] := 10;
+		SET(NOT gClearTool, autoSt1Cycle);
+	END_IF;
+	
+	// station 3
+	IF (wDataArray[2] = (20+ STEP_OK)) THEN
+		SET(TRUE, autoSt3Cycle);
+	END_IF;
+	
+	// station 5
+	SET(wDataArray[4] = (40+STEP_OK), autoSt5Cycle);
+	
+	SET(TRUE, autoGoNext);
+40:
+	// index table arrived, check which station should act.
+	IF gRotateArrived  THEN		
+		// station 6
+		IF wDataArray[5] = (50+STEP_OK) THEN
+			IF UseSt6 THEN
+				SET(TRUE, autoSt6Cycle);
+			ELSE
+				wDataArray[5] := 60+STEP_OK;
+			END_IF;
+		END_IF;
+				
+		// station 8 - ok
+		IF wDataArray[7] = (70+STEP_OK) OR St7ResultOK THEN
+			RST(TRUE, St7ResultOK);
+			
+			RST(TRUE, St8GetDone);
+			SET(TRUE, St8NeedGet);
+		ELSE
+			RST(TRUE, St8NeedGet);
+		END_IF;
+				
+		// station 9 - ng
+		IF (wDataArray[8] &gt;= TOOL_NG) THEN
+			SET(TRUE, autoSt9Cycle);
+		END_IF;
+		
+		SET(TRUE, autoGoNext);
+	END_IF;
+50:	
+	IF gAllStCycleDone THEN
+		
+		IF St1PutDone THEN
+			wDataArray[0] := 10+STEP_OK;
+		END_IF;		
+				
+		//IF gSt2HasTool THEN
+		IF xSt2Check THEN
+			wDataArray[1] := 20+STEP_OK;
+		END_IF;
+		
+		IF St3Done THEN			
+			IF gSt3CurIsBackSide THEN
+				wDataArray[2] := 903;
+				wSt3CountNG := wSt3CountNG + 1;
+			ELSE
+				wDataArray[2] := 30+STEP_OK;
+				wSt3CountNG := 0;
+			END_IF;
+			
+			IF wSt3CountNG &gt;= CONTINUS_NG_TARGET THEN
+				SET(TRUE, St3ContNG);
+			ELSE
+				RST(TRUE, St3ContNG);
+			END_IF;
+			
+			RST(TRUE, gSt3CurIsBackSide);
+		END_IF;
+		
+		(* station 4 *)
+		IF (wDataArray[3] = (30+STEP_OK)) THEN
+			//IF gSt4HasTool THEN
+			IF xSt4Check THEN
+				wDataArray[3] := 40+STEP_OK;
+				wSt4CountNG := 0;
+			ELSE
+				wDataArray[3] := 904;
+				wSt4CountNG := wSt4CountNG + 1;
+			END_IF;
+		
+			IF wSt4CountNG &gt;= CONTINUS_NG_TARGET THEN
+				SET(TRUE, St4ContNG);
+				ELSE
+				RST(TRUE, St4ContNG);
+			END_IF;
+		END_IF;
+		
+		IF St5PutDone THEN
+			wDataArray[4] := 50+STEP_OK;
+		END_IF;
+		
+		IF St6Done THEN
+			wDataArray[5] := 60+STEP_OK;
+		END_IF;
+	
+		(* station 7 *)
+		IF (wDataArray[6] = (60+STEP_OK)) THEN
+			IF st7HasTool AND st7ToolOk THEN
+				SET(TRUE, St7ResultOK);
+			ELSE
+				RST(TRUE, St7ResultOK);
+			END_IF;
+			
+			IF St7ResultOK THEN
+				wDataArray[6] := 70+STEP_OK;
+				wSt7CountNG := 0;
+			ELSE
+				wDataArray[6] := 907;
+				wSt7CountNG := wSt7CountNG + 1;
+			END_IF;
+		
+			IF wSt7CountNG &gt;= CONTINUS_NG_TARGET THEN
+				SET(TRUE, St7ContNG);
+			ELSE
+				RST(TRUE, St7ContNG);
+			END_IF;
+		END_IF;
+	
+		IF St8GetDone THEN
+			wDataArray[7] := 0;
+			wProductOkCount := wProductOkCount + 1;
+			wTotalOkCnt := wTotalOkCnt + 1;
+		END_IF;
+		
+		IF St9Done THEN
+			wDataArray[8] := 0;
+			wProductNgCount := wProductNgCount + 1;
+		END_IF;
+		
+		RST(TRUE, St1PutDone);
+		RST(TRUE, St3Done);
+		RST(TRUE, St5PutDone);
+		RST(TRUE, St6Done);
+		RST(TRUE, St7Done);
+		RST(TRUE, St8GetDone);
+		RST(TRUE, St9Done);		
+		RST(TRUE, St8NeedGet);
+		
+		IF gEnStopCount THEN
+			IF wProductOkCount &gt;= wStopMachineNumber THEN
+				SET(TRUE, gTargetCounted);
+				SET(TRUE, gWaitStopAuto);
+			END_IF;
+		END_IF;
+		
+		IF gClearTool THEN
+			IF CheckHasTool(wDataArray) = FALSE THEN
+				RST(TRUE, gClearTool);
+				SET(TRUE, gWaitStopAuto);
+			END_IF;
+		END_IF;
+		
+		wAutoIdx := 60;
+	END_IF;	// all cycle done
+60:
+	// non resident and non target counted
+	IF (NOT F3) AND 
+		(NOT F4) AND 
+		NOT St3ContNG AND 
+		NOT St4ContNG AND 
+		NOT St7ContNG THEN
+		
+		IF NOT gWaitStopAuto THEN
+			wAutoIdx := 10;
+		ELSE
+			wAutoIdx := OK_STEP;
+		END_IF;
+	END_IF;
+END_CASE;
+
+IF St8NeedGet AND (NOT St8GetDone) AND gRotateArrived AND (NOT St8Cycle) THEN
+	SET(TRUE, autoSt8Cycle);
+END_IF;
+
+IF wAutoIdx = OK_STEP THEN
+	wAutoIdx := 0;
+	RST(TRUE, sys.AutoMode);
+	SET(TRUE, sys.ManMode);
+	RST(TRUE, gWaitStopAuto);
+	RST(TRUE, uiFeeder);	
+	
+	RST(gClearTool, gClearTool);
+	
+ELSIF wAutoIdx = NG_STEP THEN
+	IF gAutoCanGoNext THEN
+		wAutoIdx := 0;
+	END_IF;
+END_IF;
+
+IF autoGoNext THEN
+	IF gAutoCanGoNext THEN
+		wAutoIdx := wAutoIdx + 10;
+		RST(TRUE, autoGoNext);
+	END_IF;
+END_IF;
+</code><button class="copy-code-button"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon lucide-copy"><rect x="8" y="8" width="14" height="14" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></pre></div><div class="el-h3"><h3 data-heading="Error" dir="auto" class="heading" id="Error_0"><span class="heading-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span>Error</h3></div><div class="el-ul"><ul class="has-list-bullet">
+<li data-line="0" dir="auto"><span class="list-bullet"></span>Declare</li>
+</ul></div><div class="el-pre"><pre><code data-line="0"></code><button class="copy-code-button"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon lucide-copy"><rect x="8" y="8" width="14" height="14" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></pre></div><div class="el-ul"><ul class="has-list-bullet">
+<li data-line="0" dir="auto"><span class="list-bullet"></span>Code</li>
+</ul></div><div class="el-pre"><pre><code data-line="0">
+IF NOT tmrSysInit.Q THEN
+	RETURN;
+END_IF;
+
+ResetAlarm := uiResetAlarm;
+BKRSTP(ResetAlarm, 100, F0);
+
+sys.HasError :=
+	F0 OR
+	F1 OR
+	// F2
+	errDoorOpen OR
+	// F3 OR
+	F4 OR 
+	F5 OR
+	F6 OR
+	F7 
+	;
+
+sys.HasWarning := SM8048;
+
+IF sys.EMG THEN
+	RST(TRUE, sys.AutoMode);
+	SET(TRUE, sys.ManMode);
+	RST(TRUE, gWaitStopAuto);
+	RST(TRUE, gClearTool);
+	
+	RST(TRUE, gSt1RotatoryFeeder);
+	RST(TRUE, gSt5RotatoryFeeder);
+	RST(TRUE, gSt3Feed);
+		
+	RST(TRUE, gSt1Vacuum);
+	RST(TRUE, uiFeeder);
+	
+	RST(TRUE, St1Cycle);
+	RST(TRUE, St3Cycle);
+	RST(TRUE, St5Cycle);
+	RST(TRUE, St6Cycle);
+	RST(TRUE, St7Cycle);
+	RST(TRUE, St8Cycle);
+	RST(TRUE, St9Cycle);
+	
+	RST(TRUE, gAllAxisZeroDone);
+END_IF;
+
+IF ResetAlarm THEN
+	IF St2ContNG THEN
+		wSt2CountNG := 0;
+	END_IF;
+	
+	IF St3ContNG THEN
+		wSt3CountNG := 0;
+	END_IF;
+	
+	IF St4ContNG THEN
+		wSt4CountNG := 0;
+	END_IF;
+	
+	IF St7ContNG THEN
+		wSt7CountNG := 0;
+	END_IF;
+		
+	RST(TRUE, St3ContNG);
+	RST(TRUE, St4ContNG);
+	RST(TRUE, St7ContNG);
+ELSE
+	SET(St3ContNG, F58);
+	SET(St4ContNG, F59);
+	SET(St7ContNG, F63);
+	
+	SET(sys.EMG, F0);
+	SET(RotateTable.oErr, F1);
+	
+	IF gEnStopCount AND gTargetCounted THEN
+		SET(TRUE, F4);
+		RST(TRUE, gTargetCounted);
+	END_IF;
+	
+	SET(NOT X26, F5);
+	SET(NOT gA1ZeroDone, F6);
+	SET(NOT gA2ZeroDone, F7);
+	
+	IF cySt1Down.oErr THEN
+		SET(cySt1Down.oErrId = ErrCyOn, F10);
+		SET(cySt1Down.oErrId = ErrCyOff, F11);
+		SET(cySt1Down.oErrId = ErrCyBoth, F12);
+	END_IF;
+
+	IF cySt1Forward.oErr THEN
+		SET(cySt1Forward.oErrId = ErrCyOn, F13);
+		SET(cySt1Forward.oErrId = ErrCyOff, F14);
+		SET(cySt1Forward.oErrId = ErrCyBoth, F15);
+	END_IF;
+
+	IF cySt1ClampRotate.oErr THEN
+		SET(cySt1ClampRotate.oErrId = ErrCyOn, F16);
+		SET(cySt1ClampRotate.oErrId = ErrCyOff, F17);
+		SET(cySt1ClampRotate.oErrId = ErrCyBoth, F18);
+	END_IF;
+
+	IF cySt1Seperate.oErr THEN
+		SET(cySt1Seperate.oErrId = ErrCyOn, F19);
+		SET(cySt1Seperate.oErrId = ErrCyOff, F20);
+		SET(cySt1Seperate.oErrId = ErrCyBoth, F21);
+	END_IF;
+
+	IF cySt3Down.oErr THEN
+		SET(cySt3Down.oErrId = ErrCyOn, F22);
+		SET(cySt3Down.oErrId = ErrCyOff, F23);
+		SET(cySt3Down.oErrId = ErrCyBoth, F24);
+	END_IF;
+
+	IF cySt3Forward.oErr THEN
+		SET(cySt3Forward.oErrId = ErrCyOn, F25);
+		SET(cySt3Forward.oErrId = ErrCyOff, F26);
+		SET(cySt3Forward.oErrId = ErrCyBoth, F27);
+	END_IF;
+	
+	SET(cySt3Suck.oErr, F28);
+
+	IF cySt5Down.oErr THEN
+		SET(cySt5Down.oErrId = ErrCyOn, F29);
+		SET(cySt5Down.oErrId = ErrCyOff, F30);
+		SET(cySt5Down.oErrId = ErrCyBoth, F31);
+	END_IF;
+
+	IF cySt5Forward.oErr THEN
+		SET(cySt5Forward.oErrId = ErrCyOn, F32);
+		SET(cySt5Forward.oErrId = ErrCyOff, F33);
+		SET(cySt5Forward.oErrId = ErrCyBoth, F34);
+	END_IF;
+	
+	SET(cySt5Suck.oErr, F35);
+	
+	IF cySt5Seperate.oErr THEN
+		SET(cySt5Seperate.oErrId = ErrCyOn, F36);
+		SET(cySt5Seperate.oErrId = ErrCyOff, F37);
+		SET(cySt5Seperate.oErrId = ErrCyBoth, F38);
+	END_IF;
+
+	IF cySt6Down.oErr THEN
+		SET(cySt6Down.oErrId = ErrCyOn, F39);
+		SET(cySt6Down.oErrId = ErrCyOff, F40);
+		SET(cySt6Down.oErrId = ErrCyBoth, F41);
+	END_IF;
+
+	IF cySt7Down.oErr THEN
+		SET(cySt7Down.oErrId = ErrCyOn, F42);
+		SET(cySt7Down.oErrId = ErrCyOff, F43);
+		SET(cySt7Down.oErrId = ErrCyBoth, F44);
+	END_IF;
+
+	IF cySt8Down.oErr THEN
+		SET(cySt8Down.oErrId = ErrCyOn, F45);
+		SET(cySt8Down.oErrId = ErrCyOff, F46);
+		SET(cySt8Down.oErrId = ErrCyBoth, F47);
+	END_IF;
+
+	IF cySt8Forward.oErr THEN
+		SET(cySt8Forward.oErrId = ErrCyOn, F48);
+		SET(cySt8Forward.oErrId = ErrCyOff, F49);
+		SET(cySt8Forward.oErrId = ErrCyBoth, F50);
+	END_IF;
+
+	IF cySt9Up.oErr THEN
+		SET(cySt9Up.oErrId = ErrCyOn, F51);
+		SET(cySt9Up.oErrId = ErrCyOff, F52);
+		SET(cySt9Up.oErrId = ErrCyBoth, F53);
+	END_IF;
+
+
+	IF gSt1RotatoryFeeder THEN
+		SET(rfSt1.oArriveTO, F54);
+		SET(rfSt1.oNeedSupply, F55);
+	END_IF;	
+		
+	IF gSt5RotatoryFeeder THEN
+		SET(rfSt5.oArriveTO, F56);
+		SET(rfSt5.oNeedSupply, F57);
+	END_IF;
+END_IF;
+
+</code><button class="copy-code-button"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon lucide-copy"><rect x="8" y="8" width="14" height="14" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></pre></div><div class="el-h3"><h3 data-heading="Manual" dir="auto" class="heading" id="Manual_0"><span class="heading-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span>Manual</h3></div><div class="el-pre"><pre><code data-line="0">
+IF (NOT tmrSysInit.Q) OR sys.EMG OR (NOT sys.ManMode) THEN
+	RETURN;
+END_IF;
+
+DMOV(uiRstOkCnt, 0, wProductOkCount);
+DMOV(uiRstNgCnt, 0, wProductNgCount);
+DMOV(uiRstTotalOkCnt, 0, wTotalOkCnt);
+
+IF uiResetAllSt THEN
+	SET(TRUE, uiSt1Reset);
+	SET(TRUE, uiSt3Reset);
+	SET(TRUE, uiSt5Reset);
+	SET(TRUE, uiSt6Reset);
+	SET(TRUE, uiSt7Reset);
+	SET(TRUE, uiSt8Reset);
+	SET(TRUE, uiSt9Reset);
+END_IF;
+
+CASE wPageIndex OF 
+11:
+	IF NOT St1Cycle THEN
+		ALTP(M50 AND cySt1Seperate.oOn, gSt1Down);
+		ALTP(M51 AND cySt1Down.oOff, gSt1Forward);
+		ALTP(M52, gSt1Clamp);
+		ALTP(M53, gSt1ClampRotate);
+		ALTP(M54, gSt1Seperate);
+		ALTP(M55, gSt1Vacuum);
+	END_IF;	
+	SET(uiStReset, uiSt1Reset);
+13:
+	IF NOT St3Cycle THEN
+		ALTP(M50, gSt3Down);
+		ALTP(M51 AND cySt3Down.oOff, gSt3Forward);
+		ALTP(M52, gSt3Suck);
+		ALTP(M53, gSt3GoSafeHeight);
+	END_IF;
+	
+END_CASE;
+
+// can change page
+M81 := 
+	(wPageIndex=11 AND St1Cycle) OR 
+	(wPageIndex=13 AND St3Cycle) OR 	
+	SM8001;
+
+IF uiSt1Reset THEN
+	RST(TRUE, gSt1Down);
+	RST(TRUE, gSt1Forward);
+	RST(TRUE, gSt1Clamp);
+	RST(TRUE, gSt1ClampRotate);
+	RST(TRUE, gSt1Seperate);
+		
+	RST(TRUE, St1Cycle);
+		
+	RST(TRUE, manSt1PF);
+	RST(TRUE, manSt1LF);
+	RST(TRUE, gSt1PF);
+	RST(TRUE, gSt1LF);
+	RST(TRUE, gSt1Vacuum);
+		
+	RST(TRUE, uiSt1Reset);
+END_IF;
+
+IF uiSt3Reset THEN
+	RST(TRUE, gSt3Down);
+	RST(TRUE, gSt3Forward);
+	RST(TRUE, gSt3Suck);
+	RST(TRUE, gSt3GoSafeHeight);
+		
+	RST(TRUE, St3Cycle);
+		
+	RST(TRUE, gSt3Feed);
+	RST(TRUE, uiSt3Reset);
+END_IF;
+
+
+</code><button class="copy-code-button"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon lucide-copy"><rect x="8" y="8" width="14" height="14" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></pre></div><div class="el-h3"><h3 data-heading="St1" dir="auto" class="heading" id="St1_0"><span class="heading-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span>St1</h3></div><div class="el-pre"><pre><code data-line="0">canGoNext	位	
+goNext	位	
+goNg	位	
+</code><button class="copy-code-button"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon lucide-copy"><rect x="8" y="8" width="14" height="14" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></pre></div><div class="el-pre"><pre><code data-line="0">;
+
+IF St1Cycle THEN   
+
+	IF wSt1Index = OK_STEP THEN
+		St1Cycle := FALSE;
+		wSt1Index := 0;
+		
+	ELSIF wSt1Index = NG_STEP THEN
+		IF canGoNext THEN			
+			wSt1Index := wSt1LastIndex;
+			wSt1LastIndex := 0;
+		END_IF;
+	END_IF;
+
+	IF sys.AutoMode THEN
+		SET(gSt1CanPick AND NOT gSt1Seperate, gSt1Seperate);
+	END_IF;
+	
+	CASE wSt1Index OF
+	10:
+		IF sys.AutoMode THEN
+			wDataArray[0] := 10 + STEP_BUSY;
+		END_IF;
+		IF NOT F54 THEN
+			SET(gSt1CanPick OR sys.ManMode, gSt1Seperate);
+		END_IF;
+		
+	    IF cySt1Seperate.oOn THEN
+	        goNext := TRUE;
+	    ELSIF cySt1Seperate.oErr THEN
+			RST(TRUE, gSt1Seperate);
+			goNg := TRUE;
+	    END_IF;		
+	20:
+	    gSt1Down := TRUE;
+		
+	    IF cySt1Down.oOn THEN
+	        goNext := TRUE;
+	    ELSIF cySt1Down.oErr THEN
+			gSt1Down := FALSE;
+			goNg := TRUE;
+	    END_IF;
+	30:
+	    gSt1Clamp := TRUE;
+	    IF cySt1Clamp.oOn THEN
+			RST(TRUE, gSt1Vacuum);			
+	        goNext := TRUE;
+	    END_IF;
+	40:	// up
+	    gSt1Down := FALSE;
+	    IF cySt1Down.oOff THEN
+			RST(TRUE, gSt1Seperate);
+	        goNext := TRUE;
+	    ELSIF cySt1Down.oErr THEN
+			goNg := TRUE;
+	    END_IF;
+	50:	// rotate, forward
+	    gSt1ClampRotate := TRUE;
+		gSt1Forward := TRUE;
+	    IF cySt1ClampRotate.oOn THEN
+	        goNext := TRUE;
+	    ELSIF cySt1ClampRotate.oErr THEN
+			gSt1Forward := FALSE;
+			goNg := TRUE;
+	    END_IF;
+	60:	// forward
+		goNext := TRUE;		
+	    gSt1Forward := TRUE;
+		 
+	    IF cySt1Forward.oOn THEN
+	        goNext := TRUE;
+	    ELSIF cySt1Forward.oErr THEN
+			gSt1Forward := FALSE;
+			goNg := TRUE;
+		END_IF;
+		
+	70:	// down
+		IF sys.ManMode THEN
+			SET(TRUE, gSt1Down);
+		ELSIF sys.AutoMode THEN
+			SET(gRotateArrived, gSt1Down);
+		END_IF;
+		
+	    IF cySt1Down.oOn THEN
+	        goNext := TRUE;
+	    ELSIF cySt1Down.oErr THEN
+			RST(TRUE, gSt1Down);
+			goNg := TRUE;
+	    END_IF;
+	80:	// clamp off
+		gSt1Clamp := FALSE;
+		SET(cySt1Clamp.oOff, goNext);
+		
+	90:	// up
+		gSt1Down := FALSE;
+		IF cySt1Down.oOff THEN
+			SET(TRUE, St1PutDone);
+			goNext := TRUE;
+		ELSIF cySt1Down.oErr THEN
+			goNg := TRUE;
+		END_IF;
+	100:// back
+	    gSt1Forward := FALSE;
+		gSt1ClampRotate := FALSE;		
+		
+	    IF cySt1Forward.oOff AND cySt1ClampRotate.oOff THEN
+	        goNext := TRUE;
+	    ELSIF cySt1Forward.oErr THEN
+			goNg := TRUE;
+	    END_IF;
+	110:
+		wSt1Index := OK_STEP;	
+	END_CASE;
+
+	IF goNg THEN
+		wSt1LastIndex := wSt1Index;
+		wSt1Index := NG_STEP;
+		goNg := FALSE;
+	END_IF;
+	
+	IF goNext AND canGoNext THEN
+		wSt1Index := wSt1Index + 10;
+		goNext := FALSE;
+	END_IF;
+END_IF;
+
+St1InOrg := 
+    cySt1Down.oOff AND
+    cySt1Forward.oOff AND
+    cySt1Clamp.oOff AND
+    cySt1ClampRotate.oOff AND
+    SM8000;
+
+canGoNext := 
+    NOT sys.HasError AND
+    NOT cySt1Down.oErr AND
+    NOT cySt1Forward.oErr AND
+    NOT cySt1ClampRotate.oErr AND
+    NOT cySt1Seperate.oErr AND
+    SM8000;
+</code><button class="copy-code-button"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon lucide-copy"><rect x="8" y="8" width="14" height="14" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></pre></div><div class="el-h3"><h3 data-heading="St3" dir="auto" class="heading" id="St3_0"><span class="heading-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span>St3</h3></div><div class="el-pre"><pre><code data-line="0">st3WaitChk	位	
+tmrSt3ChkUpDown	TON	
+st3Sucking	位	
+tmrSt3Vibrat1	TON	振動啟始時間
+tmrSt3Vibrat2	TON	振動時間
+st3Vibrat1	位	
+st3Vibrat2	位	
+goNext	位	
+canGoNext	位	
+goNg	位	
+
+</code><button class="copy-code-button"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon lucide-copy"><rect x="8" y="8" width="14" height="14" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></pre></div><div class="el-pre"><pre><code data-line="0">;
+(* TODO: 過程中吸失敗，繼續做完，並判定為不良品 *)
+
+IF St3Cycle THEN	
+	IF wSt3Index = OK_STEP THEN
+		SET(TRUE, St3Done);
+		St3Cycle := FALSE;
+		wSt3Index := 0;
+		
+	ELSIF wSt3Index = NG_STEP THEN
+		IF canGoNext THEN
+			IF wSt3LastIndex = 30 AND cySt3Suck.oErr THEN
+				wSt3Index := 20;
+			ELSE
+				wSt3Index := wSt3LastIndex;
+				wSt3LastIndex := 0;
+			END_IF;
+		END_IF;
+	END_IF;
+	
+	CASE wSt3Index OF
+	10:
+		IF St3CanPick OR (gSt3NextPos AND gRotateArrived) THEN
+			IF sys.AutoMode THEN
+				wDataArray[2] := 30 + STEP_BUSY;
+			END_IF;
+			
+			RST(TRUE, gSt3CurIsBackSide);
+			IF (gSt3NextSide = 0) OR gSt3NeedCheck THEN
+				wSt3Index := 200;
+				RST(TRUE, gSt3NeedCheck);
+			ELSE
+				SET(TRUE, goNext);
+			END_IF;
+		END_IF;
+		
+	20:	// suck and down
+		IF St3CanPick AND cySt3Forward.oOff THEN
+			gSt3Down := TRUE;
+		    gSt3Suck := TRUE;
+			
+			St3NextPosCount := 0;
+		END_IF;	
+	
+		RST(TRUE, st3Vibrat1);
+		RST(TRUE, st3Vibrat2);
+		
+		(* 如果這一次要取的料是反面，設定此旗標 *)
+		SET(gSt3NextSide = 2, gSt3CurIsBackSide);	
+	    IF (cySt3Suck.oOn OR sys.ManMode) AND cySt3Down.oOn THEN			
+	        //St3GoNext := TRUE;
+			wSt3Index := 21;
+	    ELSIF cySt3Suck.oErr AND sys.AutoMode THEN
+			RST(TRUE, gSt3Down);
+			RST(TRUE, gSt3Suck);
+			SET(TRUE, goNg);
+		END_IF;
+	21:
+		RST(TRUE, gSt3Down);
+		SET(TRUE, st3Vibrat1);
+		IF tmrSt3Vibrat1.Q THEN
+			wSt3Index := 22;
+			SET(TRUE, gSt3Down);
+			RST(TRUE, st3Vibrat1);
+		END_IF;
+	22:
+		SET(TRUE, st3Vibrat2);
+		IF tmrSt3Vibrat2.Q THEN
+			RST(TRUE, gSt3Down);
+			RST(TRUE, st3Vibrat2);
+			wSt3Index := 30;
+		END_IF;
+		
+	30:	// up
+		RST(TRUE, gSt3Down);
+		SET(TRUE, st3Sucking);
+		IF cySt3Down.oOff THEN
+	        goNext := TRUE;
+	    ELSIF cySt3Down.oErr OR cySt3Suck.oErr THEN
+			RST(cySt3Suck.oErr, gSt3Suck);
+			SET(TRUE, goNg);
+		END_IF;
+		
+	40:	// forward
+	    gSt3Forward := TRUE;
+		st3WaitChk := FALSE;
+	    IF cySt3Forward.oOn THEN
+	        goNext := TRUE;
+	    ELSIF cySt3Forward.oErr OR cySt3Suck.oErr THEN
+			RST(cySt3Suck.oErr, gSt3Suck);
+			SET(TRUE, goNg);
+	    END_IF;
+	50:	// down
+	    IF sys.ManMode THEN
+	    	gSt3Down := TRUE;
+		ELSIF sys.AutoMode THEN
+			SET(gRotateArrived, gSt3Down);
+		END_IF;
+		
+	    IF cySt3Down.oOn THEN
+			st3WaitChk := TRUE;
+	        goNext := TRUE;
+	    ELSIF cySt3Down.oErr  OR cySt3Suck.oErr THEN
+	        goNg := TRUE;
+	    END_IF;
+	60:	// place down
+	    gSt3Suck := FALSE;
+	    IF cySt3Suck.oOff AND tmrSt3ChkUpDown.Q THEN
+			RST(TRUE, st3Sucking);
+	        goNext := TRUE;
+		  	st3WaitChk := FALSE;
+			IF xSt3CheckUpDown THEN
+				gSt3NextSide := 1;
+				M257 := TRUE;
+			ELSE
+				gSt3NextSide := 2;
+				M257 := FALSE;
+			END_IF;
+			
+	    ELSIF cySt3Suck.oErr THEN
+	       goNg := TRUE;
+	    END_IF;
+	70:	// get up
+	    gSt3Down := FALSE;
+	    IF cySt3Down.oOff THEN
+			SET(TRUE, St3Done);
+	        goNext := TRUE;
+	    ELSIF cySt3Down.oErr THEN
+	        goNg := TRUE;
+		END_IF;
+	80:
+		// forward
+		gSt3Forward := FALSE;
+		IF cySt3Forward.oOff THEN
+			goNext := TRUE;
+		ELSIF cySt3Forward.oErr THEN
+			goNg := TRUE;
+		END_IF;
+		
+	90:	// cycle done
+		wSt3Index := OK_STEP;
+	END_CASE;
+	
+	tmrSt3Vibrat1(IN:=st3Vibrat1,PT:=INT_TO_TIME(D1116*10));
+	tmrSt3Vibrat2(IN:=st3Vibrat2,PT:=INT_TO_TIME(D1117*10));	
+	
+	CASE wSt3Index OF 
+	200:// forward
+	    gSt3Forward := TRUE;
+		st3WaitChk := FALSE;
+	    IF cySt3Forward.oOn THEN
+	        goNext := TRUE;
+	    ELSIF cySt3Forward.oErr THEN
+			SET(TRUE, goNg);
+	    END_IF;
+	210:	// down
+	    IF sys.ManMode THEN			
+	    	gSt3Down := TRUE;
+		ELSIF sys.AutoMode THEN
+			SET(gRotateArrived, gSt3Down);
+		END_IF;
+		
+	    IF cySt3Down.oOn THEN
+			st3WaitChk := TRUE;
+	        goNext := TRUE;
+	    ELSIF cySt3Down.oErr THEN
+	        goNg := TRUE;
+	    END_IF;
+	220:	// place down
+	    gSt3Suck := FALSE;
+		SET(TRUE, M0);
+	    IF cySt3Suck.oOff AND tmrSt3ChkUpDown.Q AND St3CanPick THEN
+			RST(TRUE, M0);
+			RST(TRUE, st3Sucking);
+			
+	        goNext := TRUE;
+		  	st3WaitChk := FALSE;
+			IF xSt3CheckUpDown THEN
+				gSt3NextSide := 1;
+				M257 := TRUE;
+			ELSE
+				gSt3NextSide := 2;
+				M257 := FALSE;
+			END_IF;
+			
+	    ELSIF cySt3Suck.oErr THEN
+	       goNg := TRUE;
+	    END_IF;
+	230:	// get up
+	    gSt3Down := FALSE;
+	    IF cySt3Down.oOff THEN
+	        goNext := TRUE;
+	    ELSIF cySt3Down.oErr THEN
+	        goNg := TRUE;
+		END_IF;
+	240:
+		// forward
+		gSt3Forward := FALSE;
+		IF cySt3Forward.oOff THEN
+			goNext := TRUE;
+		ELSIF cySt3Forward.oErr THEN
+			goNg := TRUE;
+		END_IF;
+	250:
+		wSt3Index := 20;
+		RST(TRUE, gSt3NeedCheck);
+	END_CASE;
+	
+	IF goNg THEN
+		wSt3LastIndex := wSt3Index;
+		wSt3Index := NG_STEP;
+		goNg := FALSE;
+	END_IF;
+	
+	IF goNext AND canGoNext THEN
+        wSt3Index := wSt3Index + 10;
+        goNext := FALSE;
+    END_IF;
+	
+	tmrSt3ChkUpDown(IN:=st3WaitChk, PT:=INT_TO_TIME(wSt3ToolChkT*100));
+END_IF;
+
+St3InOrg := 
+    cySt3Down.oOff AND
+    cySt3Forward.oOff AND
+    cySt3Suck.oOff AND
+    SM8000;
+
+canGoNext := 
+    NOT sys.HasError AND
+    NOT cySt3Down.oErr AND
+    NOT cySt3Forward.oErr AND
+	//NOT F60 AND 
+    NOT cySt3Suck.oErr AND
+    SM8000;
+</code><button class="copy-code-button"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon lucide-copy"><rect x="8" y="8" width="14" height="14" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></pre></div><div class="el-h3"><h3 data-heading="St5" dir="auto" class="heading" id="St5_0"><span class="heading-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span>St5</h3></div><div class="el-pre"><pre><code data-line="0">goNext	位	
+canGoNext	位	
+goNg	位	
+
+</code><button class="copy-code-button"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon lucide-copy"><rect x="8" y="8" width="14" height="14" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></pre></div><div class="el-pre"><pre><code data-line="0">;
+
+IF St5Cycle THEN
+	
+	IF wSt5Index = OK_STEP THEN		
+		St5Cycle := FALSE;
+		wSt5Index := 0;
+		
+	ELSIF wSt5Index = NG_STEP THEN
+		IF canGoNext THEN
+			IF wSt5LastIndex = 30 THEN
+				gSt5Down := TRUE;
+			END_IF;
+			
+			wSt5Index := wSt5LastIndex;
+			wSt5LastIndex := 0;
+		END_IF;
+	END_IF;
+	
+    IF sys.AutoMode THEN
+		IF gSt5CanPick AND NOT gSt5Seperate THEN
+			SET(TRUE, gSt5Seperate);
+		END_IF;
+	END_IF;
+		
+	CASE wSt5Index OF
+	10:
+		IF sys.AutoMode THEN
+			wDataArray[4] := 50 + STEP_BUSY;
+		END_IF;
+		IF NOT F56 THEN		
+			SET(gSt5CanPick OR sys.ManMode, gSt5Seperate);
+		END_IF;
+		
+	    IF cySt5Seperate.oOn  AND cySt5Down.oOff AND cySt5Forward.oOff THEN
+	        goNext := TRUE;
+	    ELSIF cySt5Seperate.oErr THEN
+			gSt5Seperate := FALSE;
+			goNg := TRUE;
+		END_IF;
+	20:
+		SET(TRUE, gSt5Down);
+		SET(TRUE, gSt5Suck);
+		
+	    IF cySt5Down.oOn THEN
+			RST(TRUE, gSt5SquareVacuum);
+			SET(TRUE, goNext);
+	    ELSIF cySt5Down.oErr OR cySt5Suck.oErr THEN
+			RST(TRUE, gSt5Down);
+			RST(TRUE, gSt5Suck);
+			SET(TRUE, goNg);
+		END_IF;
+	30:
+		SET(TRUE, gSt5Suck);
+		RST(TRUE, gSt5SquareVacuum);
+	    IF cySt5Suck.oOn THEN
+	        goNext := TRUE;
+	    ELSIF cySt5Suck.oErr THEN
+			RST(TRUE, gSt5Down);
+			RST(TRUE, gSt5Suck);
+			SET(TRUE, goNg);
+		END_IF;
+	40:
+		RST(TRUE, gSt5Down);
+	    IF cySt5Down.oOff THEN
+			RST(TRUE, gSt5Seperate);
+	        goNext := TRUE;
+	    ELSIF cySt5Down.oErr THEN
+			RST(TRUE, gSt5Down);
+			SET(TRUE, goNg);
+		END_IF;
+	50:
+	    gSt5Forward := TRUE;
+	    IF cySt5Forward.oOn THEN
+	        goNext := TRUE;
+	    ELSIF cySt5Forward.oErr THEN
+			gSt5Forward := FALSE;
+			SET(TRUE, goNg);
+		END_IF;
+	60:	// place down the workpiece
+		IF sys.ManMode THEN
+	    	gSt5Down := TRUE;
+		ELSIF sys.AutoMode THEN
+			IF gRotateArrived THEN
+				gSt5Down := TRUE;
+			END_IF;
+		END_IF;
+		
+	    IF cySt5Down.oOn THEN
+	        goNext := TRUE;
+	    ELSIF cySt5Down.oErr THEN
+			gSt5Down := FALSE;
+			goNg := TRUE;
+		END_IF;
+	70:
+		gSt5Suck := FALSE;
+		SET(TRUE, gSt5VacuumBreak);
+		IF cySt5Suck.oOff THEN
+			goNext := TRUE;
+		END_IF;
+	80:
+		gSt5Down := FALSE;
+		IF cySt5Down.oOff THEN
+			RST(TRUE, gSt5VacuumBreak);
+			SET(TRUE, St5PutDone);
+			goNext := TRUE;
+		ELSIF cySt5Down.oErr THEN
+			goNg := TRUE;
+		END_IF;
+	90:
+	    gSt5Forward := FALSE;
+	    IF cySt5Forward.oOff AND cySt5Down.oOff THEN
+	        goNext := TRUE;
+	    ELSIF cySt5Forward.oErr THEN
+			goNg := TRUE;
+		END_IF;
+	100:
+		wSt5Index := OK_STEP;
+	END_CASE;
+	
+	IF goNg THEN
+		goNg := FALSE;
+		wSt5LastIndex := wSt5Index;
+		wSt5Index := NG_STEP;
+	END_IF;
+
+	IF goNext AND canGoNext THEN
+		wSt5Index := wSt5Index + 10;
+		goNext := FALSE;
+	END_IF;
+END_IF;
+
+St5InOrg := 
+    cySt5Down.oOff AND
+    cySt5Forward.oOff AND
+    cySt5Suck.oOff AND
+    SM8000;
+
+canGoNext := 
+    NOT sys.HasError AND
+    NOT cySt5Down.oErr AND
+    NOT cySt5Forward.oErr AND
+    NOT cySt5Seperate.oErr AND
+	NOT cySt5Suck.oErr AND 
+    SM8000;
+</code><button class="copy-code-button"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon lucide-copy"><rect x="8" y="8" width="14" height="14" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></pre></div><div class="footer"><div class="data-bar"></div></div></div></div></div><div id="right-content" class="leaf" style="--sidebar-width: var(--sidebar-width-right);"><div id="right-sidebar" class="sidebar"><div class="sidebar-handle"></div><div class="sidebar-topbar"><div class="topbar-content"><label class="theme-toggle-container" for="theme-toggle-input" id=""><input class="theme-toggle-input" type="checkbox" id="theme-toggle-input"><div class="toggle-background"></div></label></div><div class="clickable-icon sidebar-collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="svg-icon"><path d="M21 3H3C1.89543 3 1 3.89543 1 5V19C1 20.1046 1.89543 21 3 21H21C22.1046 21 23 20.1046 23 19V5C23 3.89543 22.1046 3 21 3Z"></path><path d="M10 4V20"></path><path d="M4 7H7"></path><path d="M4 10H7"></path><path d="M4 13H7"></path></svg></div></div><div class="sidebar-content-wrapper"><div id="right-sidebar-content" class="leaf-content"><div class="graph-view-wrapper"><div class="feature-header"><div class="feature-title">Interactive Graph</div></div><div class="graph-view-placeholder">
+		<div class="graph-view-container">
+			<div class="graph-icon graph-expand" role="button" aria-label="Expand" data-tooltip-position="top"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg></div>
+			<div class="graph-icon graph-global" role="button" aria-label="Global Graph" data-tooltip-position="top"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon lucide-git-fork"><circle cx="12" cy="18" r="3"></circle><circle cx="6" cy="6" r="3"></circle><circle cx="18" cy="6" r="3"></circle><path d="M18 9v2c0 .6-.4 1-1 1H7c-.6 0-1-.4-1-1V9"></path><path d="M12 12v3"></path></svg></div>
+			<canvas id="graph-canvas" class="hide" width="512px" height="512px"></canvas>
+		</div>
+		</div></div><div id="outline" class=" tree-container"><div class="feature-header"><div class="feature-title">Table Of Contents</div><button class="clickable-icon nav-action-button tree-collapse-all" aria-label="Collapse All"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></svg></button></div><div class="tree-item" data-depth="1"><a class="tree-item-self is-clickable" href="fx5u-sample.html#Fx5u_-_Sample_0" data-path="#Fx5u_-_Sample_0"><div class="tree-item-inner heading-link" heading-name="Fx5u - Sample">Fx5u - Sample</div></a><div class="tree-item-children"></div></div><div class="tree-item" data-depth="1"><a class="tree-item-self is-clickable" href="fx5u-sample.html#Init_Area_0" data-path="#Init_Area_0"><div class="tree-item-inner heading-link" heading-name="Init Area">Init Area</div></a><div class="tree-item-children"></div></div><div class="tree-item" data-depth="1"><a class="tree-item-self is-clickable" href="fx5u-sample.html#Global_Var_0" data-path="#Global_Var_0"><div class="tree-item-inner heading-link" heading-name="Global Var">Global Var</div></a><div class="tree-item-children"></div></div><div class="tree-item" data-depth="1"><a class="tree-item-self is-clickable" href="fx5u-sample.html#Global_IO_var_0" data-path="#Global_IO_var_0"><div class="tree-item-inner heading-link" heading-name="Global IO var">Global IO var</div></a><div class="tree-item-children"></div></div><div class="tree-item mod-collapsible" data-depth="1"><a class="tree-item-self is-clickable mod-collapsible" href="fx5u-sample.html#Scan_Area_0" data-path="#Scan_Area_0"><div class="tree-item-icon collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></div><div class="tree-item-inner heading-link" heading-name="Scan Area">Scan Area</div></a><div class="tree-item-children"><div class="tree-item mod-collapsible" data-depth="2"><a class="tree-item-self is-clickable mod-collapsible" href="fx5u-sample.html#Local_Area_0" data-path="#Local_Area_0"><div class="tree-item-icon collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></div><div class="tree-item-inner heading-link" heading-name="Local Area">Local Area</div></a><div class="tree-item-children"><div class="tree-item" data-depth="3"><a class="tree-item-self is-clickable" href="fx5u-sample.html#Always_0" data-path="#Always_0"><div class="tree-item-inner heading-link" heading-name="Always">Always</div></a><div class="tree-item-children"></div></div><div class="tree-item" data-depth="3"><a class="tree-item-self is-clickable" href="fx5u-sample.html#Auto_0" data-path="#Auto_0"><div class="tree-item-inner heading-link" heading-name="Auto">Auto</div></a><div class="tree-item-children"></div></div><div class="tree-item" data-depth="3"><a class="tree-item-self is-clickable" href="fx5u-sample.html#Error_0" data-path="#Error_0"><div class="tree-item-inner heading-link" heading-name="Error">Error</div></a><div class="tree-item-children"></div></div><div class="tree-item" data-depth="3"><a class="tree-item-self is-clickable" href="fx5u-sample.html#Manual_0" data-path="#Manual_0"><div class="tree-item-inner heading-link" heading-name="Manual">Manual</div></a><div class="tree-item-children"></div></div><div class="tree-item" data-depth="3"><a class="tree-item-self is-clickable" href="fx5u-sample.html#St1_0" data-path="#St1_0"><div class="tree-item-inner heading-link" heading-name="St1">St1</div></a><div class="tree-item-children"></div></div><div class="tree-item" data-depth="3"><a class="tree-item-self is-clickable" href="fx5u-sample.html#St3_0" data-path="#St3_0"><div class="tree-item-inner heading-link" heading-name="St3">St3</div></a><div class="tree-item-children"></div></div><div class="tree-item" data-depth="3"><a class="tree-item-self is-clickable" href="fx5u-sample.html#St5_0" data-path="#St5_0"><div class="tree-item-inner heading-link" heading-name="St5">St5</div></a><div class="tree-item-children"></div></div></div></div></div></div></div></div></div><script defer="">let rs = document.querySelector("#right-sidebar"); rs.classList.toggle("is-collapsed", window.innerWidth < 768); rs.style.setProperty("--sidebar-width", localStorage.getItem("sidebar-right-width"));</script></div></div></div></div></body></html>
