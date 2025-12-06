@@ -3,160 +3,12 @@ import CodeEditor from '@/components/CodeEditor';
 import MachineVisualization from '@/components/MachineVisualization';
 import VariableMonitor from '@/components/VariableMonitor';
 import SimulatorControls from '@/components/SimulatorControls';
+import ProgramBlockTree from '@/components/ProgramBlockTree';
 import { useSimulator } from '@/hooks/useSimulator';
-import { Cpu, Code2, Activity, Eye } from 'lucide-react';
+import { useProgramBlocks } from '@/hooks/useProgramBlocks';
+import { Cpu, Code2, Activity, Eye, PanelLeftClose, PanelLeft } from 'lucide-react';
 import { cn } from '@/lib/utils';
-
-// Sample ST code for rotary indexing machine
-const SAMPLE_CODE = `PROGRAM RotaryMachine
-(* 圓盤分度機 - Rotary Indexing Machine *)
-(* 6站點: 進料, 組裝1, 組裝2, 檢測, OK出料, NG出料 *)
-
-VAR
-    (* 輸入 *)
-    StartButton : BOOL := FALSE;
-    StopButton : BOOL := FALSE;
-    FeederSensor : BOOL := FALSE;
-    Station1Sensor : BOOL := FALSE;
-    Station2Sensor : BOOL := FALSE;
-    Station3Sensor : BOOL := FALSE;
-    Station4Sensor : BOOL := FALSE;
-    InspectionResult : BOOL := TRUE;
-    
-    (* 輸出 *)
-    FeederOn : BOOL := FALSE;
-    Indexing : BOOL := FALSE;
-    Station1Active : BOOL := FALSE;
-    Station2Active : BOOL := FALSE;
-    Station3Active : BOOL := FALSE;
-    Station4Active : BOOL := FALSE;
-    OKOutput : BOOL := FALSE;
-    NGOutput : BOOL := FALSE;
-    
-    (* 內部變數 *)
-    MachineRunning : BOOL := FALSE;
-    CurrentStation : INT := 1;
-    CycleComplete : BOOL := FALSE;
-    PartCount : INT := 0;
-    OKCount : INT := 0;
-    NGCount : INT := 0;
-    
-    (* 計時器 *)
-    IndexTimer : TON;
-    StationTimer : TON;
-    FeederTimer : TON;
-END_VAR
-
-(* 主程序 *)
-
-(* 啟動/停止控制 *)
-IF StartButton AND NOT StopButton THEN
-    MachineRunning := TRUE;
-END_IF;
-
-IF StopButton THEN
-    MachineRunning := FALSE;
-END_IF;
-
-(* 機器運行邏輯 *)
-IF MachineRunning THEN
-    (* 震動送料機控制 *)
-    FeederOn := TRUE;
-    
-    (* 站點序列控制 *)
-    CASE CurrentStation OF
-        1: (* 進料站 *)
-            Station1Active := TRUE;
-            Station2Active := FALSE;
-            Station3Active := FALSE;
-            Station4Active := FALSE;
-            
-            IF FeederSensor THEN
-                PartCount := PartCount + 1;
-                CurrentStation := 2;
-            END_IF;
-            
-        2: (* 組裝站1 *)
-            Station1Active := FALSE;
-            Station2Active := TRUE;
-            
-            (* 模擬組裝動作 *)
-            StationTimer(IN := TRUE, PT := T#500ms);
-            IF StationTimer.Q THEN
-                StationTimer(IN := FALSE, PT := T#500ms);
-                CurrentStation := 3;
-            END_IF;
-            
-        3: (* 組裝站2 *)
-            Station2Active := FALSE;
-            Station3Active := TRUE;
-            
-            StationTimer(IN := TRUE, PT := T#500ms);
-            IF StationTimer.Q THEN
-                StationTimer(IN := FALSE, PT := T#500ms);
-                CurrentStation := 4;
-            END_IF;
-            
-        4: (* 檢測站 *)
-            Station3Active := FALSE;
-            Station4Active := TRUE;
-            
-            StationTimer(IN := TRUE, PT := T#300ms);
-            IF StationTimer.Q THEN
-                StationTimer(IN := FALSE, PT := T#300ms);
-                
-                IF InspectionResult THEN
-                    CurrentStation := 5;
-                    OKCount := OKCount + 1;
-                ELSE
-                    CurrentStation := 6;
-                    NGCount := NGCount + 1;
-                END_IF;
-            END_IF;
-            
-        5: (* OK出料 *)
-            Station4Active := FALSE;
-            OKOutput := TRUE;
-            NGOutput := FALSE;
-            
-            IndexTimer(IN := TRUE, PT := T#200ms);
-            IF IndexTimer.Q THEN
-                IndexTimer(IN := FALSE, PT := T#200ms);
-                OKOutput := FALSE;
-                CurrentStation := 1;
-                CycleComplete := TRUE;
-            END_IF;
-            
-        6: (* NG出料 *)
-            Station4Active := FALSE;
-            OKOutput := FALSE;
-            NGOutput := TRUE;
-            
-            IndexTimer(IN := TRUE, PT := T#200ms);
-            IF IndexTimer.Q THEN
-                IndexTimer(IN := FALSE, PT := T#200ms);
-                NGOutput := FALSE;
-                CurrentStation := 1;
-                CycleComplete := TRUE;
-            END_IF;
-    END_CASE;
-    
-    (* 分度動作 *)
-    Indexing := CurrentStation > 1 AND CurrentStation < 5;
-    
-ELSE
-    (* 停止時重置輸出 *)
-    FeederOn := FALSE;
-    Indexing := FALSE;
-    Station1Active := FALSE;
-    Station2Active := FALSE;
-    Station3Active := FALSE;
-    Station4Active := FALSE;
-    OKOutput := FALSE;
-    NGOutput := FALSE;
-END_IF;
-
-END_PROGRAM`;
+import { Button } from '@/components/ui/button';
 
 const Index: React.FC = () => {
   const {
@@ -178,30 +30,66 @@ const Index: React.FC = () => {
     setVariable,
   } = useSimulator();
 
-  const [code, setCode] = useState(SAMPLE_CODE);
-  const [activeTab, setActiveTab] = useState<'code' | 'visualization'>('code');
+  const {
+    project,
+    getActiveBlock,
+    selectBlock,
+    addBlock,
+    deleteBlock,
+    toggleBlock,
+    renameBlock,
+    updateBlockCode,
+    getCombinedCode,
+  } = useProgramBlocks();
 
-  // Load code into interpreter when it changes
+  const [activeTab, setActiveTab] = useState<'visualization' | 'variables'>('visualization');
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+
+  const activeBlock = getActiveBlock();
+
+  // 當切換區塊或程式碼變更時，更新解譯器
   useEffect(() => {
-    loadCode(code);
-  }, [code, loadCode]);
+    const combinedCode = getCombinedCode();
+    loadCode(combinedCode);
+  }, [project.blocks, getCombinedCode, loadCode]);
+
+  // 處理程式碼變更
+  const handleCodeChange = (newCode: string) => {
+    if (activeBlock) {
+      updateBlockCode(activeBlock.id, newCode);
+    }
+  };
 
   return (
     <div className="h-screen flex flex-col bg-background text-foreground overflow-hidden">
       {/* Header */}
-      <header className="flex items-center justify-between px-6 py-3 bg-card border-b border-border">
+      <header className="flex items-center justify-between px-4 py-2 bg-card border-b border-border">
         <div className="flex items-center gap-3">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setSidebarOpen(!sidebarOpen)}
+            className="h-8 w-8"
+          >
+            {sidebarOpen ? (
+              <PanelLeftClose className="w-4 h-4" />
+            ) : (
+              <PanelLeft className="w-4 h-4" />
+            )}
+          </Button>
           <div className="p-2 bg-primary/10 rounded-lg">
-            <Cpu className="w-6 h-6 text-primary" />
+            <Cpu className="w-5 h-5 text-primary" />
           </div>
           <div>
-            <h1 className="text-lg font-semibold">ST 模擬器</h1>
-            <p className="text-xs text-muted-foreground">IEC 61131-3 結構化文本模擬</p>
+            <h1 className="text-base font-semibold">ST 模擬器</h1>
+            <p className="text-xs text-muted-foreground">IEC 61131-3 結構化文本</p>
           </div>
         </div>
         
-        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-          <span>圓盤分度機模擬</span>
+        <div className="flex items-center gap-4 text-sm text-muted-foreground">
+          <span className="hidden md:inline">週期: {cycleCount}</span>
+          <span>|</span>
+          <span>{project.name}</span>
         </div>
       </header>
 
@@ -226,25 +114,65 @@ const Index: React.FC = () => {
 
       {/* Main Content */}
       <div className="flex-1 flex overflow-hidden">
-        {/* Left Panel - Code Editor */}
-        <div className="w-1/2 flex flex-col border-r border-border">
-          <div className="panel-header">
+        {/* Left Sidebar - Program Block Tree */}
+        <div 
+          className={cn(
+            "border-r border-border transition-all duration-300 overflow-hidden",
+            sidebarOpen ? "w-64" : "w-0"
+          )}
+        >
+          {sidebarOpen && (
+            <ProgramBlockTree
+              project={project}
+              onBlockSelect={selectBlock}
+              onBlockAdd={addBlock}
+              onBlockDelete={deleteBlock}
+              onBlockToggle={toggleBlock}
+              onBlockRename={renameBlock}
+              isRunning={isRunning}
+            />
+          )}
+        </div>
+
+        {/* Center Panel - Code Editor */}
+        <div className="flex-1 flex flex-col border-r border-border min-w-0">
+          <div className="panel-header flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Code2 className="w-4 h-4 text-primary" />
-              <span className="panel-title">ST 程式碼編輯器</span>
+              <span className="panel-title">
+                {activeBlock ? activeBlock.name : '請選擇區塊'}
+              </span>
+              {activeBlock?.type === 'scan' && activeBlock.scanInterval && (
+                <span className="text-xs px-2 py-0.5 rounded bg-primary/10 text-primary">
+                  {activeBlock.scanInterval}ms
+                </span>
+              )}
             </div>
+            {activeBlock && (
+              <span className="text-xs text-muted-foreground">
+                {activeBlock.type === 'init' ? '初始化區塊' : 
+                 activeBlock.type === 'scan' ? '掃描區塊' : 
+                 activeBlock.type === 'subroutine' ? '子程式' : '功能塊'}
+              </span>
+            )}
           </div>
           <div className="flex-1 overflow-hidden p-2">
-            <CodeEditor
-              value={code}
-              onChange={setCode}
-              readOnly={isRunning}
-            />
+            {activeBlock ? (
+              <CodeEditor
+                value={activeBlock.code}
+                onChange={handleCodeChange}
+                readOnly={isRunning}
+              />
+            ) : (
+              <div className="h-full flex items-center justify-center text-muted-foreground">
+                <p>請從左側選擇一個程式區塊</p>
+              </div>
+            )}
           </div>
         </div>
 
-        {/* Right Panel - Split View */}
-        <div className="w-1/2 flex flex-col">
+        {/* Right Panel - Visualization / Variables */}
+        <div className="w-[400px] flex flex-col min-w-0">
           {/* Tabs */}
           <div className="flex border-b border-border">
             <button
@@ -257,19 +185,19 @@ const Index: React.FC = () => {
               )}
             >
               <Eye className="w-4 h-4" />
-              機台視覺化
+              機台
             </button>
             <button
-              onClick={() => setActiveTab('code')}
+              onClick={() => setActiveTab('variables')}
               className={cn(
                 "flex items-center gap-2 px-4 py-2 text-sm font-medium transition-colors",
-                activeTab === 'code'
+                activeTab === 'variables'
                   ? "text-primary border-b-2 border-primary bg-primary/5"
                   : "text-muted-foreground hover:text-foreground"
               )}
             >
               <Activity className="w-4 h-4" />
-              變數監控
+              變數
             </button>
           </div>
 
@@ -298,7 +226,7 @@ const Index: React.FC = () => {
       </div>
 
       {/* Footer */}
-      <footer className="px-4 py-2 bg-card border-t border-border flex items-center justify-between text-xs text-muted-foreground">
+      <footer className="px-4 py-1.5 bg-card border-t border-border flex items-center justify-between text-xs text-muted-foreground">
         <div className="flex items-center gap-4">
           <span>掃描週期: {scanTime}ms</span>
           <span>|</span>
