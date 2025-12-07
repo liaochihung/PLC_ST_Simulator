@@ -11,7 +11,7 @@ interface MachineEditorProps {
   feederActive?: boolean;
   isRunning?: boolean;
   products?: { stationId: number; status: 'pending' | 'ok' | 'ng' }[];
-  stationStates?: Map<string, boolean>;
+  stationStates?: Map<string, Record<string, any>>; // Updated to match BindingResult
 }
 
 const MachineEditor: React.FC<MachineEditorProps> = ({
@@ -88,7 +88,7 @@ const MachineEditor: React.FC<MachineEditorProps> = ({
 
   const handlePropertyUpdate = (updates: Record<string, unknown>) => {
     if (!selectedElement) return;
-    
+
     switch (selectedElement.type) {
       case 'station':
         updateStation(selectedElement.data.id, updates as Partial<MachineStation>);
@@ -120,7 +120,7 @@ const MachineEditor: React.FC<MachineEditorProps> = ({
         onAddFeeder={handleAddFeeder}
         isRunning={isRunning}
       />
-      
+
       <div className="flex-1 relative overflow-hidden p-2">
         <div className="w-full h-full flex items-center justify-center">
           <MachineCanvas
@@ -138,7 +138,7 @@ const MachineEditor: React.FC<MachineEditorProps> = ({
             stationStates={stationStates}
           />
         </div>
-        
+
         {/* Property Panel */}
         {selectedElement && mode === 'edit' && (
           <MachinePropertyPanel

@@ -5,6 +5,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import type { MachineElement, MachineStation, MachineDisc, MachineFeeder, MachineConveyor } from '@/types/machine-editor';
 import { X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import IOBindingEditor from '@/components/IOBindingEditor';
+import { Separator } from '@/components/ui/separator';
 
 interface MachinePropertyPanelProps {
   element: MachineElement;
@@ -92,6 +94,33 @@ const MachinePropertyPanel: React.FC<MachinePropertyPanelProps> = ({
           value={station.angle}
           onChange={(e) => onUpdate({ angle: Number(e.target.value) })}
           className="h-8 text-xs"
+        />
+      </div>
+
+      <Separator className="my-3" />
+      <div className="space-y-3">
+        <h4 className="text-xs font-semibold">I/O 變數綁定</h4>
+        <IOBindingEditor
+          label="輸入變數 (Inputs)"
+          bindings={station.ioMapping?.inputs || []}
+          onChange={(inputs) => onUpdate({
+            ioMapping: {
+              inputs,
+              outputs: station.ioMapping?.outputs || []
+            }
+          })}
+          placeholder="例: X0, M10"
+        />
+        <IOBindingEditor
+          label="輸出變數 (Outputs)"
+          bindings={station.ioMapping?.outputs || []}
+          onChange={(outputs) => onUpdate({
+            ioMapping: {
+              inputs: station.ioMapping?.inputs || [],
+              outputs
+            }
+          })}
+          placeholder="例: Y0, M20"
         />
       </div>
     </>

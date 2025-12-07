@@ -6,6 +6,8 @@ import SimulatorControls from '@/components/SimulatorControls';
 import ProgramBlockTree from '@/components/ProgramBlockTree';
 import { useSimulator } from '@/hooks/useSimulator';
 import { useProgramBlocks } from '@/hooks/useProgramBlocks';
+import { useMachineEditor } from '@/hooks/useMachineEditor';
+import { useIOBinding } from '@/hooks/useIOBinding';
 import { Cpu, Code2, Activity, Eye, PanelLeftClose, PanelLeft, BookOpen, Save, Loader2, FolderOpen } from 'lucide-react';
 import { LibraryBrowser } from '@/components/LibraryBrowser';
 import { ProjectListDialog } from '@/components/ProjectListDialog';
@@ -54,6 +56,12 @@ const Index: React.FC = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [codeEditorVisible, setCodeEditorVisible] = useState(true);
   const [loadDialogOpen, setLoadDialogOpen] = useState(false);
+
+  // Machine Editor for layout management
+  const { layout } = useMachineEditor();
+
+  // I/O Binding - automatically bind PLC variables to machine visualization
+  const bindingResult = useIOBinding(interpreter, layout);
 
   const activeBlock = getActiveBlock();
 
@@ -260,10 +268,11 @@ const Index: React.FC = () => {
           <div className="flex-1 overflow-hidden">
             {activeTab === 'visualization' && (
               <MachineEditor
-                discAngle={discAngle}
-                feederActive={feederActive}
+                discAngle={bindingResult.discAngles.get('d1') ?? discAngle}
+                feederActive={bindingResult.feederStates.get('f1') ?? feederActive}
                 isRunning={isRunning}
                 products={products}
+                stationStates={bindingResult.stationStates}
               />
             )}
             {activeTab === 'variables' && (
@@ -283,11 +292,15 @@ const Index: React.FC = () => {
                   return;
                 }
 
-                addBlock({
-                  name: fb.name,
-                  type: 'function-block',
-                  code: fb.sourceCode
-                });
+                // Add the function block
+                addBlock('function-block');
+
+                // Find the newly added block (last one) and update its code
+                const newBlockId = `block_${Date.now()}`;
+                setTimeout(() => {
+                  renameBlock(newBlockId, fb.name);
+                  updateBlockCode(newBlockId, fb.sourceCode);
+                }, 0);
 
                 // Optional: Switch to the new block or notify
                 console.log(`Imported ${fb.name}`);
