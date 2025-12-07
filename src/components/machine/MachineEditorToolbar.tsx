@@ -47,6 +47,8 @@ interface MachineEditorToolbarProps {
   onToggleGrid: () => void;
   snapToGrid: boolean;
   onToggleSnap: () => void;
+  gridSize: number;
+  onGridSizeChange: (size: number) => void;
   // Clipboard
   hasClipboard: boolean;
   onCopy: () => void;
@@ -76,6 +78,8 @@ const MachineEditorToolbar: React.FC<MachineEditorToolbarProps> = ({
   onToggleGrid,
   snapToGrid,
   onToggleSnap,
+  gridSize,
+  onGridSizeChange,
   hasClipboard,
   onCopy,
   onCut,
@@ -185,24 +189,43 @@ const MachineEditorToolbar: React.FC<MachineEditorToolbarProps> = ({
       {/* Grid Controls (Edit mode only) */}
       {mode === 'edit' && (
         <>
-          <Button
-            variant={gridVisible ? "default" : "outline"}
-            size="sm"
-            onClick={onToggleGrid}
-            className="h-7 px-2 text-xs"
-            title="顯示/隱藏網格"
-          >
-            <Grid3x3 className="w-3 h-3" />
-          </Button>
-          <Button
-            variant={snapToGrid ? "default" : "outline"}
-            size="sm"
-            onClick={onToggleSnap}
-            className="h-7 px-2 text-xs"
-            title="吸附到網格"
-          >
-            <Magnet className="w-3 h-3" />
-          </Button>
+          <div className="flex bg-muted rounded-md p-0.5">
+            <Button
+              variant={gridVisible ? "default" : "outline"}
+              size="sm"
+              onClick={onToggleGrid}
+              className="h-7 px-2 text-xs"
+              title="顯示/隱藏網格"
+            >
+              <Grid3x3 className="w-3 h-3" />
+            </Button>
+            <Button
+              variant={snapToGrid ? "default" : "outline"}
+              size="sm"
+              onClick={onToggleSnap}
+              className="h-7 px-2 text-xs"
+              title="吸附到網格"
+            >
+              <Magnet className="w-3 h-3" />
+            </Button>
+          </div>
+
+          {/* Grid Size Selector */}
+          {gridVisible && (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="sm" className="h-7 px-2 text-xs w-[4.5rem] font-mono justify-between">
+                  {gridSize}px
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuItem onClick={() => onGridSizeChange(10)}>10px</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => onGridSizeChange(20)}>20px</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => onGridSizeChange(50)}>50px</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => onGridSizeChange(100)}>100px</DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )}
 
           <div className="w-px h-6 bg-border" />
         </>
@@ -256,7 +279,7 @@ const MachineEditorToolbar: React.FC<MachineEditorToolbarProps> = ({
         </>
       )}
 
-      {/* History Controls (Always visible) */}
+      {/* History Controls */}
       <Button
         variant="outline"
         size="sm"

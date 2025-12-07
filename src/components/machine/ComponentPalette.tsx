@@ -137,6 +137,11 @@ const ComponentPalette: React.FC<ComponentPaletteProps> = ({
     const shapeComponents = components.filter(c => c.category === 'shapes');
     const machineComponents = components.filter(c => c.category === 'machine');
 
+    const handleDragStart = (e: React.DragEvent, type: string, extraData?: any) => {
+        e.dataTransfer.setData('application/json', JSON.stringify({ type, ...extraData }));
+        e.dataTransfer.effectAllowed = 'copy';
+    };
+
     return (
         <div className="w-56 bg-card border-r border-border flex flex-col h-full">
             <div className="p-3 border-b border-border">
@@ -150,16 +155,22 @@ const ComponentPalette: React.FC<ComponentPaletteProps> = ({
                         <h4 className="text-xs font-medium text-muted-foreground mb-2 px-2">基本形狀</h4>
                         <div className="space-y-1">
                             {shapeComponents.map(component => (
-                                <Button
+                                <div
                                     key={component.id}
-                                    variant="ghost"
-                                    size="sm"
-                                    onClick={component.onAdd}
-                                    className="w-full justify-start h-8 px-2 text-xs"
+                                    draggable
+                                    onDragStart={(e) => handleDragStart(e, component.id)}
+                                    className="cursor-move"
                                 >
-                                    {component.icon}
-                                    <span className="ml-2">{component.name}</span>
-                                </Button>
+                                    <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        onClick={component.onAdd}
+                                        className="w-full justify-start h-8 px-2 text-xs pointer-events-none"
+                                    >
+                                        {component.icon}
+                                        <span className="ml-2">{component.name}</span>
+                                    </Button>
+                                </div>
                             ))}
                         </div>
                     </div>
@@ -171,16 +182,22 @@ const ComponentPalette: React.FC<ComponentPaletteProps> = ({
                         <h4 className="text-xs font-medium text-muted-foreground mb-2 px-2">機器元件</h4>
                         <div className="space-y-1">
                             {machineComponents.map(component => (
-                                <Button
+                                <div
                                     key={component.id}
-                                    variant="ghost"
-                                    size="sm"
-                                    onClick={component.onAdd}
-                                    className="w-full justify-start h-8 px-2 text-xs"
+                                    draggable
+                                    onDragStart={(e) => handleDragStart(e, component.id)}
+                                    className="cursor-move"
                                 >
-                                    {component.icon}
-                                    <span className="ml-2">{component.name}</span>
-                                </Button>
+                                    <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        onClick={component.onAdd}
+                                        className="w-full justify-start h-8 px-2 text-xs pointer-events-none"
+                                    >
+                                        {component.icon}
+                                        <span className="ml-2">{component.name}</span>
+                                    </Button>
+                                </div>
                             ))}
                         </div>
                     </div>
@@ -189,7 +206,7 @@ const ComponentPalette: React.FC<ComponentPaletteProps> = ({
 
             <div className="p-2 border-t border-border">
                 <p className="text-xs text-muted-foreground">
-                    點擊元件以新增到畫布
+                    點擊或拖曳元件到畫布
                 </p>
             </div>
         </div>

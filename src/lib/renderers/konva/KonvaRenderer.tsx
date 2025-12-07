@@ -1,5 +1,6 @@
-import React, { useState, useCallback, useEffect } from 'react';
-import { Stage, Layer, Rect, Circle, Text } from 'react-konva';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
+import { Stage, Layer, Rect, Circle, Text, Transformer } from 'react-konva';
+import Konva from 'konva';
 import KonvaStation from './KonvaStation';
 import KonvaDisc from './KonvaDisc';
 import KonvaFeeder from './KonvaFeeder';
@@ -17,8 +18,11 @@ interface KonvaRendererProps {
     selectedElement: MachineElement | null;
     onSelectElement: (element: MachineElement | null) => void;
     onMoveElement: (element: MachineElement, deltaX: number, deltaY: number) => void;
+    onUpdateElement?: (id: string, type: string, updates: any) => void;
+    onDrop?: (type: string, x: number, y: number, data?: any) => void;
     gridVisible: boolean;
     gridSize: number;
+    snapToGrid: boolean; // Add this prop
 }
 
 const KonvaRenderer: React.FC<KonvaRendererProps> = ({
@@ -30,41 +34,32 @@ const KonvaRenderer: React.FC<KonvaRendererProps> = ({
     selectedElement,
     onSelectElement,
     onMoveElement,
+    onUpdateElement,
+    onDrop,
     gridVisible,
     gridSize,
+    snapToGrid,
 }) => {
     const [stageSize, setStageSize] = useState({ width: 500, height: 500 });
+    const stageRef = useRef<Konva.Stage>(null);
+    const trRef = useRef<Konva.Transformer>(null);
 
-    // Update stage size on mount and resize
     // Update stage size on mount and resize
     useEffect(() => {
         const updateSize = () => {
             const container = document.getElementById('konva-container');
             if (container) {
-                // Use a larger max size or remove the limit if appropriate
-                // For now, increasing to a reasonable large value to support full screen
                 const width = container.clientWidth;
                 const height = container.clientHeight;
                 setStageSize({ width, height });
             }
         };
 
-        // Initial size
         updateSize();
-
-        // Use ResizeObserver to detect container size changes
-        const resizeObserver = new ResizeObserver(() => {
-            updateSize();
-        });
-
+        const resizeObserver = new ResizeObserver(() => updateSize());
         const container = document.getElementById('konva-container');
-        if (container) {
-            resizeObserver.observe(container);
-        }
-
-        return () => {
-            resizeObserver.disconnect();
-        };
+        if (container) resizeObserver.observe(container);
+        return () => resizeObserver.disconnect();
     }, []);
 
     const isSelected = useCallback((type: string, id: string) => {
@@ -72,25 +67,75 @@ const KonvaRenderer: React.FC<KonvaRendererProps> = ({
     }, [selectedElement]);
 
     const handleStageClick = useCallback((e: any) => {
-        // Deselect if clicking on stage background
         if (e.target === e.target.getStage() || e.target.attrs.id === 'background') {
             onSelectElement(null);
         }
     }, [onSelectElement]);
 
     // Calculate offset to center the layout
-    const centerX = (stageSize.width - layout.width * zoom) / 2;
-    const centerY = (stageSize.height - layout.height * zoom) / 2;
-
-    // Combined offset (centering + panning)
-    // Note: We apply zoom to layout dimensions for centering, but Konva Scale applies to the whole layer.
-    // Simpler approach: Center the unscaled layout, then let Scale handle zoom.
     const offsetX = Math.max(0, (stageSize.width / zoom - layout.width) / 2);
     const offsetY = Math.max(0, (stageSize.height / zoom - layout.height) / 2);
 
+    // Transformer logic
+    useEffect(() => {
+        if (trRef.current && stageRef.current && selectedElement && mode === 'edit') {
+            // Find the selected node
+            const selectedNode = stageRef.current.findOne('#' + selectedElement.data.id);
+            if (selectedNode) {
+                trRef.current.nodes([selectedNode]);
+                trRef.current.getLayer()?.batchDraw();
+            } else {
+                trRef.current.nodes([]);
+            }
+        } else if (trRef.current) {
+            trRef.current.nodes([]);
+            trRef.current.getLayer()?.batchDraw();
+        }
+    }, [selectedElement, mode, layout]); // Add layout to dep to refind node if re-rendered
+
+    // Drop handler
+    const handleDragOver = (e: React.DragEvent) => {
+        e.preventDefault();
+    };
+
+    const handleDrop = (e: React.DragEvent) => {
+        e.preventDefault();
+        if (!onDrop) return;
+
+        try {
+            const json = e.dataTransfer.getData('application/json');
+            if (!json) return;
+            const { type, ...extraData } = JSON.parse(json);
+
+            // Get pointer position relative to container
+            // e.nativeEvent.offsetX does not work reliably with React synthetic events sometimes on drops?
+            // Use getBoundingClientRect
+            const rect = e.currentTarget.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            // Convert to model coordinates
+            // ScreenX -> StageX -> ModelX
+            // StageX = ScreenX / Zoom
+            // ModelX = StageX - OffsetX
+            const modelX = (x / zoom) - offsetX;
+            const modelY = (y / zoom) - offsetY;
+
+            onDrop(type, modelX, modelY, extraData);
+        } catch (err) {
+            console.error('Drop error:', err);
+        }
+    };
+
     return (
-        <div id="konva-container" className="w-full h-full flex items-center justify-center bg-zinc-950">
+        <div
+            id="konva-container"
+            className="w-full h-full flex items-center justify-center bg-zinc-950"
+            onDragOver={handleDragOver}
+            onDrop={handleDrop}
+        >
             <Stage
+                ref={stageRef}
                 width={stageSize.width}
                 height={stageSize.height}
                 scaleX={zoom}
@@ -173,6 +218,7 @@ const KonvaRenderer: React.FC<KonvaRendererProps> = ({
                                 const deltaY = y - feeder.y;
                                 onMoveElement({ type: 'feeder', data: feeder }, deltaX, deltaY);
                             }}
+                            onUpdateElement={(updates) => onUpdateElement?.(feeder.id, 'feeder', updates)}
                         />
                     ))}
 
@@ -190,6 +236,7 @@ const KonvaRenderer: React.FC<KonvaRendererProps> = ({
                                 const deltaY = y - disc.y;
                                 onMoveElement({ type: 'disc', data: disc }, deltaX, deltaY);
                             }}
+                            onUpdateElement={(updates) => onUpdateElement?.(disc.id, 'disc', updates)}
                         />
                     ))}
 
@@ -207,6 +254,7 @@ const KonvaRenderer: React.FC<KonvaRendererProps> = ({
                                 const deltaY = startY - conveyor.startY;
                                 onMoveElement({ type: 'conveyor', data: conveyor }, deltaX, deltaY);
                             }}
+                            onUpdateElement={(updates) => onUpdateElement?.(conveyor.id, 'conveyor', updates)}
                         />
                     ))}
 
@@ -229,6 +277,7 @@ const KonvaRenderer: React.FC<KonvaRendererProps> = ({
                                     const deltaY = y - station.y;
                                     onMoveElement({ type: 'station', data: station }, deltaX, deltaY);
                                 }}
+                                onUpdateElement={(updates) => onUpdateElement?.(station.id, 'station', updates)}
                             />
                         );
                     })}
@@ -246,8 +295,28 @@ const KonvaRenderer: React.FC<KonvaRendererProps> = ({
                                 const deltaY = y - shape.y;
                                 onMoveElement({ type: 'shape', data: shape }, deltaX, deltaY);
                             }}
+                            onUpdateElement={(updates) => onUpdateElement?.(shape.id, 'shape', updates)}
                         />
                     ))}
+
+                    {/* Transformer */}
+                    <Transformer
+                        ref={trRef}
+                        boundBoxFunc={(oldBox, newBox) => {
+                            // Limit minimum size
+                            if (newBox.width < 5 || newBox.height < 5) {
+                                return oldBox;
+                            }
+                            return newBox;
+                        }}
+                        anchorDragBoundFunc={(oldPos, newPos, event) => {
+                            if (!snapToGrid) return newPos;
+                            return {
+                                x: Math.round(newPos.x / gridSize) * gridSize,
+                                y: Math.round(newPos.y / gridSize) * gridSize,
+                            };
+                        }}
+                    />
                 </Layer>
 
                 {/* UI Layer - Static overlays */}

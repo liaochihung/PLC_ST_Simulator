@@ -10,6 +10,7 @@ interface KonvaStationProps {
     mode: 'edit' | 'runtime';
     onSelect: () => void;
     onDragEnd: (x: number, y: number) => void;
+    onUpdateElement?: (updates: Partial<MachineStation>) => void;
 }
 
 const KonvaStation: React.FC<KonvaStationProps> = ({
@@ -20,6 +21,7 @@ const KonvaStation: React.FC<KonvaStationProps> = ({
     mode,
     onSelect,
     onDragEnd,
+    onUpdateElement,
 }) => {
     const getStationColor = (type: MachineStation['type']) => {
         switch (type) {
@@ -39,8 +41,10 @@ const KonvaStation: React.FC<KonvaStationProps> = ({
 
     return (
         <Group
+            id={station.id}
             x={station.x}
             y={station.y}
+            rotation={station.angle}
             draggable={mode === 'edit'}
             onClick={onSelect}
             onTap={onSelect}
@@ -48,13 +52,32 @@ const KonvaStation: React.FC<KonvaStationProps> = ({
                 const node = e.target;
                 onDragEnd(node.x(), node.y());
             }}
+            onTransformEnd={(e) => {
+                const node = e.target;
+                const scaleX = node.scaleX();
+                const scaleY = node.scaleY();
+
+                // Reset scale
+                node.scaleX(1);
+                node.scaleY(1);
+
+                if (onUpdateElement) {
+                    onUpdateElement({
+                        x: node.x(),
+                        y: node.y(),
+                        angle: node.rotation(),
+                        width: Math.max(5, station.width * scaleX),
+                        height: Math.max(5, station.height * scaleY),
+                    });
+                }
+            }}
         >
             {/* Main rect */}
             <Rect
-                x={-station.width / 2}
-                y={-station.height / 2}
                 width={station.width}
                 height={station.height}
+                offsetX={station.width / 2}
+                offsetY={station.height / 2}
                 cornerRadius={4}
                 fill={fillColor}
                 stroke={strokeColor}

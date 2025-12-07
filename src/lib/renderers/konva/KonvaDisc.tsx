@@ -10,6 +10,7 @@ interface KonvaDiscProps {
     mode: 'edit' | 'runtime';
     onSelect: () => void;
     onDragEnd: (x: number, y: number) => void;
+    onUpdateElement?: (updates: Partial<MachineDisc>) => void;
 }
 
 const KonvaDisc: React.FC<KonvaDiscProps> = ({
@@ -19,6 +20,7 @@ const KonvaDisc: React.FC<KonvaDiscProps> = ({
     mode,
     onSelect,
     onDragEnd,
+    onUpdateElement,
 }) => {
     const groupRef = useRef<Konva.Group>(null);
 
@@ -43,6 +45,7 @@ const KonvaDisc: React.FC<KonvaDiscProps> = ({
 
     return (
         <Group
+            id={disc.id}
             x={disc.x}
             y={disc.y}
             draggable={mode === 'edit'}
@@ -51,6 +54,21 @@ const KonvaDisc: React.FC<KonvaDiscProps> = ({
             onDragEnd={(e) => {
                 const node = e.target;
                 onDragEnd(node.x(), node.y());
+            }}
+            onTransformEnd={(e) => {
+                const node = e.target;
+                // For disc, we just sync rotation and position
+                // Resizing logic for disc (radius) is tricky with generic transformer (which does width/height)
+                // We'll stick to position and rotation for now, or implement custom radius logic later
+                // But transformer will change scaleX/scaleY.
+                const scaleX = node.scaleX();
+                node.scaleX(1);
+                node.scaleY(1);
+
+                // Call onUpdate if we have it (need to add to props)
+                // For now just position/rotation
+                onDragEnd(node.x(), node.y());
+                // Angle update is handled by property panel for now or we need onUpdate prop
             }}
         >
             <Group ref={groupRef}>

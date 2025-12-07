@@ -8,6 +8,7 @@ interface KonvaBasicShapeProps {
     mode: 'edit' | 'runtime';
     onSelect: () => void;
     onDragEnd: (x: number, y: number) => void;
+    onUpdateElement?: (updates: Partial<BasicShape>) => void;
 }
 
 const KonvaBasicShape: React.FC<KonvaBasicShapeProps> = ({
@@ -16,6 +17,7 @@ const KonvaBasicShape: React.FC<KonvaBasicShapeProps> = ({
     mode,
     onSelect,
     onDragEnd,
+    onUpdateElement,
 }) => {
     const commonProps = {
         onClick: onSelect,
@@ -23,6 +25,40 @@ const KonvaBasicShape: React.FC<KonvaBasicShapeProps> = ({
         draggable: mode === 'edit',
         onDragEnd: (e: any) => {
             onDragEnd(e.target.x(), e.target.y());
+        },
+        onTransformEnd: (e: any) => {
+            const node = e.target;
+            const scaleX = node.scaleX();
+            const scaleY = node.scaleY();
+
+            node.scaleX(1);
+            node.scaleY(1);
+
+            if (onUpdateElement) {
+                // Determine updates based on shape type
+                const updates: any = {
+                    x: node.x(),
+                    y: node.y(),
+                    // Basic shapes don't have rotation yet in interface, but Konva has it.
+                    // If we add rotation to BasicShape interface later, we can sync it.
+                };
+
+                if (shape.type === 'circle') {
+                    // Circle radius is scaled
+                    // Use node.width() which is 2*radius for circle in Konva
+                    // effectiveWidth = node.width() * scaleX
+                    // newRadius = effectiveWidth / 2
+                    const newRadius = (node.width() * scaleX) / 2;
+                    updates.radius = newRadius;
+                } else if (shape.type === 'rectangle') {
+                    updates.width = node.width() * scaleX;
+                    updates.height = node.height() * scaleY;
+                } else if (shape.type === 'text') {
+                    updates.fontSize = (node.fontSize() || 16) * scaleY;
+                }
+
+                onUpdateElement(updates);
+            }
         },
     };
 
@@ -38,6 +74,7 @@ const KonvaBasicShape: React.FC<KonvaBasicShapeProps> = ({
         case 'rectangle':
             return (
                 <Rect
+                    id={shape.id}
                     x={shape.x}
                     y={shape.y}
                     width={shape.width || 80}
@@ -53,6 +90,7 @@ const KonvaBasicShape: React.FC<KonvaBasicShapeProps> = ({
         case 'circle':
             return (
                 <Circle
+                    id={shape.id}
                     x={shape.x}
                     y={shape.y}
                     radius={shape.radius || 40}
@@ -67,6 +105,7 @@ const KonvaBasicShape: React.FC<KonvaBasicShapeProps> = ({
         case 'line':
             return (
                 <Line
+                    id={shape.id}
                     points={[
                         shape.x,
                         shape.y,
@@ -83,6 +122,7 @@ const KonvaBasicShape: React.FC<KonvaBasicShapeProps> = ({
         case 'text':
             return (
                 <Text
+                    id={shape.id}
                     x={shape.x}
                     y={shape.y}
                     text={shape.text || '文字'}

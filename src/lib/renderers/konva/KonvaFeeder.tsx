@@ -10,6 +10,7 @@ interface KonvaFeederProps {
     mode: 'edit' | 'runtime';
     onSelect: () => void;
     onDragEnd: (x: number, y: number) => void;
+    onUpdateElement?: (updates: Partial<MachineFeeder>) => void;
 }
 
 const KonvaFeeder: React.FC<KonvaFeederProps> = ({
@@ -20,12 +21,14 @@ const KonvaFeeder: React.FC<KonvaFeederProps> = ({
     mode,
     onSelect,
     onDragEnd,
+    onUpdateElement,
 }) => {
     const strokeColor = selected ? '#6366f1' : (active ? '#10b981' : '#27272a');
     const strokeWidth = selected ? 3 : 2;
 
     return (
         <Group
+            id={feeder.id}
             x={feeder.x}
             y={feeder.y}
             draggable={mode === 'edit'}
@@ -34,6 +37,27 @@ const KonvaFeeder: React.FC<KonvaFeederProps> = ({
             onDragEnd={(e) => {
                 const node = e.target;
                 onDragEnd(node.x(), node.y());
+            }}
+            onTransformEnd={(e) => {
+                const node = e.target;
+                const scaleX = node.scaleX();
+                const scaleY = node.scaleY();
+
+                node.scaleX(1);
+                node.scaleY(1);
+
+                if (onUpdateElement) {
+                    onUpdateElement({
+                        x: node.x(),
+                        y: node.y(),
+                        // Feeder doesn't have rotation in standard type? Check it. 
+                        // If it has angle, add it.
+                        // MachineFeeder has x,y,width,height. No angle in type definition I recall?
+                        // Let's check type if needed. Assuming width/height resize.
+                        width: Math.max(5, feeder.width * scaleX),
+                        height: Math.max(5, feeder.height * scaleY),
+                    });
+                }
             }}
         >
             {/* Main rect */}

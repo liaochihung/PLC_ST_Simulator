@@ -9,6 +9,7 @@ interface KonvaConveyorProps {
     mode: 'edit' | 'runtime';
     onSelect: () => void;
     onDragEnd: (startX: number, startY: number, endX: number, endY: number) => void;
+    onUpdateElement?: (updates: Partial<MachineConveyor>) => void;
 }
 
 const KonvaConveyor: React.FC<KonvaConveyorProps> = ({
@@ -18,6 +19,7 @@ const KonvaConveyor: React.FC<KonvaConveyorProps> = ({
     mode,
     onSelect,
     onDragEnd,
+    onUpdateElement,
 }) => {
     const getConveyorColor = (type: MachineConveyor['type']) => {
         switch (type) {
@@ -36,6 +38,7 @@ const KonvaConveyor: React.FC<KonvaConveyorProps> = ({
 
     return (
         <Group
+            id={conveyor.id}
             draggable={mode === 'edit'}
             onClick={onSelect}
             onTap={onSelect}

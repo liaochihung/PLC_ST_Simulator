@@ -37,8 +37,11 @@ const MachineEditor: React.FC<MachineEditorProps> = ({
     setGridVisible,
     snapToGrid,
     setSnapToGrid,
+    gridSize,
+    setGridSize,
     // CRUD operations
     addStation,
+    snapToGridValue,
     updateStation,
     addDisc,
     updateDisc,
@@ -161,6 +164,127 @@ const MachineEditor: React.FC<MachineEditorProps> = ({
     }
   };
 
+  const handleUpdateElement = (id: string, type: string, updates: any) => {
+    // Apply snapping to numeric properties if snapToGrid is enabled
+    // Note: Use snapToGridValue from hook which respects the snapToGrid state
+    const snappedUpdates: any = { ...updates };
+
+    if (snapToGrid) {
+      ['x', 'y', 'width', 'height', 'radius', 'startX', 'startY', 'endX', 'endY'].forEach(prop => {
+        if (typeof snappedUpdates[prop] === 'number') {
+          snappedUpdates[prop] = snapToGridValue(snappedUpdates[prop]);
+        }
+      });
+    }
+
+    switch (type) {
+      case 'station':
+        updateStation(id, snappedUpdates);
+        break;
+      case 'disc':
+        updateDisc(id, snappedUpdates);
+        break;
+      case 'conveyor':
+        updateConveyor(id, snappedUpdates);
+        break;
+      case 'feeder':
+        updateFeeder(id, snappedUpdates);
+        break;
+      case 'shape':
+        updateShape(id, snappedUpdates);
+        break;
+    }
+  };
+
+  const handleDrop = (type: string, x: number, y: number, data?: any) => {
+    let newId: string | null = null;
+    let newElement: MachineElement | null = null;
+
+    // Basic defaults
+    switch (type) {
+      case 'station': {
+        const station = {
+          name: '新工作站',
+          type: 'custom' as const,
+          x,
+          y,
+          angle: 0,
+          width: 50,
+          height: 40,
+          ...data
+        };
+        newId = addStation(station);
+        if (newId) newElement = { type: 'station', data: { ...station, id: newId } };
+        break;
+      }
+      case 'disc': {
+        const disc = {
+          x,
+          y,
+          radius: 80,
+          slots: 4,
+          ...data
+        };
+        newId = addDisc(disc);
+        if (newId) newElement = { type: 'disc', data: { ...disc, id: newId } };
+        break;
+      }
+      case 'conveyor': {
+        const conveyor = {
+          type: 'custom' as const,
+          startX: x - 50,
+          startY: y,
+          endX: x + 50,
+          endY: y,
+          width: 20,
+          ...data
+        };
+        newId = addConveyor(conveyor);
+        if (newId) newElement = { type: 'conveyor', data: { ...conveyor, id: newId } };
+        break;
+      }
+      case 'feeder': {
+        const feeder = {
+          name: '送料機',
+          x,
+          y,
+          width: 60,
+          height: 80,
+          ...data
+        };
+        newId = addFeeder(feeder);
+        if (newId) newElement = { type: 'feeder', data: { ...feeder, id: newId } };
+        break;
+      }
+      case 'rectangle':
+      case 'circle':
+      case 'line':
+      case 'text': {
+        const shape = {
+          type: type as any,
+          x,
+          y,
+          width: 80,
+          height: 60,
+          fill: '#3b82f6',
+          stroke: '#1e40af',
+          strokeWidth: 2,
+          radius: 40,
+          fontSize: 16,
+          text: 'Text',
+          ...data
+        };
+        newId = addShape(shape);
+        if (newId) newElement = { type: 'shape', data: { ...shape, id: newId } };
+        break;
+      }
+    }
+
+    if (newElement) {
+      selectElement(newElement);
+    }
+  };
+
   // Keyboard shortcuts
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -244,6 +368,8 @@ const MachineEditor: React.FC<MachineEditorProps> = ({
         onToggleGrid={() => setGridVisible(!gridVisible)}
         snapToGrid={snapToGrid}
         onToggleSnap={() => setSnapToGrid(!snapToGrid)}
+        gridSize={gridSize}
+        onGridSizeChange={setGridSize}
         // Clipboard
         hasClipboard={clipboard !== null}
         onCopy={copyElement}
@@ -282,8 +408,11 @@ const MachineEditor: React.FC<MachineEditorProps> = ({
               selectedElement={selectedElement}
               onSelectElement={selectElement}
               onMoveElement={moveElement}
+              onUpdateElement={handleUpdateElement}
+              onDrop={handleDrop}
               gridVisible={gridVisible}
-              gridSize={20}
+              gridSize={gridSize}
+              snapToGrid={snapToGrid}
             />
             {/* SVG fallback (commented out)
             <MachineCanvas

@@ -83,7 +83,7 @@ export function useMachineEditor() {
 
   // Add station
   const addStation = useCallback((station: Omit<MachineStation, 'id'>) => {
-    const id = `s${Date.now()} `;
+    const id = `s${Date.now()}`;
     const newLayout = {
       ...layout,
       stations: [...layout.stations, { ...station, id }]
@@ -116,7 +116,7 @@ export function useMachineEditor() {
 
   // Add disc
   const addDisc = useCallback((disc: Omit<MachineDisc, 'id'>) => {
-    const id = `d${Date.now()} `;
+    const id = `d${Date.now()}`;
     const newLayout = {
       ...layout,
       discs: [...layout.discs, { ...disc, id }]
@@ -149,7 +149,7 @@ export function useMachineEditor() {
 
   // Add conveyor
   const addConveyor = useCallback((conveyor: Omit<MachineConveyor, 'id'>) => {
-    const id = `c${Date.now()} `;
+    const id = `c${Date.now()}`;
     const newLayout = {
       ...layout,
       conveyors: [...layout.conveyors, { ...conveyor, id }]
@@ -182,7 +182,7 @@ export function useMachineEditor() {
 
   // Add feeder
   const addFeeder = useCallback((feeder: Omit<MachineFeeder, 'id'>) => {
-    const id = `f${Date.now()} `;
+    const id = `f${Date.now()}`;
     const newLayout = {
       ...layout,
       feeders: [...layout.feeders, { ...feeder, id }]
@@ -215,7 +215,7 @@ export function useMachineEditor() {
 
   // Add shape
   const addShape = useCallback((shape: Omit<BasicShape, 'id'>) => {
-    const id = `sh${Date.now()} `;
+    const id = `sh${Date.now()}`;
     const newLayout = {
       ...layout,
       shapes: [...layout.shapes, { ...shape, id }]
@@ -286,7 +286,7 @@ export function useMachineEditor() {
         });
         break;
     }
-  }, [updateStation, updateDisc, updateFeeder, updateConveyor, snapToGridValue]);
+  }, [updateStation, updateDisc, updateFeeder, updateConveyor, updateShape, snapToGridValue]);
 
   // Delete selected element
   const deleteSelectedElement = useCallback(() => {
@@ -479,5 +479,7 @@ export function useMachineEditor() {
     canRedo: historyIndex < layoutHistory.length - 1,
     undo,
     redo,
+    // Grid helper
+    snapToGridValue,
   };
 }
