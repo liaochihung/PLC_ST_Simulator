@@ -6,7 +6,7 @@ import * as AST from './AST';
 
 export class ASTBuilder extends AbstractParseTreeVisitor<AST.ASTNode> implements IEC61131Visitor<AST.ASTNode> {
     defaultResult(): AST.ASTNode {
-        return { type: 'Literal', valueType: 'BOOL', value: false }; // Dummy
+        return { type: 'Literal', valueType: 'BOOL', value: false } as AST.Literal;
     }
 
     // --- Program Structure ---
@@ -52,7 +52,7 @@ export class ASTBuilder extends AbstractParseTreeVisitor<AST.ASTNode> implements
 
     visitProgram_declaration(ctx: Parser.Program_declarationContext): AST.Program {
         const name = ctx.ID().text;
-        const body = this.visit(ctx.body()) as { statements: AST.Statement[] };
+        const body = this.visit(ctx.body()) as AST.Block;
         const varDecls: AST.VarDecl[] = [];
 
         // Visit variable declarations
@@ -71,7 +71,7 @@ export class ASTBuilder extends AbstractParseTreeVisitor<AST.ASTNode> implements
 
     visitFunction_block_declaration(ctx: Parser.Function_block_declarationContext): AST.FunctionBlock {
         const name = ctx.ID().text;
-        const body = this.visit(ctx.body()) as { statements: AST.Statement[] };
+        const body = this.visit(ctx.body()) as AST.Block;
         const varDecls: AST.VarDecl[] = [];
 
         for (const varDeclCtx of ctx.var_declarations()) {
@@ -91,7 +91,7 @@ export class ASTBuilder extends AbstractParseTreeVisitor<AST.ASTNode> implements
 
     visitGlobal_var_declarations(ctx: Parser.Global_var_declarationsContext): AST.ASTNode {
         const listCtx = ctx.var_decl_list();
-        const decls = this.visitVar_decl_list(listCtx, 'VAR_GLOBAL');
+        const decls = this.buildVarDeclList(listCtx, 'VAR_GLOBAL');
         // Return a dummy node that carries the list? 
         // Since visit expects a single node, we might need to handle this.
         // But for library_element map, we can hack it.
@@ -114,19 +114,19 @@ export class ASTBuilder extends AbstractParseTreeVisitor<AST.ASTNode> implements
         }
 
         const listCtx = ctx.var_decl_list();
-        return this.visitVar_decl_list(listCtx, type) as unknown as AST.ASTNode;
+        return this.buildVarDeclList(listCtx, type) as unknown as AST.ASTNode;
     }
 
-    // Helper, not standard visit
-    visitVar_decl_list(ctx: Parser.Var_decl_listContext, type: AST.VarDecl['varType']): AST.VarDecl[] {
+    // Helper, not standard visit - renamed to avoid interface conflict
+    private buildVarDeclList(ctx: Parser.Var_decl_listContext, type: AST.VarDecl['varType']): AST.VarDecl[] {
         const decls: AST.VarDecl[] = [];
         for (const declCtx of ctx.var_decl()) {
-            decls.push(...this.visitVar_decl(declCtx, type));
+            decls.push(...this.buildVarDecl(declCtx, type));
         }
         return decls;
     }
 
-    visitVar_decl(ctx: Parser.Var_declContext, type: AST.VarDecl['varType'] = 'VAR'): AST.VarDecl[] {
+    private buildVarDecl(ctx: Parser.Var_declContext, type: AST.VarDecl['varType'] = 'VAR'): AST.VarDecl[] {
         const ids = ctx.identifier_list().ID().map(node => node.text);
         const dataType = ctx.data_type().text;
 
