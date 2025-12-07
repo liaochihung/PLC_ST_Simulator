@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
-import MachineCanvas from './MachineCanvas';
+import React, { useMemo } from 'react';
+// import MachineCanvas from './MachineCanvas';
+import KonvaRenderer from '@/lib/renderers/konva/KonvaRenderer';
 import MachineEditorToolbar from './MachineEditorToolbar';
 import MachinePropertyPanel from './MachinePropertyPanel';
 import { useMachineEditor } from '@/hooks/useMachineEditor';
 import type { MachineStation, MachineElement } from '@/types/machine-editor';
+import type { MachineRuntimeState } from '@/types/renderer';
 
 interface MachineEditorProps {
   // Runtime props from simulator
@@ -40,6 +42,37 @@ const MachineEditor: React.FC<MachineEditorProps> = ({
     moveElement,
     deleteSelectedElement,
   } = useMachineEditor();
+
+  // Prepare runtime state for renderer (for future Konva use)
+  const runtimeState: MachineRuntimeState = useMemo(() => {
+    const discAngles = new Map<string, number>();
+    const feederStates = new Map<string, boolean>();
+    const conveyorStates = new Map<string, boolean>();
+
+    // Map disc angles
+    layout.discs.forEach(disc => {
+      discAngles.set(disc.id, discAngle);
+    });
+
+    // Map feeder states
+    layout.feeders.forEach(feeder => {
+      feederStates.set(feeder.id, feederActive);
+    });
+
+    // Map conveyor states (all inactive for now)
+    layout.conveyors.forEach(conveyor => {
+      conveyorStates.set(conveyor.id, false);
+    });
+
+    return {
+      discAngles,
+      stationStates,
+      feederStates,
+      conveyorStates,
+      products,
+      isRunning,
+    };
+  }, [discAngle, feederActive, isRunning, products, stationStates, layout]);
 
   const handleZoomIn = () => setZoom(prev => Math.min(prev + 0.1, 2));
   const handleZoomOut = () => setZoom(prev => Math.max(prev - 0.1, 0.5));
@@ -123,6 +156,18 @@ const MachineEditor: React.FC<MachineEditorProps> = ({
 
       <div className="flex-1 relative overflow-hidden p-2">
         <div className="w-full h-full flex items-center justify-center">
+          {/* Using Konva renderer */}
+          <KonvaRenderer
+            layout={layout}
+            state={runtimeState}
+            mode={mode}
+            zoom={zoom}
+            panOffset={{ x: 0, y: 0 }}
+            selectedElement={selectedElement}
+            onSelectElement={selectElement}
+            onMoveElement={moveElement}
+          />
+          {/* SVG fallback (commented out)
           <MachineCanvas
             layout={layout}
             mode={mode}
@@ -137,6 +182,7 @@ const MachineEditor: React.FC<MachineEditorProps> = ({
             products={products}
             stationStates={stationStates}
           />
+          */}
         </div>
 
         {/* Property Panel */}
