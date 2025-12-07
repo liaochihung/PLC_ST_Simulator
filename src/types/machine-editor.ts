@@ -45,6 +45,25 @@ export interface MachineFeeder {
   activeVariable?: string;
 }
 
+// Basic shapes for component palette
+export interface BasicShape {
+  id: string;
+  type: 'rectangle' | 'circle' | 'line' | 'text';
+  x: number;
+  y: number;
+  width?: number;
+  height?: number;
+  radius?: number;
+  text?: string;
+  fontSize?: number;
+  fill?: string;
+  stroke?: string;
+  strokeWidth?: number;
+  // For line type
+  endX?: number;
+  endY?: number;
+}
+
 export interface MachineLayout {
   id: string;
   name: string;
@@ -54,13 +73,15 @@ export interface MachineLayout {
   discs: MachineDisc[];
   conveyors: MachineConveyor[];
   feeders: MachineFeeder[];
+  shapes: BasicShape[];
 }
 
-export type MachineElement = 
+export type MachineElement =
   | { type: 'station'; data: MachineStation }
   | { type: 'disc'; data: MachineDisc }
   | { type: 'conveyor'; data: MachineConveyor }
-  | { type: 'feeder'; data: MachineFeeder };
+  | { type: 'feeder'; data: MachineFeeder }
+  | { type: 'shape'; data: BasicShape };
 
 export type EditorMode = 'edit' | 'runtime';
 
@@ -70,4 +91,11 @@ export interface EditorState {
   isDragging: boolean;
   zoom: number;
   panOffset: { x: number; y: number };
+}
+
+// Grid settings
+export interface GridSettings {
+  visible: boolean;
+  snapToGrid: boolean;
+  gridSize: number;
 }

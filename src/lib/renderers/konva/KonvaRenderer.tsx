@@ -4,6 +4,7 @@ import KonvaStation from './KonvaStation';
 import KonvaDisc from './KonvaDisc';
 import KonvaFeeder from './KonvaFeeder';
 import KonvaConveyor from './KonvaConveyor';
+import KonvaBasicShape from './KonvaBasicShape';
 import type { MachineLayout, MachineElement, EditorMode } from '@/types/machine-editor';
 import type { MachineRuntimeState } from '@/types/renderer';
 
@@ -16,6 +17,8 @@ interface KonvaRendererProps {
     selectedElement: MachineElement | null;
     onSelectElement: (element: MachineElement | null) => void;
     onMoveElement: (element: MachineElement, deltaX: number, deltaY: number) => void;
+    gridVisible: boolean;
+    gridSize: number;
 }
 
 const KonvaRenderer: React.FC<KonvaRendererProps> = ({
@@ -27,23 +30,41 @@ const KonvaRenderer: React.FC<KonvaRendererProps> = ({
     selectedElement,
     onSelectElement,
     onMoveElement,
+    gridVisible,
+    gridSize,
 }) => {
     const [stageSize, setStageSize] = useState({ width: 500, height: 500 });
 
+    // Update stage size on mount and resize
     // Update stage size on mount and resize
     useEffect(() => {
         const updateSize = () => {
             const container = document.getElementById('konva-container');
             if (container) {
-                const width = Math.min(container.clientWidth, 500);
-                const height = Math.min(container.clientHeight, 500);
+                // Use a larger max size or remove the limit if appropriate
+                // For now, increasing to a reasonable large value to support full screen
+                const width = container.clientWidth;
+                const height = container.clientHeight;
                 setStageSize({ width, height });
             }
         };
 
+        // Initial size
         updateSize();
-        window.addEventListener('resize', updateSize);
-        return () => window.removeEventListener('resize', updateSize);
+
+        // Use ResizeObserver to detect container size changes
+        const resizeObserver = new ResizeObserver(() => {
+            updateSize();
+        });
+
+        const container = document.getElementById('konva-container');
+        if (container) {
+            resizeObserver.observe(container);
+        }
+
+        return () => {
+            resizeObserver.disconnect();
+        };
     }, []);
 
     const isSelected = useCallback((type: string, id: string) => {
@@ -57,8 +78,18 @@ const KonvaRenderer: React.FC<KonvaRendererProps> = ({
         }
     }, [onSelectElement]);
 
+    // Calculate offset to center the layout
+    const centerX = (stageSize.width - layout.width * zoom) / 2;
+    const centerY = (stageSize.height - layout.height * zoom) / 2;
+
+    // Combined offset (centering + panning)
+    // Note: We apply zoom to layout dimensions for centering, but Konva Scale applies to the whole layer.
+    // Simpler approach: Center the unscaled layout, then let Scale handle zoom.
+    const offsetX = Math.max(0, (stageSize.width / zoom - layout.width) / 2);
+    const offsetY = Math.max(0, (stageSize.height / zoom - layout.height) / 2);
+
     return (
-        <div id="konva-container" className="w-full h-full flex items-center justify-center">
+        <div id="konva-container" className="w-full h-full flex items-center justify-center bg-zinc-950">
             <Stage
                 width={stageSize.width}
                 height={stageSize.height}
@@ -67,46 +98,66 @@ const KonvaRenderer: React.FC<KonvaRendererProps> = ({
                 onClick={handleStageClick}
                 onTap={handleStageClick}
             >
-                {/* Background Layer */}
+                {/* Background Layer (Static relative to view, unaffected by zoom/pan if we want it fixed, but usually we want it to zoom) 
+                    Actually, for an infinite canvas feel, we might want the grid to always fill.
+                    However, `layout` defines the "working area". 
+                    If we want the background to fill the *window*, we should draw a large rect.
+                */}
                 <Layer>
                     <Rect
                         id="background"
-                        x={0}
-                        y={0}
-                        width={layout.width}
-                        height={layout.height}
+                        x={-offsetX * 10} // Extend far beyond
+                        y={-offsetY * 10}
+                        width={stageSize.width / zoom + offsetX * 20} // Make it huge
+                        height={stageSize.height / zoom + offsetY * 20}
                         fill="#09090b"
                     />
 
                     {/* Grid pattern */}
-                    {Array.from({ length: Math.floor(layout.width / 20) }).map((_, i) => (
-                        <React.Fragment key={`v-${i}`}>
-                            <Rect
-                                x={i * 20}
-                                y={0}
-                                width={1}
-                                height={layout.height}
-                                fill="#27272a"
-                                opacity={0.3}
-                            />
-                        </React.Fragment>
-                    ))}
-                    {Array.from({ length: Math.floor(layout.height / 20) }).map((_, i) => (
-                        <React.Fragment key={`h-${i}`}>
-                            <Rect
-                                x={0}
-                                y={i * 20}
-                                width={layout.width}
-                                height={1}
-                                fill="#27272a"
-                                opacity={0.3}
-                            />
-                        </React.Fragment>
-                    ))}
+                    {gridVisible && (
+                        <>
+                            {Array.from({ length: Math.ceil((stageSize.width / zoom) / gridSize) + 20 }).map((_, i) => (
+                                <React.Fragment key={`v-${i}`}>
+                                    <Rect
+                                        x={(i * gridSize) - (offsetX % gridSize)} // Align grid
+                                        y={-offsetY}
+                                        width={1}
+                                        height={stageSize.height / zoom + offsetY * 2}
+                                        fill="#27272a"
+                                        opacity={0.3}
+                                    />
+                                </React.Fragment>
+                            ))}
+                            {Array.from({ length: Math.ceil((stageSize.height / zoom) / gridSize) + 20 }).map((_, i) => (
+                                <React.Fragment key={`h-${i}`}>
+                                    <Rect
+                                        x={-offsetX}
+                                        y={(i * gridSize) - (offsetY % gridSize)}
+                                        width={stageSize.width / zoom + offsetX * 2}
+                                        height={1}
+                                        fill="#27272a"
+                                        opacity={0.3}
+                                    />
+                                </React.Fragment>
+                            ))}
+                        </>
+                    )}
                 </Layer>
 
-                {/* Elements Layer */}
-                <Layer>
+                {/* Elements Layer - Centered */}
+                <Layer x={offsetX} y={offsetY}>
+                    {/* Outline of the defined layout area */}
+                    <Rect
+                        x={0}
+                        y={0}
+                        width={layout.width}
+                        height={layout.height}
+                        stroke="#27272a"
+                        strokeWidth={2}
+                        dash={[5, 5]}
+                        opacity={0.5}
+                    />
+
                     {/* Feeders */}
                     {layout.feeders.map((feeder) => (
                         <KonvaFeeder
@@ -181,14 +232,30 @@ const KonvaRenderer: React.FC<KonvaRendererProps> = ({
                             />
                         );
                     })}
+
+                    {/* Shapes */}
+                    {layout.shapes.map((shape) => (
+                        <KonvaBasicShape
+                            key={shape.id}
+                            shape={shape}
+                            selected={isSelected('shape', shape.id)}
+                            mode={mode}
+                            onSelect={() => onSelectElement({ type: 'shape', data: shape })}
+                            onDragEnd={(x, y) => {
+                                const deltaX = x - shape.x;
+                                const deltaY = y - shape.y;
+                                onMoveElement({ type: 'shape', data: shape }, deltaX, deltaY);
+                            }}
+                        />
+                    ))}
                 </Layer>
 
-                {/* UI Layer */}
+                {/* UI Layer - Static overlays */}
                 <Layer>
                     {/* Running indicator */}
                     {state.isRunning && mode === 'runtime' && (
                         <Circle
-                            x={layout.width - 20}
+                            x={stageSize.width / zoom - 20}
                             y={20}
                             radius={8}
                             fill="#22c55e"

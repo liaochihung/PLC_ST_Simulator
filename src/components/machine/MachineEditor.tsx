@@ -1,8 +1,9 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useEffect } from 'react';
 // import MachineCanvas from './MachineCanvas';
 import KonvaRenderer from '@/lib/renderers/konva/KonvaRenderer';
 import MachineEditorToolbar from './MachineEditorToolbar';
 import MachinePropertyPanel from './MachinePropertyPanel';
+import ComponentPalette from './ComponentPalette';
 import { useMachineEditor } from '@/hooks/useMachineEditor';
 import type { MachineStation, MachineElement } from '@/types/machine-editor';
 import type { MachineRuntimeState } from '@/types/renderer';
@@ -31,6 +32,12 @@ const MachineEditor: React.FC<MachineEditorProps> = ({
     selectElement,
     zoom,
     setZoom,
+    // Grid
+    gridVisible,
+    setGridVisible,
+    snapToGrid,
+    setSnapToGrid,
+    // CRUD operations
     addStation,
     updateStation,
     addDisc,
@@ -39,8 +46,21 @@ const MachineEditor: React.FC<MachineEditorProps> = ({
     updateConveyor,
     addFeeder,
     updateFeeder,
+    addShape,
+    updateShape,
     moveElement,
     deleteSelectedElement,
+    // Clipboard
+    clipboard,
+    copyElement,
+    cutElement,
+    pasteElement,
+    duplicateElement,
+    // History
+    canUndo,
+    canRedo,
+    undo,
+    redo,
   } = useMachineEditor();
 
   // Prepare runtime state for renderer (for future Konva use)
@@ -135,8 +155,75 @@ const MachineEditor: React.FC<MachineEditorProps> = ({
       case 'feeder':
         updateFeeder(selectedElement.data.id, updates);
         break;
+      case 'shape':
+        updateShape(selectedElement.data.id, updates);
+        break;
     }
   };
+
+  // Keyboard shortcuts
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Only handle shortcuts in edit mode or for undo/redo
+      const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
+      const cmdKey = isMac ? e.metaKey : e.ctrlKey;
+
+      // Undo (Cmd/Ctrl+Z) - works in both modes
+      if (cmdKey && e.key === 'z' && !e.shiftKey) {
+        e.preventDefault();
+        undo();
+        return;
+      }
+
+      // Redo (Cmd/Ctrl+Shift+Z) - works in both modes
+      if (cmdKey && e.key === 'z' && e.shiftKey) {
+        e.preventDefault();
+        redo();
+        return;
+      }
+
+      // Edit mode only shortcuts
+      if (mode !== 'edit') return;
+
+      // Copy (Cmd/Ctrl+C)
+      if (cmdKey && e.key === 'c') {
+        e.preventDefault();
+        copyElement();
+        return;
+      }
+
+      // Cut (Cmd/Ctrl+X)
+      if (cmdKey && e.key === 'x') {
+        e.preventDefault();
+        cutElement();
+        return;
+      }
+
+      // Paste (Cmd/Ctrl+V)
+      if (cmdKey && e.key === 'v') {
+        e.preventDefault();
+        pasteElement();
+        return;
+      }
+
+      // Duplicate (Cmd/Ctrl+D)
+      if (cmdKey && e.key === 'd') {
+        e.preventDefault();
+        duplicateElement();
+        return;
+      }
+
+      // Delete (Delete or Backspace)
+      if (e.key === 'Delete' || e.key === 'Backspace') {
+        e.preventDefault();
+        deleteSelectedElement();
+        return;
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [mode, copyElement, cutElement, pasteElement, duplicateElement, deleteSelectedElement, undo, redo]);
 
   return (
     <div className="flex flex-col h-full">
@@ -152,47 +239,79 @@ const MachineEditor: React.FC<MachineEditorProps> = ({
         onAddConveyor={handleAddConveyor}
         onAddFeeder={handleAddFeeder}
         isRunning={isRunning}
+        // Grid controls
+        gridVisible={gridVisible}
+        onToggleGrid={() => setGridVisible(!gridVisible)}
+        snapToGrid={snapToGrid}
+        onToggleSnap={() => setSnapToGrid(!snapToGrid)}
+        // Clipboard
+        hasClipboard={clipboard !== null}
+        onCopy={copyElement}
+        onCut={cutElement}
+        onPaste={pasteElement}
+        onDuplicate={duplicateElement}
+        // History
+        canUndo={canUndo}
+        canRedo={canRedo}
+        onUndo={undo}
+        onRedo={redo}
       />
 
-      <div className="flex-1 relative overflow-hidden p-2">
-        <div className="w-full h-full flex items-center justify-center">
-          {/* Using Konva renderer */}
-          <KonvaRenderer
-            layout={layout}
-            state={runtimeState}
-            mode={mode}
-            zoom={zoom}
-            panOffset={{ x: 0, y: 0 }}
-            selectedElement={selectedElement}
-            onSelectElement={selectElement}
-            onMoveElement={moveElement}
-          />
-          {/* SVG fallback (commented out)
-          <MachineCanvas
-            layout={layout}
-            mode={mode}
-            selectedElement={selectedElement}
-            onSelectElement={selectElement}
-            onMoveElement={moveElement}
-            zoom={zoom}
-            panOffset={{ x: 0, y: 0 }}
-            discAngle={discAngle}
-            feederActive={feederActive}
-            isRunning={isRunning}
-            products={products}
-            stationStates={stationStates}
-          />
-          */}
-        </div>
-
-        {/* Property Panel */}
-        {selectedElement && mode === 'edit' && (
-          <MachinePropertyPanel
-            element={selectedElement}
-            onUpdate={handlePropertyUpdate}
-            onClose={() => selectElement(null)}
+      <div className="flex-1 flex overflow-hidden">
+        {/* Component Palette (Edit mode only) */}
+        {mode === 'edit' && (
+          <ComponentPalette
+            onAddShape={addShape}
+            onAddStation={handleAddStation}
+            onAddDisc={handleAddDisc}
+            onAddConveyor={handleAddConveyor}
+            onAddFeeder={handleAddFeeder}
+            layoutCenter={{ x: layout.width / 2, y: layout.height / 2 }}
           />
         )}
+
+        <div className="flex-1 relative overflow-hidden p-2">
+          <div className="w-full h-full flex items-center justify-center">
+            {/* Using Konva renderer */}
+            <KonvaRenderer
+              layout={layout}
+              state={runtimeState}
+              mode={mode}
+              zoom={zoom}
+              panOffset={{ x: 0, y: 0 }}
+              selectedElement={selectedElement}
+              onSelectElement={selectElement}
+              onMoveElement={moveElement}
+              gridVisible={gridVisible}
+              gridSize={20}
+            />
+            {/* SVG fallback (commented out)
+            <MachineCanvas
+              layout={layout}
+              mode={mode}
+              selectedElement={selectedElement}
+              onSelectElement={selectElement}
+              onMoveElement={moveElement}
+              zoom={zoom}
+              panOffset={{ x: 0, y: 0 }}
+              discAngle={discAngle}
+              feederActive={feederActive}
+              isRunning={isRunning}
+              products={products}
+              stationStates={stationStates}
+            />
+            */}
+          </div>
+
+          {/* Property Panel */}
+          {selectedElement && mode === 'edit' && (
+            <MachinePropertyPanel
+              element={selectedElement}
+              onUpdate={handlePropertyUpdate}
+              onClose={() => selectElement(null)}
+            />
+          )}
+        </div>
       </div>
     </div>
   );
