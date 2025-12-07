@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import CodeEditor from '@/components/CodeEditor';
-import MachineVisualization from '@/components/MachineVisualization';
+import MachineEditor from '@/components/machine/MachineEditor';
 import VariableMonitor from '@/components/VariableMonitor';
 import SimulatorControls from '@/components/SimulatorControls';
 import ProgramBlockTree from '@/components/ProgramBlockTree';
 import { useSimulator } from '@/hooks/useSimulator';
 import { useProgramBlocks } from '@/hooks/useProgramBlocks';
-import { Cpu, Code2, Activity, Eye, PanelLeftClose, PanelLeft } from 'lucide-react';
+import { Cpu, Code2, Activity, Eye, PanelLeftClose, PanelLeft, PanelRightClose, PanelRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 
@@ -47,6 +47,7 @@ const Index: React.FC = () => {
 
   const [activeTab, setActiveTab] = useState<'visualization' | 'variables'>('visualization');
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [codeEditorVisible, setCodeEditorVisible] = useState(true);
 
   const activeBlock = getActiveBlock();
 
@@ -138,41 +139,67 @@ const Index: React.FC = () => {
         </div>
 
         {/* Center Panel - Code Editor */}
-        <div className="flex-1 flex flex-col border-r border-border min-w-0">
-          <div className="panel-header flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Code2 className="w-4 h-4 text-primary" />
-              <span className="panel-title">
-                {activeBlock ? activeBlock.name : '請選擇區塊'}
-              </span>
-              {activeBlock?.type === 'scan' && activeBlock.scanInterval && (
-                <span className="text-xs px-2 py-0.5 rounded bg-primary/10 text-primary">
-                  {activeBlock.scanInterval}ms
+        {codeEditorVisible && (
+          <div className="flex-1 flex flex-col border-r border-border min-w-0">
+            <div className="panel-header flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Code2 className="w-4 h-4 text-primary" />
+                <span className="panel-title">
+                  {activeBlock ? activeBlock.name : '請選擇區塊'}
                 </span>
+                {activeBlock?.type === 'scan' && activeBlock.scanInterval && (
+                  <span className="text-xs px-2 py-0.5 rounded bg-primary/10 text-primary">
+                    {activeBlock.scanInterval}ms
+                  </span>
+                )}
+              </div>
+              <div className="flex items-center gap-2">
+                {activeBlock && (
+                  <span className="text-xs text-muted-foreground">
+                    {activeBlock.type === 'init' ? '初始化區塊' :
+                      activeBlock.type === 'scan' ? '掃描區塊' :
+                        activeBlock.type === 'subroutine' ? '子程式' : '功能塊'}
+                  </span>
+                )}
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setCodeEditorVisible(false)}
+                  className="h-6 w-6"
+                  title="隱藏程式碼編輯器"
+                >
+                  <PanelRightClose className="w-3 h-3" />
+                </Button>
+              </div>
+            </div>
+            <div className="flex-1 overflow-hidden p-2">
+              {activeBlock ? (
+                <CodeEditor
+                  value={activeBlock.code}
+                  onChange={handleCodeChange}
+                  readOnly={isRunning}
+                />
+              ) : (
+                <div className="h-full flex items-center justify-center text-muted-foreground">
+                  <p>請從左側選擇一個程式區塊</p>
+                </div>
               )}
             </div>
-            {activeBlock && (
-              <span className="text-xs text-muted-foreground">
-                {activeBlock.type === 'init' ? '初始化區塊' :
-                  activeBlock.type === 'scan' ? '掃描區塊' :
-                    activeBlock.type === 'subroutine' ? '子程式' : '功能塊'}
-              </span>
-            )}
           </div>
-          <div className="flex-1 overflow-hidden p-2">
-            {activeBlock ? (
-              <CodeEditor
-                value={activeBlock.code}
-                onChange={handleCodeChange}
-                readOnly={isRunning}
-              />
-            ) : (
-              <div className="h-full flex items-center justify-center text-muted-foreground">
-                <p>請從左側選擇一個程式區塊</p>
-              </div>
-            )}
-          </div>
-        </div>
+        )}
+
+        {/* Show Code Editor Button (when hidden) */}
+        {!codeEditorVisible && (
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setCodeEditorVisible(true)}
+            className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10"
+          >
+            <PanelRight className="w-4 h-4 mr-2" />
+            顯示程式碼
+          </Button>
+        )}
 
         {/* Right Panel - Visualization / Variables */}
         <div className="w-[400px] flex flex-col min-w-0">
@@ -207,15 +234,12 @@ const Index: React.FC = () => {
           {/* Tab Content */}
           <div className="flex-1 overflow-hidden">
             {activeTab === 'visualization' ? (
-              <div className="h-full p-4">
-                <MachineVisualization
-                  stations={stations}
-                  discAngle={discAngle}
-                  feederActive={feederActive}
-                  isRunning={isRunning}
-                  products={products}
-                />
-              </div>
+              <MachineEditor
+                discAngle={discAngle}
+                feederActive={feederActive}
+                isRunning={isRunning}
+                products={products}
+              />
             ) : (
               <VariableMonitor
                 variables={variables}
