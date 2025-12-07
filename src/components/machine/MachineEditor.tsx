@@ -28,8 +28,9 @@ const MachineEditor: React.FC<MachineEditorProps> = ({
     layout,
     mode,
     setMode,
-    selectedElement,
+    selectedElements,
     selectElement,
+    selectElements,
     zoom,
     setZoom,
     // Grid
@@ -52,7 +53,7 @@ const MachineEditor: React.FC<MachineEditorProps> = ({
     addShape,
     updateShape,
     moveElement,
-    deleteSelectedElement,
+    deleteSelectedElements,
     // Clipboard
     clipboard,
     copyElement,
@@ -65,6 +66,8 @@ const MachineEditor: React.FC<MachineEditorProps> = ({
     undo,
     redo,
   } = useMachineEditor();
+
+  const selectedElement = selectedElements.length === 1 ? selectedElements[0] : null;
 
   // Prepare runtime state for renderer (for future Konva use)
   const runtimeState: MachineRuntimeState = useMemo(() => {
@@ -340,22 +343,22 @@ const MachineEditor: React.FC<MachineEditorProps> = ({
       // Delete (Delete or Backspace)
       if (e.key === 'Delete' || e.key === 'Backspace') {
         e.preventDefault();
-        deleteSelectedElement();
+        deleteSelectedElements();
         return;
       }
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [mode, copyElement, cutElement, pasteElement, duplicateElement, deleteSelectedElement, undo, redo]);
+  }, [mode, copyElement, cutElement, pasteElement, duplicateElement, deleteSelectedElements, undo, redo]);
 
   return (
     <div className="flex flex-col h-full">
       <MachineEditorToolbar
         mode={mode}
         onModeChange={setMode}
-        selectedElement={selectedElement}
-        onDelete={deleteSelectedElement}
+        selectedElements={selectedElements}
+        onDelete={deleteSelectedElements}
         onZoomIn={handleZoomIn}
         onZoomOut={handleZoomOut}
         onAddStation={handleAddStation}
@@ -405,8 +408,9 @@ const MachineEditor: React.FC<MachineEditorProps> = ({
               mode={mode}
               zoom={zoom}
               panOffset={{ x: 0, y: 0 }}
-              selectedElement={selectedElement}
+              selectedElements={selectedElements}
               onSelectElement={selectElement}
+              onSelectElements={selectElements}
               onMoveElement={moveElement}
               onUpdateElement={handleUpdateElement}
               onDrop={handleDrop}
@@ -432,10 +436,10 @@ const MachineEditor: React.FC<MachineEditorProps> = ({
             */}
           </div>
 
-          {/* Property Panel */}
-          {selectedElement && mode === 'edit' && (
+          {/* Property Panel - Only show if exactly one element is selected */}
+          {selectedElements.length === 1 && mode === 'edit' && (
             <MachinePropertyPanel
-              element={selectedElement}
+              element={selectedElements[0]}
               onUpdate={handlePropertyUpdate}
               onClose={() => selectElement(null)}
             />

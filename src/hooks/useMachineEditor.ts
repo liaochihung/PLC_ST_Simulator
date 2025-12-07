@@ -40,7 +40,9 @@ const MAX_HISTORY = 50;
 export function useMachineEditor() {
   const [layout, setLayout] = useState<MachineLayout>(defaultLayout);
   const [mode, setMode] = useState<EditorMode>('runtime');
-  const [selectedElement, setSelectedElement] = useState<MachineElement | null>(null);
+  const [selectedElements, setSelectedElements] = useState<MachineElement[]>([]);
+  // Derived state for backward compatibility and single-item editing
+  const selectedElement = selectedElements.length === 1 ? selectedElements[0] : null;
   const [zoom, setZoom] = useState(1);
   const [panOffset, setPanOffset] = useState({ x: 0, y: 0 });
 
@@ -50,7 +52,8 @@ export function useMachineEditor() {
   const [gridSize, setGridSize] = useState(20);
 
   // Clipboard
-  const [clipboard, setClipboard] = useState<MachineElement | null>(null);
+  // Clipboard - stored as Array
+  const [clipboard, setClipboard] = useState<MachineElement[]>([]);
 
   // History management
   const [layoutHistory, setLayoutHistory] = useState<MachineLayout[]>([defaultLayout]);
@@ -77,8 +80,32 @@ export function useMachineEditor() {
   }, [snapToGrid, gridSize]);
 
   // Select element
-  const selectElement = useCallback((element: MachineElement | null) => {
-    setSelectedElement(element);
+
+  const selectElement = useCallback((element: MachineElement | null, multi = false) => {
+    if (!element) {
+      if (!multi) setSelectedElements([]);
+      return;
+    }
+
+    if (multi) {
+      setSelectedElements(prev => {
+        const index = prev.findIndex(e => e.data.id === element.data.id);
+        if (index >= 0) {
+          // Deselect
+          return prev.filter((_, i) => i !== index);
+        } else {
+          // Select
+          return [...prev, element];
+        }
+      });
+    } else {
+      setSelectedElements([element]);
+    }
+  }, []);
+
+  // Select multiple elements directly (e.g. for rubber band)
+  const selectElements = useCallback((elements: MachineElement[]) => {
+    setSelectedElements(elements);
   }, []);
 
   // Add station
@@ -111,7 +138,7 @@ export function useMachineEditor() {
     };
     setLayout(newLayout);
     recordHistory(newLayout);
-    setSelectedElement(null);
+    setSelectedElements([]);
   }, [layout, recordHistory]);
 
   // Add disc
@@ -144,7 +171,7 @@ export function useMachineEditor() {
     };
     setLayout(newLayout);
     recordHistory(newLayout);
-    setSelectedElement(null);
+    setSelectedElements([]);
   }, [layout, recordHistory]);
 
   // Add conveyor
@@ -177,7 +204,7 @@ export function useMachineEditor() {
     };
     setLayout(newLayout);
     recordHistory(newLayout);
-    setSelectedElement(null);
+    setSelectedElements([]);
   }, [layout, recordHistory]);
 
   // Add feeder
@@ -210,7 +237,7 @@ export function useMachineEditor() {
     };
     setLayout(newLayout);
     recordHistory(newLayout);
-    setSelectedElement(null);
+    setSelectedElements([]);
   }, [layout, recordHistory]);
 
   // Add shape
@@ -243,174 +270,391 @@ export function useMachineEditor() {
     };
     setLayout(newLayout);
     recordHistory(newLayout);
-    setSelectedElement(null);
+    setSelectedElements([]);
   }, [layout, recordHistory]);
 
-  // Move element (for drag & drop)
+  // Move element (for drag & drop and nudge)
   const moveElement = useCallback((element: MachineElement, deltaX: number, deltaY: number) => {
-    switch (element.type) {
-      case 'station':
-        updateStation(element.data.id, {
-          x: snapToGridValue(element.data.x + deltaX),
-          y: snapToGridValue(element.data.y + deltaY)
-        });
-        break;
-      case 'disc':
-        updateDisc(element.data.id, {
-          x: snapToGridValue(element.data.x + deltaX),
-          y: snapToGridValue(element.data.y + deltaY)
-        });
-        break;
-      case 'feeder':
-        updateFeeder(element.data.id, {
-          x: snapToGridValue(element.data.x + deltaX),
-          y: snapToGridValue(element.data.y + deltaY)
-        });
-        break;
-      case 'conveyor':
-        updateConveyor(element.data.id, {
-          startX: snapToGridValue(element.data.startX + deltaX),
-          startY: snapToGridValue(element.data.startY + deltaY),
-          endX: snapToGridValue(element.data.endX + deltaX),
-          endY: snapToGridValue(element.data.endY + deltaY)
-        });
-        break;
-      case 'shape':
-        updateShape(element.data.id, {
-          x: snapToGridValue(element.data.x + deltaX),
-          y: snapToGridValue(element.data.y + deltaY),
-          ...(element.data.type === 'line' && {
-            endX: snapToGridValue((element.data.endX || 0) + deltaX),
-            endY: snapToGridValue((element.data.endY || 0) + deltaY)
-          })
-        });
-        break;
-    }
-  }, [updateStation, updateDisc, updateFeeder, updateConveyor, updateShape, snapToGridValue]);
+    // If the element is part of the selection, move ALL selected elements
+    // Otherwise, just move that one element (and implicitly select it if not multi) - 
+    // Logic here might need to be "moveElements" to be cleaner, but for now we adapt.
+
+    // Check if the moved element is in the selection
+    const isSelected = selectedElements.some(e => e.data.id === element.data.id);
+    const elementsToMove = isSelected ? selectedElements : [element];
+
+    const updates: { type: string; id: string; update: any }[] = [];
+
+    elementsToMove.forEach(el => {
+      let update = {};
+      switch (el.type) {
+        case 'station':
+          update = {
+            x: snapToGridValue(el.data.x + deltaX),
+            y: snapToGridValue(el.data.y + deltaY)
+          };
+          // We can't batch call updateStation/etc easily without refactoring state to be more unified or batch-aware.
+          // For now, we will just call the update functions sequentially. This might trigger multiple re-renders.
+          // BETTER: Create a batch update function or just update them one by one. given the small number, one by one is "okay" but not efficient.
+          // We'll update the layout state ONCE.
+          break;
+        case 'disc':
+          update = {
+            x: snapToGridValue(el.data.x + deltaX),
+            y: snapToGridValue(el.data.y + deltaY)
+          };
+          break;
+        case 'feeder':
+          update = {
+            x: snapToGridValue(el.data.x + deltaX),
+            y: snapToGridValue(el.data.y + deltaY)
+          };
+          break;
+        case 'conveyor':
+          update = {
+            startX: snapToGridValue(el.data.startX + deltaX),
+            startY: snapToGridValue(el.data.startY + deltaY),
+            endX: snapToGridValue(el.data.endX + deltaX),
+            endY: snapToGridValue(el.data.endY + deltaY)
+          };
+          break;
+        case 'shape':
+          update = {
+            x: snapToGridValue(el.data.x + deltaX),
+            y: snapToGridValue(el.data.y + deltaY),
+            ...(el.data.type === 'line' && {
+              endX: snapToGridValue((el.data.endX || 0) + deltaX),
+              endY: snapToGridValue((el.data.endY || 0) + deltaY)
+            })
+          };
+          break;
+      }
+      updates.push({ type: el.type, id: el.data.id, update });
+    });
+
+    // Apply all updates to a new layout
+    setLayout(prev => {
+      let newLayout = { ...prev };
+      updates.forEach(({ type, id, update }) => {
+        switch (type) {
+          case 'station':
+            newLayout.stations = newLayout.stations.map(s => s.id === id ? { ...s, ...update } : s);
+            break;
+          case 'disc':
+            newLayout.discs = newLayout.discs.map(d => d.id === id ? { ...d, ...update } : d);
+            break;
+          case 'feeder':
+            newLayout.feeders = newLayout.feeders.map(f => f.id === id ? { ...f, ...update } : f);
+            break;
+          case 'conveyor':
+            newLayout.conveyors = newLayout.conveyors.map(c => c.id === id ? { ...c, ...update } : c);
+            break;
+          case 'shape':
+            newLayout.shapes = newLayout.shapes.map(s => s.id === id ? { ...s, ...update } : s);
+            break;
+        }
+      });
+      return newLayout;
+    });
+
+    // We don't record history for every drag frame, ideally. But these functions are usually called on DragEnd.
+    // If this is DragEnd, we should record history.
+    // However, `moveElement` usage in KonvaRenderer is `onDragEnd`.
+    // So YES, we should record history.
+    // But we can't access `newLayout` easily inside setLayout. 
+    // Let's rely on the fact that `onDragEnd` calls this once.
+    // We need to properly invoke `recordHistory`.
+
+    // Issue: `recordHistory` depends on `layout` state or we pass the new layout to it.
+    // My previous batch update inside `setLayout` makes it hard to get the new layout out for `recordHistory`.
+    // Let's reconstruct the new layout first.
+
+    const newLayout = { ...layout }; // Cloned from current layout scope (closure) - might be stale if strict mode? No, closure.
+    updates.forEach(({ type, id, update }) => {
+      switch (type) {
+        case 'station':
+          newLayout.stations = newLayout.stations.map(s => s.id === id ? { ...s, ...update } : s);
+          break;
+        case 'disc':
+          newLayout.discs = newLayout.discs.map(d => d.id === id ? { ...d, ...update } : d);
+          break;
+        case 'feeder':
+          newLayout.feeders = newLayout.feeders.map(f => f.id === id ? { ...f, ...update } : f);
+          break;
+        case 'conveyor':
+          newLayout.conveyors = newLayout.conveyors.map(c => c.id === id ? { ...c, ...update } : c);
+          break;
+        case 'shape':
+          newLayout.shapes = newLayout.shapes.map(s => s.id === id ? { ...s, ...update } : s);
+          break;
+      }
+    });
+    setLayout(newLayout);
+    recordHistory(newLayout);
+
+  }, [layout, selectedElements, snapToGridValue, recordHistory]);
 
   // Delete selected element
-  const deleteSelectedElement = useCallback(() => {
-    if (!selectedElement) return;
+  const deleteSelectedElements = useCallback(() => {
+    if (selectedElements.length === 0) return;
 
-    switch (selectedElement.type) {
-      case 'station':
-        deleteStation(selectedElement.data.id);
-        break;
-      case 'disc':
-        deleteDisc(selectedElement.data.id);
-        break;
-      case 'conveyor':
-        deleteConveyor(selectedElement.data.id);
-        break;
-      case 'feeder':
-        deleteFeeder(selectedElement.data.id);
-        break;
-      case 'shape':
-        deleteShape(selectedElement.data.id);
-        break;
-    }
-  }, [selectedElement, deleteStation, deleteDisc, deleteConveyor, deleteFeeder, deleteShape]);
+    let newLayout = { ...layout };
+
+    selectedElements.forEach(element => {
+      switch (element.type) {
+        case 'station':
+          newLayout.stations = newLayout.stations.filter(s => s.id !== element.data.id);
+          break;
+        case 'disc':
+          newLayout.discs = newLayout.discs.filter(d => d.id !== element.data.id);
+          break;
+        case 'conveyor':
+          newLayout.conveyors = newLayout.conveyors.filter(c => c.id !== element.data.id);
+          break;
+        case 'feeder':
+          newLayout.feeders = newLayout.feeders.filter(f => f.id !== element.data.id);
+          break;
+        case 'shape':
+          newLayout.shapes = newLayout.shapes.filter(s => s.id !== element.data.id);
+          break;
+      }
+    });
+
+    setLayout(newLayout);
+    recordHistory(newLayout);
+    setSelectedElements([]);
+  }, [selectedElements, layout, recordHistory]);
 
   // Clipboard: Copy
   const copyElement = useCallback(() => {
-    if (!selectedElement) return;
-    setClipboard(selectedElement);
-  }, [selectedElement]);
+    if (selectedElements.length === 0) return;
+    setClipboard(selectedElements);
+  }, [selectedElements]);
 
   // Clipboard: Cut
   const cutElement = useCallback(() => {
-    if (!selectedElement) return;
-    setClipboard(selectedElement);
-    deleteSelectedElement();
-  }, [selectedElement, deleteSelectedElement]);
+    if (selectedElements.length === 0) return;
+    setClipboard(selectedElements);
+    deleteSelectedElements();
+  }, [selectedElements, deleteSelectedElements]);
 
   // Clipboard: Paste
   const pasteElement = useCallback(() => {
-    if (!clipboard) return;
+    if (clipboard.length === 0) return;
 
     const offset = 20; // Offset to avoid overlapping
 
-    switch (clipboard.type) {
-      case 'station': {
-        const data = clipboard.data as MachineStation;
-        addStation({
-          name: data.name,
-          type: data.type,
-          x: data.x + offset,
-          y: data.y + offset,
-          angle: data.angle,
-          width: data.width,
-          height: data.height,
-          ioMapping: data.ioMapping,
-          properties: data.properties
-        });
-        break;
+    // Process each item in clipboard
+    const newIds: string[] = [];
+    let currentLayout = { ...layout };
+
+    clipboard.forEach(item => {
+      let newId = '';
+      switch (item.type) {
+        case 'station': {
+          const data = item.data as MachineStation;
+          newId = `s${Date.now()}_${Math.random().toString(36).substr(2, 5)}`;
+          currentLayout.stations = [...currentLayout.stations, {
+            ...data,
+            id: newId,
+            x: data.x + offset,
+            y: data.y + offset
+          }];
+          break;
+        }
+        case 'disc': {
+          const data = item.data as MachineDisc;
+          newId = `d${Date.now()}_${Math.random().toString(36).substr(2, 5)}`;
+          currentLayout.discs = [...currentLayout.discs, {
+            ...data,
+            id: newId,
+            x: data.x + offset,
+            y: data.y + offset
+          }];
+          break;
+        }
+        case 'conveyor': {
+          const data = item.data as MachineConveyor;
+          newId = `c${Date.now()}_${Math.random().toString(36).substr(2, 5)}`;
+          currentLayout.conveyors = [...currentLayout.conveyors, {
+            ...data,
+            id: newId,
+            startX: data.startX + offset,
+            startY: data.startY + offset,
+            endX: data.endX + offset,
+            endY: data.endY + offset
+          }];
+          break;
+        }
+        case 'feeder': {
+          const data = item.data as MachineFeeder;
+          newId = `f${Date.now()}_${Math.random().toString(36).substr(2, 5)}`;
+          currentLayout.feeders = [...currentLayout.feeders, {
+            ...data,
+            id: newId,
+            x: data.x + offset,
+            y: data.y + offset
+          }];
+          break;
+        }
+        case 'shape': {
+          const data = item.data as BasicShape;
+          newId = `sh${Date.now()}_${Math.random().toString(36).substr(2, 5)}`;
+          currentLayout.shapes = [...currentLayout.shapes, {
+            ...data,
+            id: newId,
+            x: data.x + offset,
+            y: data.y + offset,
+            ...(data.type === 'line' && {
+              endX: (data.endX || 0) + offset,
+              endY: (data.endY || 0) + offset
+            })
+          }];
+          break;
+        }
       }
-      case 'disc': {
-        const data = clipboard.data as MachineDisc;
-        addDisc({
-          x: data.x + offset,
-          y: data.y + offset,
-          radius: data.radius,
-          slots: data.slots,
-          rotationVariable: data.rotationVariable
-        });
-        break;
-      }
-      case 'conveyor': {
-        const data = clipboard.data as MachineConveyor;
-        addConveyor({
-          type: data.type,
-          startX: data.startX + offset,
-          startY: data.startY + offset,
-          endX: data.endX + offset,
-          endY: data.endY + offset,
-          width: data.width
-        });
-        break;
-      }
-      case 'feeder': {
-        const data = clipboard.data as MachineFeeder;
-        addFeeder({
-          name: data.name,
-          x: data.x + offset,
-          y: data.y + offset,
-          width: data.width,
-          height: data.height,
-          activeVariable: data.activeVariable
-        });
-        break;
-      }
-      case 'shape': {
-        const data = clipboard.data as BasicShape;
-        addShape({
-          type: data.type,
-          x: data.x + offset,
-          y: data.y + offset,
-          width: data.width,
-          height: data.height,
-          radius: data.radius,
-          text: data.text,
-          fontSize: data.fontSize,
-          fill: data.fill,
-          stroke: data.stroke,
-          strokeWidth: data.strokeWidth,
-          ...(data.type === 'line' && {
-            endX: (data.endX || 0) + offset,
-            endY: (data.endY || 0) + offset
-          })
-        });
-        break;
-      }
-    }
-  }, [clipboard, addStation, addDisc, addConveyor, addFeeder, addShape]);
+      newIds.push(newId);
+    });
+
+    setLayout(currentLayout);
+    recordHistory(currentLayout);
+
+    // Select newly pasted items
+    // We need to reconstruct MachineElements from IDs
+    // This is getting complicated to do efficiently without helper lookup
+    // For now, let's just clear selection or not select. 
+    // Ideally we select them.
+    // ... logic to find them ...
+    // Let's skip auto-select for now to save complexity or implement finding logic.
+    // Actually, users expect pasted items to be selected.
+    // Let's rely on internal knowledge that we just added them.
+    const newSelection: MachineElement[] = [];
+    newIds.forEach(id => {
+      // Search in currentLayout lists...
+      // Actually currentLayout is updated.
+      const s = currentLayout.stations.find(x => x.id === id);
+      if (s) newSelection.push({ type: 'station', data: s });
+      const d = currentLayout.discs.find(x => x.id === id);
+      if (d) newSelection.push({ type: 'disc', data: d });
+      // ... etc
+      const c = currentLayout.conveyors.find(x => x.id === id);
+      if (c) newSelection.push({ type: 'conveyor', data: c });
+      const f = currentLayout.feeders.find(x => x.id === id);
+      if (f) newSelection.push({ type: 'feeder', data: f });
+      const sh = currentLayout.shapes.find(x => x.id === id);
+      if (sh) newSelection.push({ type: 'shape', data: sh });
+    });
+    setSelectedElements(newSelection);
+
+  }, [clipboard, layout, recordHistory]);
 
   // Clipboard: Duplicate
   const duplicateElement = useCallback(() => {
-    if (!selectedElement) return;
-    setClipboard(selectedElement);
-    pasteElement();
-  }, [selectedElement, pasteElement]);
+    if (selectedElements.length === 0) return;
+    setClipboard(selectedElements);
+    // Paste logic is async in useEffect? No, it's direct.
+    // But we need to paste WHAT we just set.
+    // Since setClipboard is state update, it won't be immediate.
+    // So we should pass the elements directly to a helper or just duplicating logic here.
+    // For simplicity, let's reuse paste logic but pass data directly?
+    // Or just implement duplicate logic since we have the data.
+
+    // Reuse paste logic needs state to update.
+    // Let's wait for next render? No, user expects immediate.
+    // Let's just implement duplicate manually using the selectedElements
+
+    // Same logic as paste but source is selectedElements
+    const newIds: string[] = [];
+    const offset = 20;
+    let currentLayout = { ...layout };
+
+    selectedElements.forEach(item => {
+      let newId = '';
+      switch (item.type) {
+        case 'station': {
+          const data = item.data as MachineStation;
+          newId = `s${Date.now()}_${Math.random().toString(36).substr(2, 5)}`;
+          currentLayout.stations = [...currentLayout.stations, {
+            ...data,
+            id: newId,
+            x: data.x + offset,
+            y: data.y + offset
+          }];
+          break;
+        }
+        case 'disc': {
+          const data = item.data as MachineDisc;
+          newId = `d${Date.now()}_${Math.random().toString(36).substr(2, 5)}`;
+          currentLayout.discs = [...currentLayout.discs, {
+            ...data,
+            id: newId,
+            x: data.x + offset,
+            y: data.y + offset
+          }];
+          break;
+        }
+        case 'conveyor': {
+          const data = item.data as MachineConveyor;
+          newId = `c${Date.now()}_${Math.random().toString(36).substr(2, 5)}`;
+          currentLayout.conveyors = [...currentLayout.conveyors, {
+            ...data,
+            id: newId,
+            startX: data.startX + offset,
+            startY: data.startY + offset,
+            endX: data.endX + offset,
+            endY: data.endY + offset
+          }];
+          break;
+        }
+        case 'feeder': {
+          const data = item.data as MachineFeeder;
+          newId = `f${Date.now()}_${Math.random().toString(36).substr(2, 5)}`;
+          currentLayout.feeders = [...currentLayout.feeders, {
+            ...data,
+            id: newId,
+            x: data.x + offset,
+            y: data.y + offset
+          }];
+          break;
+        }
+        case 'shape': {
+          const data = item.data as BasicShape;
+          newId = `sh${Date.now()}_${Math.random().toString(36).substr(2, 5)}`;
+          currentLayout.shapes = [...currentLayout.shapes, {
+            ...data,
+            id: newId,
+            x: data.x + offset,
+            y: data.y + offset,
+            ...(data.type === 'line' && {
+              endX: (data.endX || 0) + offset,
+              endY: (data.endY || 0) + offset
+            })
+          }];
+          break;
+        }
+      }
+      newIds.push(newId);
+    });
+
+    setLayout(currentLayout);
+    recordHistory(currentLayout);
+
+    const newSelection: MachineElement[] = [];
+    newIds.forEach(id => {
+      const s = currentLayout.stations.find(x => x.id === id);
+      if (s) newSelection.push({ type: 'station', data: s });
+      const d = currentLayout.discs.find(x => x.id === id);
+      if (d) newSelection.push({ type: 'disc', data: d });
+      const c = currentLayout.conveyors.find(x => x.id === id);
+      if (c) newSelection.push({ type: 'conveyor', data: c });
+      const f = currentLayout.feeders.find(x => x.id === id);
+      if (f) newSelection.push({ type: 'feeder', data: f });
+      const sh = currentLayout.shapes.find(x => x.id === id);
+      if (sh) newSelection.push({ type: 'shape', data: sh });
+    });
+    setSelectedElements(newSelection);
+
+  }, [selectedElements, layout, recordHistory]);
 
   // History: Undo
   const undo = useCallback(() => {
@@ -432,8 +676,10 @@ export function useMachineEditor() {
     layout,
     mode,
     setMode,
+    selectedElements,
     selectedElement,
     selectElement,
+    selectElements,
     zoom,
     setZoom,
     panOffset,
@@ -467,7 +713,7 @@ export function useMachineEditor() {
     deleteShape,
     // Element operations
     moveElement,
-    deleteSelectedElement,
+    deleteSelectedElements,
     // Clipboard
     clipboard,
     copyElement,

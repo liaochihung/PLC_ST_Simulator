@@ -33,7 +33,7 @@ import {
 interface MachineEditorToolbarProps {
   mode: EditorMode;
   onModeChange: (mode: EditorMode) => void;
-  selectedElement: MachineElement | null;
+  selectedElements: MachineElement[];
   onDelete: () => void;
   onZoomIn: () => void;
   onZoomOut: () => void;
@@ -65,7 +65,7 @@ interface MachineEditorToolbarProps {
 const MachineEditorToolbar: React.FC<MachineEditorToolbarProps> = ({
   mode,
   onModeChange,
-  selectedElement,
+  selectedElements,
   onDelete,
   onZoomIn,
   onZoomOut,
@@ -90,6 +90,8 @@ const MachineEditorToolbar: React.FC<MachineEditorToolbarProps> = ({
   onUndo,
   onRedo,
 }) => {
+  const hasSelection = selectedElements.length > 0;
+
   return (
     <div className="flex items-center gap-2 p-2 bg-card border-b border-border">
       {/* Mode Toggle */}
@@ -175,7 +177,7 @@ const MachineEditorToolbar: React.FC<MachineEditorToolbarProps> = ({
             variant="outline"
             size="sm"
             onClick={onDelete}
-            disabled={!selectedElement}
+            disabled={!hasSelection}
             className="h-7 px-2 text-xs text-destructive hover:text-destructive"
           >
             <Trash2 className="w-3 h-3 mr-1" />
@@ -238,7 +240,7 @@ const MachineEditorToolbar: React.FC<MachineEditorToolbarProps> = ({
             variant="outline"
             size="sm"
             onClick={onCopy}
-            disabled={!selectedElement}
+            disabled={!hasSelection}
             className="h-7 px-2 text-xs"
             title="複製 (Cmd+C)"
           >
@@ -248,7 +250,7 @@ const MachineEditorToolbar: React.FC<MachineEditorToolbarProps> = ({
             variant="outline"
             size="sm"
             onClick={onCut}
-            disabled={!selectedElement}
+            disabled={!hasSelection}
             className="h-7 px-2 text-xs"
             title="剪下 (Cmd+X)"
           >
@@ -268,7 +270,7 @@ const MachineEditorToolbar: React.FC<MachineEditorToolbarProps> = ({
             variant="outline"
             size="sm"
             onClick={onDuplicate}
-            disabled={!selectedElement}
+            disabled={!hasSelection}
             className="h-7 px-2 text-xs"
             title="複製 (Cmd+D)"
           >
@@ -314,15 +316,21 @@ const MachineEditorToolbar: React.FC<MachineEditorToolbarProps> = ({
       </div>
 
       {/* Selection Info */}
-      {selectedElement && mode === 'edit' && (
+      {hasSelection && mode === 'edit' && (
         <>
           <div className="w-px h-6 bg-border" />
           <span className="text-xs text-muted-foreground">
-            已選擇: {selectedElement.type === 'station' && selectedElement.data.name}
-            {selectedElement.type === 'disc' && '轉盤'}
-            {selectedElement.type === 'conveyor' && '輸送帶'}
-            {selectedElement.type === 'feeder' && selectedElement.data.name}
-            {selectedElement.type === 'shape' && `形狀 (${selectedElement.data.type})`}
+            {selectedElements.length === 1 ? (
+              <>
+                已選擇: {selectedElements[0].type === 'station' && selectedElements[0].data.name}
+                {selectedElements[0].type === 'disc' && '轉盤'}
+                {selectedElements[0].type === 'conveyor' && '輸送帶'}
+                {selectedElements[0].type === 'feeder' && selectedElements[0].data.name}
+                {selectedElements[0].type === 'shape' && `形狀 (${selectedElements[0].data.type})`}
+              </>
+            ) : (
+              `已選擇 ${selectedElements.length} 個物件`
+            )}
           </span>
         </>
       )}

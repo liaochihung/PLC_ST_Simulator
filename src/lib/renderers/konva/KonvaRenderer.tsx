@@ -15,8 +15,9 @@ interface KonvaRendererProps {
     mode: EditorMode;
     zoom: number;
     panOffset: { x: number; y: number };
-    selectedElement: MachineElement | null;
-    onSelectElement: (element: MachineElement | null) => void;
+    selectedElements: MachineElement[];
+    onSelectElement: (element: MachineElement | null, multi?: boolean) => void;
+    onSelectElements: (elements: MachineElement[]) => void;
     onMoveElement: (element: MachineElement, deltaX: number, deltaY: number) => void;
     onUpdateElement?: (id: string, type: string, updates: any) => void;
     onDrop?: (type: string, x: number, y: number, data?: any) => void;
@@ -31,8 +32,9 @@ const KonvaRenderer: React.FC<KonvaRendererProps> = ({
     mode,
     zoom,
     panOffset,
-    selectedElement,
+    selectedElements,
     onSelectElement,
+    onSelectElements,
     onMoveElement,
     onUpdateElement,
     onDrop,
@@ -43,6 +45,10 @@ const KonvaRenderer: React.FC<KonvaRendererProps> = ({
     const [stageSize, setStageSize] = useState({ width: 500, height: 500 });
     const stageRef = useRef<Konva.Stage>(null);
     const trRef = useRef<Konva.Transformer>(null);
+
+    // Rubber band selection state
+    const [selectionBox, setSelectionBox] = useState<{ startX: number; startY: number; width: number; height: number } | null>(null);
+    const isSelecting = useRef(false);
 
     // Update stage size on mount and resize
     useEffect(() => {
@@ -63,14 +69,141 @@ const KonvaRenderer: React.FC<KonvaRendererProps> = ({
     }, []);
 
     const isSelected = useCallback((type: string, id: string) => {
-        return selectedElement?.type === type && selectedElement?.data?.id === id;
-    }, [selectedElement]);
+        return selectedElements.some(el => el.type === type && el.data.id === id);
+    }, [selectedElements]);
 
     const handleStageClick = useCallback((e: any) => {
+        // If clicking on empty stage and NOT dragging selection
+        if (selectionBox) {
+            // End of selection drag, handled in MouseUp
+            return;
+        }
+
         if (e.target === e.target.getStage() || e.target.attrs.id === 'background') {
             onSelectElement(null);
         }
-    }, [onSelectElement]);
+    }, [onSelectElement, selectionBox]);
+
+    const handleMouseDown = (e: Konva.KonvaEventObject<MouseEvent>) => {
+        if (e.target !== e.target.getStage() && e.target.attrs.id !== 'background') return;
+
+        // Start rubber band selection
+        const stage = e.target.getStage();
+        if (!stage) return;
+
+        const pos = stage.getPointerPosition();
+        if (!pos) return;
+
+        // Convert to stage coordinates (taking pan/zoom into account if needed, but for drawing Rect on top layer we might want absolute? 
+        // Actually, let's draw the selection box in stage coords (relative to zoom) so it matches the scene)
+        // But usually selection box is screen space.
+        // Let's implement logic: 
+        // We track StartX/Y in "Page" or "Stage" logic.
+        // Since we want to select items in the "Layer" which is transformed by offsetX/Y, we need to be careful.
+        // Let's store raw pointer position relative to stage top-left (untransformed by stage scale?)
+        // Stage scale is applied to everything.
+
+        // Let's work in "Stage local" coordinates (before Zoom?) No, Stage has scale.
+        // pointerPos is relative to stage container top-left.
+        // To draw a Rect on a Layer that is NOT scaled, we can just use pointerPos.
+        // But our Layers ARE scaled (or stage is).
+
+        // Let's use `model` coordinates for logic, but draw rect using relevant transform.
+        // OR: simpler, put Selection Rect on a top Layer that has NO transform (scale=1, x=0, y=0).
+        // But Stage has scale.
+        // So we need to invert scale for the selection rect if we put it in a non-scaled layer?
+        // Let's put it in a Layer that shares Stage scale/position?
+        // Actually the easiest is to calculate everything in Model Space.
+
+        const transform = e.target.getStage()?.getAbsoluteTransform().copy();
+        transform?.invert();
+        const pointerPos = transform?.point(pos);
+
+        if (pointerPos) {
+            setSelectionBox({
+                startX: pointerPos.x,
+                startY: pointerPos.y,
+                width: 0,
+                height: 0
+            });
+            isSelecting.current = true;
+        }
+    };
+
+    const handleMouseMove = (e: Konva.KonvaEventObject<MouseEvent>) => {
+        if (!isSelecting.current || !selectionBox) return;
+
+        const stage = e.target.getStage();
+        if (!stage) return;
+
+        const pos = stage.getPointerPosition();
+        if (!pos) return;
+
+        const transform = stage.getAbsoluteTransform().copy();
+        transform.invert();
+        const pointerPos = transform.point(pos);
+
+        setSelectionBox(prev => prev ? ({
+            ...prev,
+            width: pointerPos.x - prev.startX,
+            height: pointerPos.y - prev.startY
+        }) : null);
+    };
+
+    const handleMouseUp = (e: Konva.KonvaEventObject<MouseEvent>) => {
+        if (isSelecting.current && selectionBox) {
+            // Perform selection
+            // Calculate absolute box
+            const box = {
+                x: Math.min(selectionBox.startX, selectionBox.startX + selectionBox.width),
+                y: Math.min(selectionBox.startY, selectionBox.startY + selectionBox.height),
+                width: Math.abs(selectionBox.width),
+                height: Math.abs(selectionBox.height)
+            };
+
+            // Check intersections with layout elements
+            const newSelection: MachineElement[] = [];
+
+            // Helper to check intersection
+            const intersects = (itemX: number, itemY: number, itemW: number, itemH: number) => {
+                return (
+                    box.x < itemX + itemW &&
+                    box.x + box.width > itemX &&
+                    box.y < itemY + itemH &&
+                    box.y + box.height > itemY
+                );
+            };
+
+            // Iterate all elements
+            layout.stations.forEach(s => {
+                if (intersects(s.x, s.y, s.width, s.height)) newSelection.push({ type: 'station', data: s });
+            });
+            layout.discs.forEach(d => {
+                // Approximate circle as square for selection
+                if (intersects(d.x - d.radius, d.y - d.radius, d.radius * 2, d.radius * 2)) newSelection.push({ type: 'disc', data: d });
+            });
+            layout.conveyors.forEach(c => {
+                // Simplified: check bounding box of start/end
+                const minX = Math.min(c.startX, c.endX);
+                const minY = Math.min(c.startY, c.endY);
+                const w = Math.abs(c.endX - c.startX) + c.width; // rough approx
+                const h = Math.abs(c.endY - c.startY) + c.width;
+                if (intersects(minX - c.width / 2, minY - c.width / 2, w, h)) newSelection.push({ type: 'conveyor', data: c });
+            });
+            layout.feeders.forEach(f => {
+                if (intersects(f.x, f.y, f.width, f.height)) newSelection.push({ type: 'feeder', data: f });
+            });
+            layout.shapes.forEach(s => {
+                // rough approx for all
+                if (intersects(s.x, s.y, s.width || 50, s.height || 50)) newSelection.push({ type: 'shape', data: s });
+            });
+
+            onSelectElements(newSelection);
+
+            setSelectionBox(null);
+            isSelecting.current = false;
+        }
+    };
 
     // Calculate offset to center the layout
     const offsetX = Math.max(0, (stageSize.width / zoom - layout.width) / 2);
@@ -78,20 +211,18 @@ const KonvaRenderer: React.FC<KonvaRendererProps> = ({
 
     // Transformer logic
     useEffect(() => {
-        if (trRef.current && stageRef.current && selectedElement && mode === 'edit') {
-            // Find the selected node
-            const selectedNode = stageRef.current.findOne('#' + selectedElement.data.id);
-            if (selectedNode) {
-                trRef.current.nodes([selectedNode]);
+        if (trRef.current && stageRef.current) {
+            const nodes = selectedElements.map(el => stageRef.current?.findOne('#' + el.data.id)).filter(Boolean) as Konva.Node[];
+
+            if (nodes.length > 0) {
+                trRef.current.nodes(nodes);
                 trRef.current.getLayer()?.batchDraw();
             } else {
                 trRef.current.nodes([]);
+                trRef.current.getLayer()?.batchDraw();
             }
-        } else if (trRef.current) {
-            trRef.current.nodes([]);
-            trRef.current.getLayer()?.batchDraw();
         }
-    }, [selectedElement, mode, layout]); // Add layout to dep to refind node if re-rendered
+    }, [selectedElements, mode, layout]); // Add layout to dep to refind node if re-rendered
 
     // Drop handler
     const handleDragOver = (e: React.DragEvent) => {
@@ -142,6 +273,9 @@ const KonvaRenderer: React.FC<KonvaRendererProps> = ({
                 scaleY={zoom}
                 onClick={handleStageClick}
                 onTap={handleStageClick}
+                onMouseDown={handleMouseDown}
+                onMouseMove={handleMouseMove}
+                onMouseUp={handleMouseUp}
             >
                 {/* Background Layer (Static relative to view, unaffected by zoom/pan if we want it fixed, but usually we want it to zoom) 
                     Actually, for an infinite canvas feel, we might want the grid to always fill.
@@ -212,7 +346,12 @@ const KonvaRenderer: React.FC<KonvaRendererProps> = ({
                             selected={isSelected('feeder', feeder.id)}
                             isRunning={state.isRunning}
                             mode={mode}
-                            onSelect={() => onSelectElement({ type: 'feeder', data: feeder })}
+                            onSelect={(e) => {
+                                const multi = e?.evt?.shiftKey;
+                                onSelectElement({ type: 'feeder', data: feeder }, multi);
+                                // Stop propagation? Konva event bubbling might trigger stage click
+                                if (e) e.cancelBubble = true;
+                            }}
                             onDragEnd={(x, y) => {
                                 const deltaX = x - feeder.x;
                                 const deltaY = y - feeder.y;
@@ -230,7 +369,11 @@ const KonvaRenderer: React.FC<KonvaRendererProps> = ({
                             angle={state.discAngles.get(disc.id) || 0}
                             selected={isSelected('disc', disc.id)}
                             mode={mode}
-                            onSelect={() => onSelectElement({ type: 'disc', data: disc })}
+                            onSelect={(e) => {
+                                const multi = e?.evt?.shiftKey;
+                                onSelectElement({ type: 'disc', data: disc }, multi);
+                                if (e) e.cancelBubble = true;
+                            }}
                             onDragEnd={(x, y) => {
                                 const deltaX = x - disc.x;
                                 const deltaY = y - disc.y;
@@ -248,7 +391,11 @@ const KonvaRenderer: React.FC<KonvaRendererProps> = ({
                             selected={isSelected('conveyor', conveyor.id)}
                             isRunning={state.isRunning}
                             mode={mode}
-                            onSelect={() => onSelectElement({ type: 'conveyor', data: conveyor })}
+                            onSelect={(e) => {
+                                const multi = e?.evt?.shiftKey;
+                                onSelectElement({ type: 'conveyor', data: conveyor }, multi);
+                                if (e) e.cancelBubble = true;
+                            }}
                             onDragEnd={(startX, startY, endX, endY) => {
                                 const deltaX = startX - conveyor.startX;
                                 const deltaY = startY - conveyor.startY;
@@ -271,7 +418,11 @@ const KonvaRenderer: React.FC<KonvaRendererProps> = ({
                                 selected={isSelected('station', station.id)}
                                 isRunning={state.isRunning}
                                 mode={mode}
-                                onSelect={() => onSelectElement({ type: 'station', data: station })}
+                                onSelect={(e) => {
+                                    const multi = e?.evt?.shiftKey;
+                                    onSelectElement({ type: 'station', data: station }, multi);
+                                    if (e) e.cancelBubble = true;
+                                }}
                                 onDragEnd={(x, y) => {
                                     const deltaX = x - station.x;
                                     const deltaY = y - station.y;
@@ -289,7 +440,11 @@ const KonvaRenderer: React.FC<KonvaRendererProps> = ({
                             shape={shape}
                             selected={isSelected('shape', shape.id)}
                             mode={mode}
-                            onSelect={() => onSelectElement({ type: 'shape', data: shape })}
+                            onSelect={(e) => {
+                                const multi = e?.evt?.shiftKey;
+                                onSelectElement({ type: 'shape', data: shape }, multi);
+                                if (e) e.cancelBubble = true;
+                            }}
                             onDragEnd={(x, y) => {
                                 const deltaX = x - shape.x;
                                 const deltaY = y - shape.y;
@@ -317,6 +472,21 @@ const KonvaRenderer: React.FC<KonvaRendererProps> = ({
                             };
                         }}
                     />
+                </Layer>
+
+                {/* Selection Layer */}
+                <Layer>
+                    {selectionBox && (
+                        <Rect
+                            x={selectionBox.startX}
+                            y={selectionBox.startY}
+                            width={selectionBox.width}
+                            height={selectionBox.height}
+                            fill="rgba(0, 161, 255, 0.3)"
+                            stroke="#00a1ff"
+                            strokeWidth={1}
+                        />
+                    )}
                 </Layer>
 
                 {/* UI Layer - Static overlays */}

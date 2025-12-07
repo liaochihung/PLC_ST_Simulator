@@ -8,7 +8,7 @@ interface KonvaStationProps {
     selected: boolean;
     isRunning: boolean;
     mode: 'edit' | 'runtime';
-    onSelect: () => void;
+    onSelect: (e: any) => void;
     onDragEnd: (x: number, y: number) => void;
     onUpdateElement?: (updates: Partial<MachineStation>) => void;
 }
