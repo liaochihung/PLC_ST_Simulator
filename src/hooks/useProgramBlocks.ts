@@ -6,6 +6,9 @@ import { DEFAULT_PROJECT } from '@/lib/default-project';
 export function useProgramBlocks() {
   const [project, setProject] = useState<ProgramProject>(DEFAULT_PROJECT);
   const [activeBlockId, setActiveBlockId] = useState<string | null>(DEFAULT_PROJECT.activeBlockId);
+  const [currentProjectId, setCurrentProjectId] = useState<string | null>(null);
+  const [isSaving, setIsSaving] = useState(false);
+
 
   const getActiveBlock = useCallback(() => {
     // Flatten blocks including children to find by ID
@@ -141,7 +144,53 @@ export function useProgramBlocks() {
     const subroutines = allBlocks.filter(b => b.type === 'subroutine').map(b => b.code).join('\n\n');
 
     return [globals, fbs, programs, subroutines].filter(s => s).join('\n\n');
+    return [globals, fbs, programs, subroutines].filter(s => s).join('\n\n');
   }, [project.blocks]);
+
+  // Project Management Functions
+  const loadProject = useCallback(async (id: string) => {
+    // Dynamic import to avoid circular dependencies if any, though Service is clean
+    const { ProjectService } = await import('@/lib/services/ProjectService');
+    const loadedProj = await ProjectService.getProject(id);
+    if (loadedProj) {
+      setProject(loadedProj);
+      setActiveBlockId(loadedProj.activeBlockId);
+      setCurrentProjectId(loadedProj.id);
+    }
+  }, []);
+
+  const saveProject = useCallback(async (asNew = false) => {
+    setIsSaving(true);
+    try {
+      const { ProjectService } = await import('@/lib/services/ProjectService');
+
+      const projectToSave = {
+        ...project,
+        activeBlockId // Ensure current active block is saved
+      };
+
+      if (currentProjectId && !asNew) {
+        // Update existing
+        projectToSave.id = currentProjectId;
+        await ProjectService.updateProject(projectToSave);
+      } else {
+        // Create new
+        const newId = await ProjectService.createProject(projectToSave);
+        if (newId) setCurrentProjectId(newId);
+      }
+    } catch (e) {
+      console.error("Failed to save project", e);
+      throw e;
+    } finally {
+      setIsSaving(false);
+    }
+  }, [project, activeBlockId, currentProjectId]);
+
+  const newProject = useCallback(() => {
+    setProject(DEFAULT_PROJECT);
+    setActiveBlockId(DEFAULT_PROJECT.activeBlockId);
+    setCurrentProjectId(null);
+  }, []);
 
   return {
     project,
@@ -153,6 +202,12 @@ export function useProgramBlocks() {
     toggleBlock,
     renameBlock,
     updateBlockCode,
-    getCombinedCode
+    getCombinedCode,
+    // Project Mgmt
+    currentProjectId,
+    isSaving,
+    loadProject,
+    saveProject,
+    newProject
   };
 }

@@ -6,7 +6,9 @@ import SimulatorControls from '@/components/SimulatorControls';
 import ProgramBlockTree from '@/components/ProgramBlockTree';
 import { useSimulator } from '@/hooks/useSimulator';
 import { useProgramBlocks } from '@/hooks/useProgramBlocks';
-import { Cpu, Code2, Activity, Eye, PanelLeftClose, PanelLeft } from 'lucide-react';
+import { Cpu, Code2, Activity, Eye, PanelLeftClose, PanelLeft, BookOpen, Save, Loader2, FolderOpen } from 'lucide-react';
+import { LibraryBrowser } from '@/components/LibraryBrowser';
+import { ProjectListDialog } from '@/components/ProjectListDialog';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 
@@ -43,11 +45,15 @@ const Index: React.FC = () => {
     renameBlock,
     updateBlockCode,
     getCombinedCode,
+    saveProject,
+    loadProject,
+    isSaving
   } = useProgramBlocks();
 
-  const [activeTab, setActiveTab] = useState<'visualization' | 'variables'>('visualization');
+  const [activeTab, setActiveTab] = useState<'visualization' | 'variables' | 'library'>('visualization');
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [codeEditorVisible, setCodeEditorVisible] = useState(true);
+  const [loadDialogOpen, setLoadDialogOpen] = useState(false);
 
   const activeBlock = getActiveBlock();
 
@@ -91,6 +97,32 @@ const Index: React.FC = () => {
         </div>
 
         <div className="flex items-center gap-4 text-sm text-muted-foreground">
+          {/* Project Controls */}
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => saveProject()}
+              disabled={isSaving}
+            >
+              {isSaving ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Save className="w-4 h-4 mr-2" />}
+              Save
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setLoadDialogOpen(true)}
+            >
+              <FolderOpen className="w-4 h-4 mr-2" />
+              Open
+            </Button>
+
+            <ProjectListDialog
+              open={loadDialogOpen}
+              onOpenChange={setLoadDialogOpen}
+              onLoad={loadProject}
+            />
+          </div>
           <span className="hidden md:inline">週期: {cycleCount}</span>
           <span>|</span>
           <span>{project.name}</span>
@@ -210,24 +242,56 @@ const Index: React.FC = () => {
               <Activity className="w-4 h-4" />
               變數
             </button>
+            <button
+              onClick={() => setActiveTab('library')}
+              className={cn(
+                "flex items-center gap-2 px-4 py-2 text-sm font-medium transition-colors",
+                activeTab === 'library'
+                  ? "text-primary border-b-2 border-primary bg-primary/5"
+                  : "text-muted-foreground hover:text-foreground"
+              )}
+            >
+              <BookOpen className="w-4 h-4" />
+              Library
+            </button>
           </div>
 
           {/* Tab Content */}
           <div className="flex-1 overflow-hidden">
-            {activeTab === 'visualization' ? (
+            {activeTab === 'visualization' && (
               <MachineEditor
                 discAngle={discAngle}
                 feederActive={feederActive}
                 isRunning={isRunning}
                 products={products}
               />
-            ) : (
+            )}
+            {activeTab === 'variables' && (
               <VariableMonitor
                 variables={variables}
                 timers={timers}
                 counters={counters}
                 onVariableChange={setVariable}
               />
+            )}
+            {activeTab === 'library' && (
+              <LibraryBrowser onImport={(fb) => {
+                // Check if block already exists
+                const exists = project.blocks.some(b => b.name === fb.name);
+                if (exists) {
+                  alert(`Block ${fb.name} already exists!`);
+                  return;
+                }
+
+                addBlock({
+                  name: fb.name,
+                  type: 'function-block',
+                  code: fb.sourceCode
+                });
+
+                // Optional: Switch to the new block or notify
+                console.log(`Imported ${fb.name}`);
+              }} />
             )}
           </div>
         </div>
