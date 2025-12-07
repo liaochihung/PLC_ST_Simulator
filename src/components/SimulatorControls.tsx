@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { Play, Square, RotateCcw, StepForward, Settings } from 'lucide-react';
+import { Play, Square, RotateCcw, StepForward, Settings, Code2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface SimulatorControlsProps {
@@ -12,6 +12,8 @@ interface SimulatorControlsProps {
   onReset: () => void;
   onStep: () => void;
   onScanTimeChange: (time: number) => void;
+  codeEditorVisible?: boolean;
+  onCodeEditorToggle?: () => void;
 }
 
 const SimulatorControls: React.FC<SimulatorControlsProps> = ({
@@ -22,7 +24,9 @@ const SimulatorControls: React.FC<SimulatorControlsProps> = ({
   onStop,
   onReset,
   onStep,
-  onScanTimeChange
+  onScanTimeChange,
+  codeEditorVisible,
+  onCodeEditorToggle
 }) => {
   return (
     <div className="flex items-center gap-4 p-4 bg-card border-b border-border">
@@ -49,7 +53,7 @@ const SimulatorControls: React.FC<SimulatorControlsProps> = ({
             停止
           </Button>
         )}
-        
+
         <Button
           onClick={onStep}
           variant="secondary"
@@ -60,7 +64,7 @@ const SimulatorControls: React.FC<SimulatorControlsProps> = ({
           <StepForward className="w-4 h-4" />
           單步
         </Button>
-        
+
         <Button
           onClick={onReset}
           variant="outline"
@@ -105,11 +109,28 @@ const SimulatorControls: React.FC<SimulatorControlsProps> = ({
             {isRunning ? '運行中' : '已停止'}
           </span>
         </div>
-        
+
         <div className="text-sm text-muted-foreground">
           週期: <span className="font-mono text-primary">{cycleCount}</span>
         </div>
       </div>
+
+      {/* Spacer to push code editor toggle to the right */}
+      <div className="flex-1" />
+
+      {/* Code Editor Toggle */}
+      {onCodeEditorToggle && (
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={onCodeEditorToggle}
+          className="gap-2"
+          title={codeEditorVisible ? '隱藏程式碼編輯器' : '顯示程式碼編輯器'}
+        >
+          <Code2 className="w-4 h-4" />
+          {codeEditorVisible ? '隱藏程式碼' : '顯示程式碼'}
+        </Button>
+      )}
     </div>
   );
 };

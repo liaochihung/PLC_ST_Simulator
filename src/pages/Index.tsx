@@ -6,7 +6,7 @@ import SimulatorControls from '@/components/SimulatorControls';
 import ProgramBlockTree from '@/components/ProgramBlockTree';
 import { useSimulator } from '@/hooks/useSimulator';
 import { useProgramBlocks } from '@/hooks/useProgramBlocks';
-import { Cpu, Code2, Activity, Eye, PanelLeftClose, PanelLeft, PanelRightClose, PanelRight } from 'lucide-react';
+import { Cpu, Code2, Activity, Eye, PanelLeftClose, PanelLeft } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 
@@ -107,6 +107,8 @@ const Index: React.FC = () => {
         onReset={reset}
         onStep={step}
         onScanTimeChange={setScanTime}
+        codeEditorVisible={codeEditorVisible}
+        onCodeEditorToggle={() => setCodeEditorVisible(!codeEditorVisible)}
       />
 
       {/* Error Display */}
@@ -161,15 +163,6 @@ const Index: React.FC = () => {
                         activeBlock.type === 'subroutine' ? '子程式' : '功能塊'}
                   </span>
                 )}
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => setCodeEditorVisible(false)}
-                  className="h-6 w-6"
-                  title="隱藏程式碼編輯器"
-                >
-                  <PanelRightClose className="w-3 h-3" />
-                </Button>
               </div>
             </div>
             <div className="flex-1 overflow-hidden p-2">
@@ -188,18 +181,6 @@ const Index: React.FC = () => {
           </div>
         )}
 
-        {/* Show Code Editor Button (when hidden) */}
-        {!codeEditorVisible && (
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setCodeEditorVisible(true)}
-            className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10"
-          >
-            <PanelRight className="w-4 h-4 mr-2" />
-            顯示程式碼
-          </Button>
-        )}
 
         {/* Right Panel - Visualization / Variables */}
         <div className="w-[400px] flex flex-col min-w-0">
