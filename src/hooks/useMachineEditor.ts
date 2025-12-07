@@ -7,7 +7,8 @@ import type {
   MachineFeeder,
   BasicShape,
   MachineElement,
-  EditorMode
+  EditorMode,
+  MachineGroup
 } from '@/types/machine-editor';
 
 // Default layout matching current visualization
@@ -32,7 +33,8 @@ const defaultLayout: MachineLayout = {
   feeders: [
     { id: 'f1', name: '震動送料機', x: 50, y: 200, width: 60, height: 80 }
   ],
-  shapes: []
+  shapes: [],
+  groups: []
 };
 
 const MAX_HISTORY = 50;
@@ -727,5 +729,305 @@ export function useMachineEditor() {
     redo,
     // Grid helper
     snapToGridValue,
+
+    // Grouping
+    groupSelectedElements: () => {
+      if (selectedElements.length < 2) return;
+
+      const newLayout = { ...layout };
+      const timestamp = Date.now();
+      const groupId = `g${timestamp}`;
+
+      // Calculate Bounding Box of selection
+      let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+
+      selectedElements.forEach(el => {
+        let ex = 0, ey = 0, ew = 0, eh = 0;
+        switch (el.type) {
+          case 'station':
+            ex = el.data.x; ey = el.data.y; ew = el.data.width; eh = el.data.height; break;
+          case 'disc':
+            // Center to TopLeft for bounding box
+            ex = el.data.x - el.data.radius; ey = el.data.y - el.data.radius;
+            ew = el.data.radius * 2; eh = el.data.radius * 2; break;
+          case 'feeder':
+            ex = el.data.x; ey = el.data.y; ew = el.data.width; eh = el.data.height; break;
+          case 'conveyor':
+            const minCX = Math.min(el.data.startX, el.data.endX);
+            const minCY = Math.min(el.data.startY, el.data.endY);
+            ex = minCX - el.data.width / 2; ey = minCY - el.data.width / 2;
+            ew = Math.abs(el.data.endX - el.data.startX) + el.data.width;
+            eh = Math.abs(el.data.endY - el.data.startY) + el.data.width;
+            break;
+          case 'shape':
+            ex = el.data.x; ey = el.data.y; ew = el.data.width ?? 0; eh = el.data.height ?? 0; break;
+          case 'group':
+            ex = el.data.x; ey = el.data.y; ew = 100; eh = 100; break;
+        }
+
+        if (ex < minX) minX = ex;
+        if (ey < minY) minY = ey;
+        if (ex + ew > maxX) maxX = ex + ew;
+        if (ey + eh > maxY) maxY = ey + eh;
+      });
+
+      const groupX = minX;
+      const groupY = minY;
+
+      const childIds: string[] = [];
+      const updateRelative = (item: any) => {
+        return {
+          ...item,
+          groupId: groupId,
+          x: item.x !== undefined ? item.x - groupX : undefined,
+          y: item.y !== undefined ? item.y - groupY : undefined,
+          startX: item.startX !== undefined ? item.startX - groupX : undefined,
+          startY: item.startY !== undefined ? item.startY - groupY : undefined,
+          endX: item.endX !== undefined ? item.endX - groupX : undefined,
+          endY: item.endY !== undefined ? item.endY - groupY : undefined,
+        };
+      };
+
+      selectedElements.forEach(el => {
+        childIds.push(el.data.id);
+        switch (el.type) {
+          case 'station':
+            newLayout.stations = newLayout.stations.map(s => s.id === el.data.id ? updateRelative(s) : s);
+            break;
+          case 'disc':
+            newLayout.discs = newLayout.discs.map(d => d.id === el.data.id ? updateRelative(d) : d);
+            break;
+          case 'feeder':
+            newLayout.feeders = newLayout.feeders.map(f => f.id === el.data.id ? updateRelative(f) : f);
+            break;
+          case 'conveyor':
+            newLayout.conveyors = newLayout.conveyors.map(c => c.id === el.data.id ? updateRelative(c) : c);
+            break;
+          case 'shape':
+            newLayout.shapes = newLayout.shapes.map(s => s.id === el.data.id ? updateRelative(s) : s);
+            break;
+          case 'group':
+            newLayout.groups = newLayout.groups.map(g => g.id === el.data.id ? updateRelative(g) : g);
+            break;
+        }
+      });
+
+      newLayout.groups.push({
+        id: groupId,
+        type: 'group',
+        x: groupX,
+        y: groupY,
+        childIds: childIds,
+        zIndex: 100
+      });
+
+      setLayout(newLayout);
+      recordHistory(newLayout);
+      // Select the new group
+      // We need to wait for render, but we can optimistically try
+      // Actually we need to reconstruct the MachineGroup object for selection
+      // But we can just clear selection for now or select the new group
+      const newGroup = newLayout.groups[newLayout.groups.length - 1];
+      if (newGroup) {
+        setSelectedElements([{ type: 'group', data: newGroup }]);
+      }
+    },
+
+    ungroupSelectedElements: () => {
+      if (selectedElements.length !== 1 || selectedElements[0].type !== 'group') return;
+      const group = selectedElements[0].data as MachineGroup;
+
+      const newLayout = { ...layout };
+      newLayout.groups = newLayout.groups.filter(g => g.id !== group.id);
+
+      const groupX = group.x;
+      const groupY = group.y;
+
+      // Restore children to absolute
+      const updateAbsolute = (item: any) => {
+        if (item.groupId !== group.id) return item;
+
+        return {
+          ...item,
+          groupId: undefined,
+          x: item.x !== undefined ? item.x + groupX : undefined,
+          y: item.y !== undefined ? item.y + groupY : undefined,
+          startX: item.startX !== undefined ? item.startX + groupX : undefined,
+          startY: item.startY !== undefined ? item.startY + groupY : undefined,
+          endX: item.endX !== undefined ? item.endX + groupX : undefined,
+          endY: item.endY !== undefined ? item.endY + groupY : undefined,
+        };
+      };
+
+      const childrenElements: MachineElement[] = [];
+
+      newLayout.stations = newLayout.stations.map(s => {
+        const updated = updateAbsolute(s);
+        if (s.groupId === group.id) childrenElements.push({ type: 'station', data: updated });
+        return updated;
+      });
+      newLayout.discs = newLayout.discs.map(d => {
+        const updated = updateAbsolute(d);
+        if (d.groupId === group.id) childrenElements.push({ type: 'disc', data: updated });
+        return updated;
+      });
+      newLayout.feeders = newLayout.feeders.map(f => {
+        const updated = updateAbsolute(f);
+        if (f.groupId === group.id) childrenElements.push({ type: 'feeder', data: updated });
+        return updated;
+      });
+      newLayout.conveyors = newLayout.conveyors.map(c => {
+        const updated = updateAbsolute(c);
+        if (c.groupId === group.id) childrenElements.push({ type: 'conveyor', data: updated });
+        return updated;
+      });
+      newLayout.shapes = newLayout.shapes.map(s => {
+        const updated = updateAbsolute(s);
+        if (s.groupId === group.id) childrenElements.push({ type: 'shape', data: updated });
+        return updated;
+      });
+
+      setLayout(newLayout);
+      recordHistory(newLayout);
+      selectElements(childrenElements);
+    },
+
+    alignSelectedElements: (align: 'left' | 'center' | 'right' | 'top' | 'middle' | 'bottom') => {
+      if (selectedElements.length < 2) return;
+
+      let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+
+      selectedElements.forEach(el => {
+        let ex = 0, ey = 0, ew = 0, eh = 0;
+        switch (el.type) {
+          case 'station':
+            ex = el.data.x; ey = el.data.y; ew = el.data.width; eh = el.data.height; break;
+          case 'disc':
+            ex = el.data.x - el.data.radius; ey = el.data.y - el.data.radius;
+            ew = el.data.radius * 2; eh = el.data.radius * 2; break;
+          case 'feeder':
+            ex = el.data.x; ey = el.data.y; ew = el.data.width; eh = el.data.height; break;
+          case 'conveyor':
+            const minCX = Math.min(el.data.startX, el.data.endX);
+            const minCY = Math.min(el.data.startY, el.data.endY);
+            ex = minCX - el.data.width / 2; ey = minCY - el.data.width / 2;
+            ew = Math.abs(el.data.endX - el.data.startX) + el.data.width;
+            eh = Math.abs(el.data.endY - el.data.startY) + el.data.width;
+            break;
+          case 'shape':
+            ex = el.data.x; ey = el.data.y; ew = el.data.width || 0; eh = el.data.height || 0; break;
+          case 'group':
+            ex = el.data.x; ey = el.data.y; ew = 100; eh = 100; break;
+        }
+
+        if (ex < minX) minX = ex;
+        if (ey < minY) minY = ey;
+        if (ex + ew > maxX) maxX = ex + ew;
+        if (ey + eh > maxY) maxY = ey + eh;
+      });
+
+      const centerLineX = (minX + maxX) / 2;
+      const centerLineY = (minY + maxY) / 2;
+
+      const newLayout = { ...layout };
+
+      const updatePosition = (item: any, type: string) => {
+        let ew = 0, eh = 0;
+        if (type === 'station' || type === 'feeder' || type === 'shape') { ew = item.width || 0; eh = item.height || 0; }
+        if (type === 'disc') { ew = item.radius * 2; eh = item.radius * 2; }
+        if (type === 'conveyor') return item;
+
+        let newX = item.x;
+        let newY = item.y;
+
+        const isTopLeft = type !== 'disc';
+
+        if (!isTopLeft) { // Disc
+          if (align === 'left') newX = minX + item.radius;
+          if (align === 'center') newX = centerLineX;
+          if (align === 'right') newX = maxX - item.radius;
+          if (align === 'top') newY = minY + item.radius;
+          if (align === 'middle') newY = centerLineY;
+          if (align === 'bottom') newY = maxY - item.radius;
+        } else {
+          if (align === 'left') newX = minX;
+          if (align === 'center') newX = centerLineX - ew / 2;
+          if (align === 'right') newX = maxX - ew;
+          if (align === 'top') newY = minY;
+          if (align === 'middle') newY = centerLineY - eh / 2;
+          if (align === 'bottom') newY = maxY - eh;
+        }
+        return { ...item, x: newX, y: newY };
+      };
+
+      const isSelected = (id: string, type: string) => selectedElements.some(e => e.data.id === id && e.type === type);
+
+      newLayout.stations = newLayout.stations.map(s => isSelected(s.id, 'station') ? updatePosition(s, 'station') : s);
+      newLayout.discs = newLayout.discs.map(d => isSelected(d.id, 'disc') ? updatePosition(d, 'disc') : d);
+      newLayout.feeders = newLayout.feeders.map(f => isSelected(f.id, 'feeder') ? updatePosition(f, 'feeder') : f);
+      newLayout.shapes = newLayout.shapes.map(s => isSelected(s.id, 'shape') ? updatePosition(s, 'shape') : s);
+      newLayout.groups = newLayout.groups.map(g => isSelected(g.id, 'group') ? updatePosition(g, 'group') : g);
+
+      setLayout(newLayout);
+      recordHistory(newLayout);
+    },
+
+    reorderSelectedElements: (action: 'front' | 'back' | 'forward' | 'backward') => {
+      if (selectedElements.length === 0) return;
+
+      const allElements: { id: string, zIndex: number, type: string }[] = [];
+      const add = (arr: any[], type: string) => arr.forEach(x => allElements.push({ id: x.id, zIndex: x.zIndex || 0, type }));
+
+      add(layout.stations, 'station');
+      add(layout.discs, 'disc');
+      add(layout.feeders, 'feeder');
+      add(layout.conveyors, 'conveyor');
+      add(layout.shapes, 'shape');
+      add(layout.groups, 'group');
+
+      allElements.sort((a, b) => a.zIndex - b.zIndex);
+
+      const selectedIds = new Set(selectedElements.map(e => e.data.id));
+
+      if (action === 'front') {
+        const topZ = allElements.length > 0 ? allElements[allElements.length - 1].zIndex : 0;
+        let nextZ = topZ + 1;
+        const updates = new Map<string, number>();
+        allElements.forEach(el => {
+          if (selectedIds.has(el.id)) updates.set(el.id, nextZ++);
+        });
+
+        const newLayout = { ...layout };
+        const apply = (arr: any[]) => arr.map(x => updates.has(x.id) ? { ...x, zIndex: updates.get(x.id) } : x);
+        newLayout.stations = apply(newLayout.stations);
+        newLayout.discs = apply(newLayout.discs);
+        newLayout.feeders = apply(newLayout.feeders);
+        newLayout.conveyors = apply(newLayout.conveyors);
+        newLayout.shapes = apply(newLayout.shapes);
+        newLayout.groups = apply(newLayout.groups);
+
+        setLayout(newLayout);
+        recordHistory(newLayout);
+      } else if (action === 'back') {
+        const bottomZ = allElements.length > 0 ? allElements[0].zIndex : 0;
+        let nextZ = bottomZ - 1;
+        const updates = new Map<string, number>();
+        allElements.forEach(el => {
+          if (selectedIds.has(el.id)) updates.set(el.id, nextZ--);
+        });
+
+        const newLayout = { ...layout };
+        const apply = (arr: any[]) => arr.map(x => updates.has(x.id) ? { ...x, zIndex: updates.get(x.id) } : x);
+        newLayout.stations = apply(newLayout.stations);
+        newLayout.discs = apply(newLayout.discs);
+        newLayout.feeders = apply(newLayout.feeders);
+        newLayout.conveyors = apply(newLayout.conveyors);
+        newLayout.shapes = apply(newLayout.shapes);
+        newLayout.groups = apply(newLayout.groups);
+        setLayout(newLayout);
+        recordHistory(newLayout);
+      }
+    },
+
   };
 }

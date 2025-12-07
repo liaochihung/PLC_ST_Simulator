@@ -19,7 +19,18 @@ import {
   Clipboard,
   CopyPlus,
   Undo,
-  Redo
+  Redo,
+  Group,
+  Ungroup,
+  AlignLeft,
+  AlignCenter,
+  AlignRight,
+  ArrowUpToLine,
+  AlignVerticalJustifyCenter, // Middle
+  ArrowDownToLine,
+  BringToFront,
+  SendToBack,
+  Layers
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import type { EditorMode, MachineElement } from '@/types/machine-editor';
@@ -60,6 +71,11 @@ interface MachineEditorToolbarProps {
   canRedo: boolean;
   onUndo: () => void;
   onRedo: () => void;
+  // Grouping & Alignment
+  onGroup: () => void;
+  onUngroup: () => void;
+  onAlign: (align: 'left' | 'center' | 'right' | 'top' | 'middle' | 'bottom') => void;
+  onReorder: (action: 'front' | 'back' | 'forward' | 'backward') => void;
 }
 
 const MachineEditorToolbar: React.FC<MachineEditorToolbarProps> = ({
@@ -89,6 +105,10 @@ const MachineEditorToolbar: React.FC<MachineEditorToolbarProps> = ({
   canRedo,
   onUndo,
   onRedo,
+  onGroup,
+  onUngroup,
+  onAlign,
+  onReorder,
 }) => {
   const hasSelection = selectedElements.length > 0;
 
@@ -281,6 +301,48 @@ const MachineEditorToolbar: React.FC<MachineEditorToolbarProps> = ({
         </>
       )}
 
+      {/* Group & Align (Edit mode only) */}
+      {mode === 'edit' && hasSelection && (
+        <>
+          <Button variant="outline" size="sm" onClick={onGroup} className="h-7 px-2 text-xs" title="群組">
+            <Group className="w-3 h-3" />
+          </Button>
+          <Button variant="outline" size="sm" onClick={onUngroup} className="h-7 px-2 text-xs" title="解散群組">
+            <Ungroup className="w-3 h-3" />
+          </Button>
+
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" size="sm" className="h-7 px-2 text-xs" title="對齊">
+                <AlignLeft className="w-3 h-3" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuItem onClick={() => onAlign('left')}><AlignLeft className="w-4 h-4 mr-2" />置左對齊</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => onAlign('center')}><AlignCenter className="w-4 h-4 mr-2" />水平置中</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => onAlign('right')}><AlignRight className="w-4 h-4 mr-2" />置右對齊</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => onAlign('top')}><ArrowUpToLine className="w-4 h-4 mr-2" />置頂對齊</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => onAlign('middle')}><AlignVerticalJustifyCenter className="w-4 h-4 mr-2" />垂直置中</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => onAlign('bottom')}><ArrowDownToLine className="w-4 h-4 mr-2" />置底對齊</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" size="sm" className="h-7 px-2 text-xs" title="順序">
+                <Layers className="w-3 h-3" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuItem onClick={() => onReorder('front')}><BringToFront className="w-4 h-4 mr-2" />移到最上層</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => onReorder('back')}><SendToBack className="w-4 h-4 mr-2" />移到最下層</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          <div className="w-px h-6 bg-border" />
+        </>
+      )}
+
       {/* History Controls */}
       <Button
         variant="outline"
@@ -327,6 +389,7 @@ const MachineEditorToolbar: React.FC<MachineEditorToolbarProps> = ({
                 {selectedElements[0].type === 'conveyor' && '輸送帶'}
                 {selectedElements[0].type === 'feeder' && selectedElements[0].data.name}
                 {selectedElements[0].type === 'shape' && `形狀 (${selectedElements[0].data.type})`}
+                {selectedElements[0].type === 'group' && '群組'}
               </>
             ) : (
               `已選擇 ${selectedElements.length} 個物件`

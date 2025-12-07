@@ -65,6 +65,11 @@ const MachineEditor: React.FC<MachineEditorProps> = ({
     canRedo,
     undo,
     redo,
+    // Grouping
+    groupSelectedElements,
+    ungroupSelectedElements,
+    alignSelectedElements,
+    reorderSelectedElements
   } = useMachineEditor();
 
   const selectedElement = selectedElements.length === 1 ? selectedElements[0] : null;
@@ -384,6 +389,11 @@ const MachineEditor: React.FC<MachineEditorProps> = ({
         canRedo={canRedo}
         onUndo={undo}
         onRedo={redo}
+        // Grouping & Alignment
+        onGroup={groupSelectedElements}
+        onUngroup={ungroupSelectedElements}
+        onAlign={alignSelectedElements}
+        onReorder={reorderSelectedElements}
       />
 
       <div className="flex-1 flex overflow-hidden">
