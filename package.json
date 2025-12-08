@@ -13,6 +13,7 @@
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
     "@monaco-editor/react": "^4.7.0",
+    "@naresh-khatri/konva-editor": "^0.1.11",
     "@pixi/react": "^8.0.5",
     "@radix-ui/react-accordion": "^1.2.11",
     "@radix-ui/react-alert-dialog": "^1.1.14",
@@ -70,7 +71,9 @@
     "sonner": "^1.7.4",
     "tailwind-merge": "^2.6.0",
     "tailwindcss-animate": "^1.0.7",
+    "use-image": "^1.1.4",
     "util": "^0.12.5",
+    "uuid": "^13.0.0",
     "vaul": "^0.9.9",
     "zod": "^3.25.76",
     "zustand": "^5.0.9"
