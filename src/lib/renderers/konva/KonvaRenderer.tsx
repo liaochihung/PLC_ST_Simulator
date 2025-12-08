@@ -241,11 +241,11 @@ const KonvaRenderer: React.FC<KonvaRendererProps> = ({
     // --- Recursive Render Helper ---
     const renderItem = (item: any) => {
         const commonProps = {
-            key: item.id,
+            // key property removed to be passed explicitly
             selected: isSelected(item.elementType, item.id),
             mode: mode,
             isRunning: state.isRunning,
-            onSelect: (e: any) => {
+            onSelect: (e?: any) => {
                 const multi = e?.evt?.shiftKey;
                 // If item found, dispatch select
                 // Note: KonvaGroup might handle this too
@@ -291,15 +291,15 @@ const KonvaRenderer: React.FC<KonvaRendererProps> = ({
             case 'station':
                 const stationState = state.stationStates.get(item.id);
                 const active = stationState ? Object.values(stationState).some(v => v === true) : false;
-                return <KonvaStation {...commonProps} station={item} active={active} />;
+                return <KonvaStation key={item.id} {...commonProps} station={item} active={active} />;
             case 'disc':
-                return <KonvaDisc {...commonProps} disc={item} angle={state.discAngles.get(item.id) || 0} />;
+                return <KonvaDisc key={item.id} {...commonProps} disc={item} angle={state.discAngles.get(item.id) || 0} />;
             case 'feeder':
-                return <KonvaFeeder {...commonProps} feeder={item} active={state.feederStates.get(item.id) || false} />;
+                return <KonvaFeeder key={item.id} {...commonProps} feeder={item} active={state.feederStates.get(item.id) || false} />;
             case 'conveyor':
-                return <KonvaConveyor {...commonProps} conveyor={item} />;
+                return <KonvaConveyor key={item.id} {...commonProps} conveyor={item} />;
             case 'shape':
-                return <KonvaBasicShape {...commonProps} shape={item} />;
+                return <KonvaBasicShape key={item.id} {...commonProps} shape={item} />;
             case 'group':
                 // Find children
                 const children = [

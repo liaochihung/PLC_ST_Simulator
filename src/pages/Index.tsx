@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import CodeEditor from '@/components/CodeEditor';
 import MachineEditor from '@/components/machine/MachineEditor';
 import VariableMonitor from '@/components/VariableMonitor';
@@ -18,10 +19,13 @@ import {
   ResizablePanel,
   ResizablePanelGroup,
 } from "@/components/ui/resizable"
+import MachineToolbox from '@/components/machine/MachineToolbox';
+import { MainLayout } from '@/components/layout/MainLayout';
+import { PropertyPanel } from '@/components/editor/PropertyPanel';
 
 const Index: React.FC = () => {
   const {
-    interpreter, // Keep for debugging if needed, or remove if unused
+    interpreter,
     variables,
     timers,
     counters,
@@ -83,6 +87,175 @@ const Index: React.FC = () => {
     }
   };
 
+  const LeftPanelContent = (
+    <div className="h-full flex flex-col bg-background">
+      <Tabs defaultValue="explorer" className="h-full flex flex-col">
+        <div className="border-b px-2 pt-2 bg-muted/20">
+          <TabsList className="w-full grid grid-cols-2 h-8">
+            <TabsTrigger value="explorer" className="text-xs">Explorer</TabsTrigger>
+            <TabsTrigger value="toolbox" className="text-xs">Toolbox</TabsTrigger>
+          </TabsList>
+        </div>
+
+        <TabsContent value="explorer" className="flex-1 mt-0 overflow-hidden data-[state=inactive]:hidden">
+          <ProgramBlockTree
+            project={project}
+            onBlockSelect={selectBlock}
+            onBlockAdd={addBlock}
+            onBlockDelete={deleteBlock}
+            onBlockToggle={toggleBlock}
+            onBlockRename={renameBlock}
+            isRunning={isRunning}
+          />
+        </TabsContent>
+
+        <TabsContent value="toolbox" className="flex-1 mt-0 overflow-hidden data-[state=inactive]:hidden">
+          <MachineToolbox />
+          {/* <div className="p-4">Toolbox Placeholder</div> */}
+        </TabsContent>
+      </Tabs>
+    </div>
+  );
+
+  const CenterPanelContent = (
+    <ResizablePanelGroup direction="horizontal">
+      {codeEditorVisible && (
+        <>
+          <ResizablePanel defaultSize={65} minSize={30}>
+            {/* Center Panel - Code Editor */}
+            <div className="h-full flex flex-col min-w-0">
+              <div className="panel-header flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Code2 className="w-4 h-4 text-primary" />
+                  <span className="panel-title">
+                    {activeBlock ? activeBlock.name : '請選擇區塊'}
+                  </span>
+                  {activeBlock?.type === 'scan' && activeBlock.scanInterval && (
+                    <span className="text-xs px-2 py-0.5 rounded bg-primary/10 text-primary">
+                      {activeBlock.scanInterval}ms
+                    </span>
+                  )}
+                </div>
+                <div className="flex items-center gap-2">
+                  {activeBlock && (
+                    <span className="text-xs text-muted-foreground">
+                      {activeBlock.type === 'init' ? '初始化區塊' :
+                        activeBlock.type === 'scan' ? '掃描區塊' :
+                          activeBlock.type === 'subroutine' ? '子程式' : '功能塊'}
+                    </span>
+                  )}
+                </div>
+              </div>
+              <div className="flex-1 overflow-hidden p-2">
+                {activeBlock ? (
+                  <CodeEditor
+                    value={activeBlock.code}
+                    onChange={handleCodeChange}
+                    readOnly={isRunning}
+                  />
+                ) : (
+                  <div className="h-full flex items-center justify-center text-muted-foreground">
+                    <p>請從左側選擇一個程式區塊</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          </ResizablePanel>
+          <ResizableHandle withHandle />
+        </>
+      )}
+
+      <ResizablePanel defaultSize={codeEditorVisible ? 35 : 100} minSize={20}>
+        {/* Right Panel - Visualization / Variables */}
+        <div className="h-full flex flex-col min-w-0">
+          {/* Tabs */}
+          <div className="flex border-b border-border">
+            <button
+              onClick={() => setActiveTab('visualization')}
+              className={cn(
+                "flex items-center gap-2 px-4 py-2 text-sm font-medium transition-colors",
+                activeTab === 'visualization'
+                  ? "text-primary border-b-2 border-primary bg-primary/5"
+                  : "text-muted-foreground hover:text-foreground"
+              )}
+            >
+              <Eye className="w-4 h-4" />
+              機台
+            </button>
+            <button
+              onClick={() => setActiveTab('variables')}
+              className={cn(
+                "flex items-center gap-2 px-4 py-2 text-sm font-medium transition-colors",
+                activeTab === 'variables'
+                  ? "text-primary border-b-2 border-primary bg-primary/5"
+                  : "text-muted-foreground hover:text-foreground"
+              )}
+            >
+              <Activity className="w-4 h-4" />
+              變數
+            </button>
+            <button
+              onClick={() => setActiveTab('library')}
+              className={cn(
+                "flex items-center gap-2 px-4 py-2 text-sm font-medium transition-colors",
+                activeTab === 'library'
+                  ? "text-primary border-b-2 border-primary bg-primary/5"
+                  : "text-muted-foreground hover:text-foreground"
+              )}
+            >
+              <BookOpen className="w-4 h-4" />
+              Library
+            </button>
+          </div>
+
+          {/* Tab Content */}
+          <div className="flex-1 overflow-hidden">
+            {activeTab === 'visualization' && (
+              <MachineEditor
+                discAngle={bindingResult.discAngles.get('d1') ?? discAngle}
+                feederActive={bindingResult.feederStates.get('f1') ?? feederActive}
+                isRunning={isRunning}
+                products={products}
+                stationStates={bindingResult.stationStates}
+              />
+            )}
+            {activeTab === 'variables' && (
+              <VariableMonitor
+                variables={variables}
+                timers={timers}
+                counters={counters}
+                onVariableChange={setVariable}
+              />
+            )}
+            {activeTab === 'library' && (
+              <LibraryBrowser onImport={(fb) => {
+                // Check if block already exists
+                const exists = project.blocks.some(b => b.name === fb.name);
+                if (exists) {
+                  alert(`Block ${fb.name} already exists!`);
+                  return;
+                }
+
+                // Add the function block
+                addBlock('function-block');
+
+                // Find the newly added block (last one) and update its code
+                const newBlockId = `block_${Date.now()}`;
+                setTimeout(() => {
+                  renameBlock(newBlockId, fb.name);
+                  updateBlockCode(newBlockId, fb.sourceCode);
+                }, 0);
+
+                // Optional: Switch to the new block or notify
+                console.log(`Imported ${fb.name}`);
+              }} />
+            )}
+          </div>
+        </div>
+      </ResizablePanel>
+    </ResizablePanelGroup>
+  )
+
   return (
     <div className="h-screen flex flex-col bg-background text-foreground overflow-hidden">
       {/* Header */}
@@ -91,7 +264,7 @@ const Index: React.FC = () => {
           <Button
             variant="ghost"
             size="icon"
-            onClick={() => setSidebarOpen(!sidebarOpen)}
+            onClick={() => setSidebarOpen(!sidebarOpen)} // TODO: Connect to MainLayout handle
             className="h-8 w-8"
           >
             {sidebarOpen ? (
@@ -164,167 +337,11 @@ const Index: React.FC = () => {
       )}
 
       {/* Main Content */}
-      <div className="flex-1 flex overflow-hidden">
-        {/* Left Sidebar - Program Block Tree */}
-        <div
-          className={cn(
-            "border-r border-border transition-all duration-300 overflow-hidden",
-            sidebarOpen ? "w-64" : "w-0"
-          )}
-        >
-          {sidebarOpen && (
-            <ProgramBlockTree
-              project={project}
-              onBlockSelect={selectBlock}
-              onBlockAdd={addBlock}
-              onBlockDelete={deleteBlock}
-              onBlockToggle={toggleBlock}
-              onBlockRename={renameBlock}
-              isRunning={isRunning}
-            />
-          )}
-        </div>
-
-        {/* Resizable Content Area */}
-        <div className="flex-1 overflow-hidden">
-          <ResizablePanelGroup direction="horizontal">
-            {codeEditorVisible && (
-              <>
-                <ResizablePanel defaultSize={65} minSize={30}>
-                  {/* Center Panel - Code Editor */}
-                  <div className="h-full flex flex-col min-w-0">
-                    <div className="panel-header flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <Code2 className="w-4 h-4 text-primary" />
-                        <span className="panel-title">
-                          {activeBlock ? activeBlock.name : '請選擇區塊'}
-                        </span>
-                        {activeBlock?.type === 'scan' && activeBlock.scanInterval && (
-                          <span className="text-xs px-2 py-0.5 rounded bg-primary/10 text-primary">
-                            {activeBlock.scanInterval}ms
-                          </span>
-                        )}
-                      </div>
-                      <div className="flex items-center gap-2">
-                        {activeBlock && (
-                          <span className="text-xs text-muted-foreground">
-                            {activeBlock.type === 'init' ? '初始化區塊' :
-                              activeBlock.type === 'scan' ? '掃描區塊' :
-                                activeBlock.type === 'subroutine' ? '子程式' : '功能塊'}
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                    <div className="flex-1 overflow-hidden p-2">
-                      {activeBlock ? (
-                        <CodeEditor
-                          value={activeBlock.code}
-                          onChange={handleCodeChange}
-                          readOnly={isRunning}
-                        />
-                      ) : (
-                        <div className="h-full flex items-center justify-center text-muted-foreground">
-                          <p>請從左側選擇一個程式區塊</p>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </ResizablePanel>
-                <ResizableHandle withHandle />
-              </>
-            )}
-
-            <ResizablePanel defaultSize={codeEditorVisible ? 35 : 100} minSize={20}>
-              {/* Right Panel - Visualization / Variables */}
-              <div className="h-full flex flex-col min-w-0">
-                {/* Tabs */}
-                <div className="flex border-b border-border">
-                  <button
-                    onClick={() => setActiveTab('visualization')}
-                    className={cn(
-                      "flex items-center gap-2 px-4 py-2 text-sm font-medium transition-colors",
-                      activeTab === 'visualization'
-                        ? "text-primary border-b-2 border-primary bg-primary/5"
-                        : "text-muted-foreground hover:text-foreground"
-                    )}
-                  >
-                    <Eye className="w-4 h-4" />
-                    機台
-                  </button>
-                  <button
-                    onClick={() => setActiveTab('variables')}
-                    className={cn(
-                      "flex items-center gap-2 px-4 py-2 text-sm font-medium transition-colors",
-                      activeTab === 'variables'
-                        ? "text-primary border-b-2 border-primary bg-primary/5"
-                        : "text-muted-foreground hover:text-foreground"
-                    )}
-                  >
-                    <Activity className="w-4 h-4" />
-                    變數
-                  </button>
-                  <button
-                    onClick={() => setActiveTab('library')}
-                    className={cn(
-                      "flex items-center gap-2 px-4 py-2 text-sm font-medium transition-colors",
-                      activeTab === 'library'
-                        ? "text-primary border-b-2 border-primary bg-primary/5"
-                        : "text-muted-foreground hover:text-foreground"
-                    )}
-                  >
-                    <BookOpen className="w-4 h-4" />
-                    Library
-                  </button>
-                </div>
-
-                {/* Tab Content */}
-                <div className="flex-1 overflow-hidden">
-                  {activeTab === 'visualization' && (
-                    <MachineEditor
-                      discAngle={bindingResult.discAngles.get('d1') ?? discAngle}
-                      feederActive={bindingResult.feederStates.get('f1') ?? feederActive}
-                      isRunning={isRunning}
-                      products={products}
-                      stationStates={bindingResult.stationStates}
-                    />
-                  )}
-                  {activeTab === 'variables' && (
-                    <VariableMonitor
-                      variables={variables}
-                      timers={timers}
-                      counters={counters}
-                      onVariableChange={setVariable}
-                    />
-                  )}
-                  {activeTab === 'library' && (
-                    <LibraryBrowser onImport={(fb) => {
-                      // Check if block already exists
-                      const exists = project.blocks.some(b => b.name === fb.name);
-                      if (exists) {
-                        alert(`Block ${fb.name} already exists!`);
-                        return;
-                      }
-
-                      // Add the function block
-                      addBlock('function-block');
-
-                      // Find the newly added block (last one) and update its code
-                      const newBlockId = `block_${Date.now()}`;
-                      setTimeout(() => {
-                        renameBlock(newBlockId, fb.name);
-                        updateBlockCode(newBlockId, fb.sourceCode);
-                      }, 0);
-
-                      // Optional: Switch to the new block or notify
-                      console.log(`Imported ${fb.name}`);
-                    }} />
-                  )}
-                </div>
-              </div>
-            </ResizablePanel>
-          </ResizablePanelGroup>
-        </div>
-      </div>
+      <MainLayout
+        leftPanel={LeftPanelContent}
+        centerPanel={CenterPanelContent}
+        rightPanel={<PropertyPanel />}
+      />
 
       {/* Footer */}
       <footer className="px-4 py-1.5 bg-card border-t border-border flex items-center justify-between text-xs text-muted-foreground">

@@ -12,12 +12,14 @@ interface MachinePropertyPanelProps {
   element: MachineElement;
   onUpdate: (updates: Partial<MachineStation | MachineDisc | MachineFeeder | MachineConveyor>) => void;
   onClose: () => void;
+  className?: string; // Added prop
 }
 
 const MachinePropertyPanel: React.FC<MachinePropertyPanelProps> = ({
   element,
   onUpdate,
   onClose,
+  className,
 }) => {
   const renderStationProperties = (station: MachineStation) => (
     <>
@@ -302,7 +304,7 @@ const MachinePropertyPanel: React.FC<MachinePropertyPanelProps> = ({
   );
 
   return (
-    <div className="absolute right-2 top-2 w-56 bg-card border border-border rounded-lg shadow-lg p-3 z-10">
+    <div className={className || "absolute right-2 top-2 w-56 bg-card border border-border rounded-lg shadow-lg p-3 z-10"}>
       <div className="flex items-center justify-between mb-3">
         <h3 className="text-sm font-medium">
           {element.type === 'station' && '站別屬性'}

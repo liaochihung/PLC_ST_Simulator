@@ -3,7 +3,7 @@ import React, { useMemo, useEffect } from 'react';
 import KonvaRenderer from '@/lib/renderers/konva/KonvaRenderer';
 import MachineEditorToolbar from './MachineEditorToolbar';
 import MachinePropertyPanel from './MachinePropertyPanel';
-import ComponentPalette from './ComponentPalette';
+// import ComponentPalette from './ComponentPalette';
 import { useMachineEditor } from '@/hooks/useMachineEditor';
 import type { MachineStation, MachineElement } from '@/types/machine-editor';
 import type { MachineRuntimeState } from '@/types/renderer';
@@ -398,16 +398,7 @@ const MachineEditor: React.FC<MachineEditorProps> = ({
 
       <div className="flex-1 flex overflow-hidden">
         {/* Component Palette (Edit mode only) */}
-        {mode === 'edit' && (
-          <ComponentPalette
-            onAddShape={addShape}
-            onAddStation={handleAddStation}
-            onAddDisc={handleAddDisc}
-            onAddConveyor={handleAddConveyor}
-            onAddFeeder={handleAddFeeder}
-            layoutCenter={{ x: layout.width / 2, y: layout.height / 2 }}
-          />
-        )}
+        {/* Component Palette moved to Left Sidebar (MachineToolbox) */}
 
         <div className="flex-1 relative overflow-hidden p-2">
           <div className="w-full h-full flex items-center justify-center">

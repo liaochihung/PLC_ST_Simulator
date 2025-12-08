@@ -1,3 +1,5 @@
+import { MachineLayout } from './machine-editor';
+
 // 程式區塊類型定義
 export type BlockType = 'init' | 'scan' | 'subroutine' | 'function-block';
 
@@ -19,6 +21,10 @@ export interface ProgramProject {
   name: string;
   blocks: ProgramBlock[];
   activeBlockId: string | null;
+  visualDesign?: {
+    layout: MachineLayout;
+    views?: any[];
+  }
 }
 
 // 預設區塊模板
