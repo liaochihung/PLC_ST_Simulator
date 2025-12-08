@@ -25,6 +25,8 @@ interface KonvaRendererProps {
     gridVisible: boolean;
     gridSize: number;
     snapToGrid: boolean;
+    isPanMode?: boolean;
+    onPanOffsetChange?: (offset: { x: number; y: number }) => void;
 }
 
 const KonvaRenderer: React.FC<KonvaRendererProps> = ({
@@ -42,6 +44,8 @@ const KonvaRenderer: React.FC<KonvaRendererProps> = ({
     gridVisible,
     gridSize,
     snapToGrid,
+    isPanMode = false,
+    onPanOffsetChange,
 }) => {
     const [stageSize, setStageSize] = useState({ width: 500, height: 500 });
     const stageRef = useRef<Konva.Stage>(null);
@@ -50,6 +54,10 @@ const KonvaRenderer: React.FC<KonvaRendererProps> = ({
     // Rubber band selection state
     const [selectionBox, setSelectionBox] = useState<{ startX: number; startY: number; width: number; height: number } | null>(null);
     const isSelecting = useRef(false);
+
+    // Pan mode state
+    const [isPanning, setIsPanning] = useState(false);
+    const panStart = useRef<{ x: number; y: number } | null>(null);
 
     // Update stage size on mount and resize
     useEffect(() => {
@@ -73,15 +81,6 @@ const KonvaRenderer: React.FC<KonvaRendererProps> = ({
         return selectedElements.some(el => el.type === type && el.data.id === id);
     }, [selectedElements]);
 
-    const handleStageClick = useCallback((e: any) => {
-        if (selectionBox) {
-            return;
-        }
-        if (e.target === e.target.getStage() || e.target.attrs.id === 'background') {
-            onSelectElement(null);
-        }
-    }, [onSelectElement, selectionBox]);
-
     const handleMouseDown = (e: Konva.KonvaEventObject<MouseEvent>) => {
         if (e.target !== e.target.getStage() && e.target.attrs.id !== 'background') return;
 
@@ -90,6 +89,20 @@ const KonvaRenderer: React.FC<KonvaRendererProps> = ({
 
         const pos = stage.getPointerPosition();
         if (!pos) return;
+
+        // Pan mode: start panning
+        if (isPanMode) {
+            setIsPanning(true);
+            const stagePos = stage.position();
+            panStart.current = {
+                x: pos.x - stagePos.x,
+                y: pos.y - stagePos.y
+            };
+            return;
+        }
+
+        // Edit mode: start rubber band selection
+        if (mode !== 'edit') return;
 
         const transform = e.target.getStage()?.getAbsoluteTransform().copy();
         transform?.invert();
@@ -107,13 +120,25 @@ const KonvaRenderer: React.FC<KonvaRendererProps> = ({
     };
 
     const handleMouseMove = (e: Konva.KonvaEventObject<MouseEvent>) => {
-        if (!isSelecting.current || !selectionBox) return;
-
         const stage = e.target.getStage();
         if (!stage) return;
 
         const pos = stage.getPointerPosition();
         if (!pos) return;
+
+        // Handle panning
+        if (isPanning && panStart.current) {
+            const newPos = {
+                x: pos.x - panStart.current.x,
+                y: pos.y - panStart.current.y
+            };
+            stage.position(newPos);
+            stage.batchDraw();
+            return;
+        }
+
+        // Handle rubber band selection
+        if (!isSelecting.current || !selectionBox) return;
 
         const transform = stage.getAbsoluteTransform().copy();
         transform.invert();
@@ -127,6 +152,14 @@ const KonvaRenderer: React.FC<KonvaRendererProps> = ({
     };
 
     const handleMouseUp = (e: Konva.KonvaEventObject<MouseEvent>) => {
+        // Handle pan end
+        if (isPanning) {
+            setIsPanning(false);
+            panStart.current = null;
+            return;
+        }
+
+        // Handle selection box end
         if (isSelecting.current && selectionBox) {
             const box = {
                 x: Math.min(selectionBox.startX, selectionBox.startX + selectionBox.width),
@@ -192,6 +225,15 @@ const KonvaRenderer: React.FC<KonvaRendererProps> = ({
 
             setSelectionBox(null);
             isSelecting.current = false;
+            return;
+        }
+
+        // Handle click on empty space to deselect (only in edit mode)
+        if (mode === 'edit' && !isPanMode) {
+            const clickedOnEmpty = e.target === e.target.getStage() || e.target.attrs.id === 'background';
+            if (clickedOnEmpty) {
+                onSelectElement(null);
+            }
         }
     };
 
@@ -199,7 +241,8 @@ const KonvaRenderer: React.FC<KonvaRendererProps> = ({
     const offsetY = Math.max(0, (stageSize.height / zoom - layout.height) / 2);
 
     useEffect(() => {
-        if (trRef.current && stageRef.current) {
+        // Only show transformer in edit mode
+        if (trRef.current && stageRef.current && mode === 'edit') {
             const nodes = selectedElements.map(el => stageRef.current?.findOne('#' + el.data.id)).filter(Boolean) as Konva.Node[];
 
             if (nodes.length > 0) {
@@ -209,6 +252,10 @@ const KonvaRenderer: React.FC<KonvaRendererProps> = ({
                 trRef.current.nodes([]);
                 trRef.current.getLayer()?.batchDraw();
             }
+        } else if (trRef.current) {
+            // Hide transformer in runtime mode
+            trRef.current.nodes([]);
+            trRef.current.getLayer()?.batchDraw();
         }
     }, [selectedElements, mode, layout]);
 
@@ -359,8 +406,6 @@ const KonvaRenderer: React.FC<KonvaRendererProps> = ({
                 height={stageSize.height}
                 scaleX={zoom}
                 scaleY={zoom}
-                onClick={handleStageClick}
-                onTap={handleStageClick}
                 onMouseDown={handleMouseDown}
                 onMouseMove={handleMouseMove}
                 onMouseUp={handleMouseUp}

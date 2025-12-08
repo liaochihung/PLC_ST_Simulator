@@ -3,6 +3,7 @@ import Editor, { OnChange, OnMount } from '@monaco-editor/react';
 import type { editor } from 'monaco-editor';
 import { Button } from '@/components/ui/button';
 import { setupMonacoSTLanguage } from '@/lib/monaco-st-setup';
+import { Copy, Scissors, Clipboard } from 'lucide-react';
 
 interface CodeEditorProps {
   value: string;
@@ -52,15 +53,15 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ value, onChange, readOnly = fal
 
   return (
     <div className="h-full w-full flex flex-col bg-background rounded-lg overflow-hidden border border-border">
-      <div className="flex-shrink-0 bg-muted/50 border-b border-border p-1 flex items-center gap-2">
-        <Button size="sm" variant="ghost" onClick={handleCopy}>
-          Copy
+      <div className="flex-shrink-0 bg-muted/50 border-b border-border p-1 flex items-center gap-1">
+        <Button size="icon" variant="ghost" onClick={handleCopy} title="Copy" className="h-6 w-6">
+          <Copy className="h-4 w-4" />
         </Button>
-        <Button size="sm" variant="ghost" onClick={handleCut}>
-          Cut
+        <Button size="icon" variant="ghost" onClick={handleCut} title="Cut" className="h-6 w-6">
+          <Scissors className="h-4 w-4" />
         </Button>
-        <Button size="sm" variant="ghost" onClick={handlePaste}>
-          Paste
+        <Button size="icon" variant="ghost" onClick={handlePaste} title="Paste" className="h-6 w-6">
+          <Clipboard className="h-4 w-4" />
         </Button>
       </div>
       <div className="flex-grow">

@@ -1,7 +1,9 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
+import { Slider } from '@/components/ui/slider';
 import {
   MousePointer2,
+  Hand,
   Plus,
   Trash2,
   ZoomIn,
@@ -46,8 +48,12 @@ interface MachineEditorToolbarProps {
   onModeChange: (mode: EditorMode) => void;
   selectedElements: MachineElement[];
   onDelete: () => void;
+  zoom: number;
+  onZoomChange: (zoom: number) => void;
   onZoomIn: () => void;
   onZoomOut: () => void;
+  isPanMode: boolean;
+  onPanModeChange: (isPanMode: boolean) => void;
   onAddStation: (type: 'feed' | 'assembly' | 'ok' | 'ng' | 'custom') => void;
   onAddDisc: () => void;
   onAddConveyor: () => void;
@@ -83,8 +89,12 @@ const MachineEditorToolbar: React.FC<MachineEditorToolbarProps> = ({
   onModeChange,
   selectedElements,
   onDelete,
+  zoom,
+  onZoomChange,
   onZoomIn,
   onZoomOut,
+  isPanMode,
+  onPanModeChange,
   onAddStation,
   onAddDisc,
   onAddConveyor,
@@ -367,12 +377,55 @@ const MachineEditorToolbar: React.FC<MachineEditorToolbarProps> = ({
 
       <div className="w-px h-6 bg-border" />
 
+      {/* Cursor/Hand Mode Toggle */}
+      <div className="flex items-center bg-muted rounded-md p-0.5">
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => onPanModeChange(false)}
+          className={cn(
+            "h-7 px-2 text-xs",
+            !isPanMode && "bg-background shadow-sm"
+          )}
+          title="選取模式 (V)"
+        >
+          <MousePointer2 className="w-3 h-3" />
+        </Button>
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => onPanModeChange(true)}
+          className={cn(
+            "h-7 px-2 text-xs",
+            isPanMode && "bg-background shadow-sm"
+          )}
+          title="平移模式 (H)"
+        >
+          <Hand className="w-3 h-3" />
+        </Button>
+      </div>
+
+      <div className="w-px h-6 bg-border" />
+
       {/* Zoom Controls */}
-      <div className="flex items-center gap-1">
-        <Button variant="ghost" size="icon" onClick={onZoomOut} className="h-7 w-7">
+      <div className="flex items-center gap-2">
+        <Button variant="ghost" size="icon" onClick={onZoomOut} className="h-7 w-7" title="縮小">
           <ZoomOut className="w-3 h-3" />
         </Button>
-        <Button variant="ghost" size="icon" onClick={onZoomIn} className="h-7 w-7">
+        <div className="flex items-center gap-2 min-w-[120px]">
+          <Slider
+            value={[zoom * 100]}
+            onValueChange={(values) => onZoomChange(values[0] / 100)}
+            min={50}
+            max={200}
+            step={10}
+            className="w-20"
+          />
+          <span className="text-xs font-mono text-muted-foreground w-10 text-right">
+            {Math.round(zoom * 100)}%
+          </span>
+        </div>
+        <Button variant="ghost" size="icon" onClick={onZoomIn} className="h-7 w-7" title="放大">
           <ZoomIn className="w-3 h-3" />
         </Button>
       </div>

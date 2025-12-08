@@ -21,19 +21,22 @@ export const MainLayout = ({ leftPanel, centerPanel, rightPanel, className }: Ma
 
                 <ResizableHandle />
 
-                <ResizablePanel defaultSize={60} minSize={30}>
+                <ResizablePanel defaultSize={rightPanel ? 60 : 80} minSize={30}>
                     <div className="h-full w-full relative">
                         {centerPanel}
                     </div>
                 </ResizablePanel>
 
-                <ResizableHandle />
-
-                <ResizablePanel defaultSize={20} minSize={15} maxSize={30} className="border-l">
-                    <div className="h-full w-full overflow-hidden bg-secondary/10">
-                        {rightPanel}
-                    </div>
-                </ResizablePanel>
+                {rightPanel && (
+                    <>
+                        <ResizableHandle />
+                        <ResizablePanel defaultSize={20} minSize={15} maxSize={30} className="border-l">
+                            <div className="h-full w-full overflow-hidden bg-secondary/10">
+                                {rightPanel}
+                            </div>
+                        </ResizablePanel>
+                    </>
+                )}
             </ResizablePanelGroup>
         </div>
     );

@@ -47,6 +47,7 @@ export function useMachineLogic() {
   const selectedElement = selectedElements.length === 1 ? selectedElements[0] : null;
   const [zoom, setZoom] = useState(1);
   const [panOffset, setPanOffset] = useState({ x: 0, y: 0 });
+  const [isPanMode, setIsPanMode] = useState(false);
 
   // Grid settings
   const [gridVisible, setGridVisible] = useState(true);
@@ -686,6 +687,8 @@ export function useMachineLogic() {
     setZoom,
     panOffset,
     setPanOffset,
+    isPanMode,
+    setIsPanMode,
     // Grid settings
     gridVisible,
     setGridVisible,

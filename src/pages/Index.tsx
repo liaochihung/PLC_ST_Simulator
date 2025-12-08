@@ -3,13 +3,12 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import CodeEditor from '@/components/CodeEditor';
 import MachineEditor from '@/components/machine/MachineEditor';
 import VariableMonitor from '@/components/VariableMonitor';
-import SimulatorControls from '@/components/SimulatorControls';
 import ProgramBlockTree from '@/components/ProgramBlockTree';
 import { useSimulator } from '@/hooks/useSimulator';
 import { useProgramBlocks } from '@/hooks/useProgramBlocks';
 import { useMachineEditor } from '@/hooks/useMachineEditor';
 import { useIOBinding } from '@/hooks/useIOBinding';
-import { Cpu, Code2, Activity, Eye, PanelLeftClose, PanelLeft, BookOpen, Save, Loader2, FolderOpen } from 'lucide-react';
+import { Cpu, Code2, Activity, Eye, PanelLeftClose, PanelLeft, BookOpen, Save, Loader2, FolderOpen, Play, Square, StepForward, RotateCcw } from 'lucide-react';
 import { LibraryBrowser } from '@/components/LibraryBrowser';
 import { ProjectListDialog } from '@/components/ProjectListDialog';
 import { cn } from '@/lib/utils';
@@ -19,9 +18,8 @@ import {
   ResizablePanel,
   ResizablePanelGroup,
 } from "@/components/ui/resizable"
-import MachineToolbox from '@/components/machine/MachineToolbox';
 import { MainLayout } from '@/components/layout/MainLayout';
-import { PropertyPanel } from '@/components/editor/PropertyPanel';
+import { Separator } from "@/components/ui/separator";
 
 const Index: React.FC = () => {
   const {
@@ -89,31 +87,21 @@ const Index: React.FC = () => {
 
   const LeftPanelContent = (
     <div className="h-full flex flex-col bg-background">
-      <Tabs defaultValue="explorer" className="h-full flex flex-col">
-        <div className="border-b px-2 pt-2 bg-muted/20">
-          <TabsList className="w-full grid grid-cols-2 h-8">
-            <TabsTrigger value="explorer" className="text-xs">Explorer</TabsTrigger>
-            <TabsTrigger value="toolbox" className="text-xs">Toolbox</TabsTrigger>
-          </TabsList>
-        </div>
-
-        <TabsContent value="explorer" className="flex-1 mt-0 overflow-hidden data-[state=inactive]:hidden">
-          <ProgramBlockTree
-            project={project}
-            onBlockSelect={selectBlock}
-            onBlockAdd={addBlock}
-            onBlockDelete={deleteBlock}
-            onBlockToggle={toggleBlock}
-            onBlockRename={renameBlock}
-            isRunning={isRunning}
-          />
-        </TabsContent>
-
-        <TabsContent value="toolbox" className="flex-1 mt-0 overflow-hidden data-[state=inactive]:hidden">
-          <MachineToolbox />
-          {/* <div className="p-4">Toolbox Placeholder</div> */}
-        </TabsContent>
-      </Tabs>
+      <div className="border-b px-3 py-2 bg-muted/20 font-medium text-xs flex items-center gap-2 text-muted-foreground">
+        <FolderOpen className="w-3.5 h-3.5" />
+        Explorer
+      </div>
+      <div className="flex-1 overflow-hidden">
+        <ProgramBlockTree
+          project={project}
+          onBlockSelect={selectBlock}
+          onBlockAdd={addBlock}
+          onBlockDelete={deleteBlock}
+          onBlockToggle={toggleBlock}
+          onBlockRename={renameBlock}
+          isRunning={isRunning}
+        />
+      </div>
     </div>
   );
 
@@ -124,29 +112,71 @@ const Index: React.FC = () => {
           <ResizablePanel defaultSize={65} minSize={30}>
             {/* Center Panel - Code Editor */}
             <div className="h-full flex flex-col min-w-0">
-              <div className="panel-header flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <Code2 className="w-4 h-4 text-primary" />
-                  <span className="panel-title">
-                    {activeBlock ? activeBlock.name : '請選擇區塊'}
-                  </span>
+              <div className="panel-header flex items-center justify-between h-10 px-2 bg-muted/10 border-b border-border">
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                    <Code2 className="w-4 h-4 text-primary" />
+                    <span className="font-medium text-foreground">
+                      {activeBlock ? activeBlock.name : 'No Selection'}
+                    </span>
+                  </div>
                   {activeBlock?.type === 'scan' && activeBlock.scanInterval && (
-                    <span className="text-xs px-2 py-0.5 rounded bg-primary/10 text-primary">
+                    <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-primary/10 text-primary font-mono">
                       {activeBlock.scanInterval}ms
                     </span>
                   )}
                 </div>
-                <div className="flex items-center gap-2">
-                  {activeBlock && (
-                    <span className="text-xs text-muted-foreground">
-                      {activeBlock.type === 'init' ? '初始化區塊' :
-                        activeBlock.type === 'scan' ? '掃描區塊' :
-                          activeBlock.type === 'subroutine' ? '子程式' : '功能塊'}
-                    </span>
+
+                {/* Simulation Controls - Relocated here */}
+                <div className="flex items-center gap-1">
+                  <div className="h-4 w-px bg-border mx-1" />
+                  {!isRunning ? (
+                    <Button
+                      onClick={start}
+                      variant="ghost"
+                      size="sm"
+                      className="h-7 px-2 text-green-600 hover:text-green-700 hover:bg-green-500/10 gap-1.5"
+                      title="Run Program"
+                    >
+                      <Play className="w-3.5 h-3.5 fill-current" />
+                      <span className="text-xs font-semibold">Run</span>
+                    </Button>
+                  ) : (
+                    <Button
+                      onClick={stop}
+                      variant="ghost"
+                      size="sm"
+                      className="h-7 px-2 text-red-600 hover:text-red-700 hover:bg-red-500/10 gap-1.5"
+                      title="Stop Program"
+                    >
+                      <Square className="w-3.5 h-3.5 fill-current" />
+                      <span className="text-xs font-semibold">Stop</span>
+                    </Button>
                   )}
+
+                  <Button
+                    onClick={step}
+                    variant="ghost"
+                    size="icon"
+                    className="h-7 w-7"
+                    disabled={isRunning}
+                    title="Step Over"
+                  >
+                    <StepForward className="w-3.5 h-3.5" />
+                  </Button>
+
+                  <Button
+                    onClick={reset}
+                    variant="ghost"
+                    size="icon"
+                    className="h-7 w-7"
+                    title="Reset Simulation"
+                  >
+                    <RotateCcw className="w-3.5 h-3.5" />
+                  </Button>
                 </div>
               </div>
-              <div className="flex-1 overflow-hidden p-2">
+              <div className="flex-1 overflow-hidden p-0 relative">
                 {activeBlock ? (
                   <CodeEditor
                     value={activeBlock.code}
@@ -167,49 +197,49 @@ const Index: React.FC = () => {
 
       <ResizablePanel defaultSize={codeEditorVisible ? 35 : 100} minSize={20}>
         {/* Right Panel - Visualization / Variables */}
-        <div className="h-full flex flex-col min-w-0">
+        <div className="h-full flex flex-col min-w-0 bg-background">
           {/* Tabs */}
-          <div className="flex border-b border-border">
+          <div className="flex border-b border-border bg-muted/10">
             <button
               onClick={() => setActiveTab('visualization')}
               className={cn(
-                "flex items-center gap-2 px-4 py-2 text-sm font-medium transition-colors",
+                "flex items-center gap-2 px-3 py-2 text-xs font-medium transition-colors border-r border-border/50",
                 activeTab === 'visualization'
-                  ? "text-primary border-b-2 border-primary bg-primary/5"
-                  : "text-muted-foreground hover:text-foreground"
+                  ? "text-primary bg-background border-b-2 border-b-primary -mb-px"
+                  : "text-muted-foreground hover:bg-muted/50"
               )}
             >
-              <Eye className="w-4 h-4" />
-              機台
+              <Eye className="w-3.5 h-3.5" />
+              Machine
             </button>
             <button
               onClick={() => setActiveTab('variables')}
               className={cn(
-                "flex items-center gap-2 px-4 py-2 text-sm font-medium transition-colors",
+                "flex items-center gap-2 px-3 py-2 text-xs font-medium transition-colors border-r border-border/50",
                 activeTab === 'variables'
-                  ? "text-primary border-b-2 border-primary bg-primary/5"
-                  : "text-muted-foreground hover:text-foreground"
+                  ? "text-primary bg-background border-b-2 border-b-primary -mb-px"
+                  : "text-muted-foreground hover:bg-muted/50"
               )}
             >
-              <Activity className="w-4 h-4" />
-              變數
+              <Activity className="w-3.5 h-3.5" />
+              Variables
             </button>
             <button
               onClick={() => setActiveTab('library')}
               className={cn(
-                "flex items-center gap-2 px-4 py-2 text-sm font-medium transition-colors",
+                "flex items-center gap-2 px-3 py-2 text-xs font-medium transition-colors border-r border-border/50",
                 activeTab === 'library'
-                  ? "text-primary border-b-2 border-primary bg-primary/5"
-                  : "text-muted-foreground hover:text-foreground"
+                  ? "text-primary bg-background border-b-2 border-b-primary -mb-px"
+                  : "text-muted-foreground hover:bg-muted/50"
               )}
             >
-              <BookOpen className="w-4 h-4" />
+              <BookOpen className="w-3.5 h-3.5" />
               Library
             </button>
           </div>
 
           {/* Tab Content */}
-          <div className="flex-1 overflow-hidden">
+          <div className="flex-1 overflow-hidden relative">
             {activeTab === 'visualization' && (
               <MachineEditor
                 discAngle={bindingResult.discAngles.get('d1') ?? discAngle}
@@ -229,25 +259,17 @@ const Index: React.FC = () => {
             )}
             {activeTab === 'library' && (
               <LibraryBrowser onImport={(fb) => {
-                // Check if block already exists
                 const exists = project.blocks.some(b => b.name === fb.name);
                 if (exists) {
                   alert(`Block ${fb.name} already exists!`);
                   return;
                 }
-
-                // Add the function block
                 addBlock('function-block');
-
-                // Find the newly added block (last one) and update its code
                 const newBlockId = `block_${Date.now()}`;
                 setTimeout(() => {
                   renameBlock(newBlockId, fb.name);
                   updateBlockCode(newBlockId, fb.sourceCode);
                 }, 0);
-
-                // Optional: Switch to the new block or notify
-                console.log(`Imported ${fb.name}`);
               }} />
             )}
           </div>
@@ -259,80 +281,76 @@ const Index: React.FC = () => {
   return (
     <div className="h-screen flex flex-col bg-background text-foreground overflow-hidden">
       {/* Header */}
-      <header className="flex items-center justify-between px-4 py-2 bg-card border-b border-border">
-        <div className="flex items-center gap-3">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => setSidebarOpen(!sidebarOpen)} // TODO: Connect to MainLayout handle
-            className="h-8 w-8"
-          >
-            {sidebarOpen ? (
-              <PanelLeftClose className="w-4 h-4" />
-            ) : (
-              <PanelLeft className="w-4 h-4" />
-            )}
-          </Button>
-          <div className="p-2 bg-primary/10 rounded-lg">
-            <Cpu className="w-5 h-5 text-primary" />
+      <header className="h-12 flex items-center justify-between px-4 bg-background border-b border-border">
+        <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2.5">
+            <div className="p-1.5 bg-primary/10 rounded-md">
+              <Cpu className="w-5 h-5 text-primary" />
+            </div>
+            <div>
+              <h1 className="text-sm font-bold leading-none tracking-tight">ST Simulator</h1>
+              <p className="text-[10px] text-muted-foreground font-mono mt-0.5">IEC 61131-3</p>
+            </div>
           </div>
-          <div>
-            <h1 className="text-base font-semibold">ST 模擬器</h1>
-            <p className="text-xs text-muted-foreground">IEC 61131-3 結構化文本</p>
-          </div>
-        </div>
 
-        <div className="flex items-center gap-4 text-sm text-muted-foreground">
-          {/* Project Controls */}
-          <div className="flex items-center gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => saveProject()}
-              disabled={isSaving}
-            >
-              {isSaving ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Save className="w-4 h-4 mr-2" />}
-              Save
-            </Button>
+          <div className="h-5 w-px bg-border mx-2" />
+
+          {/* Project Actions - Toolbar Style */}
+          <div className="flex items-center gap-1">
             <Button
               variant="ghost"
               size="sm"
               onClick={() => setLoadDialogOpen(true)}
+              className="h-8 text-xs gap-2"
             >
-              <FolderOpen className="w-4 h-4 mr-2" />
+              <FolderOpen className="w-3.5 h-3.5" />
               Open
             </Button>
-
-            <ProjectListDialog
-              open={loadDialogOpen}
-              onOpenChange={setLoadDialogOpen}
-              onLoad={loadProject}
-            />
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => saveProject()}
+              disabled={isSaving}
+              className="h-8 text-xs gap-2"
+            >
+              {isSaving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Save className="w-3.5 h-3.5" />}
+              Save
+            </Button>
           </div>
-          <span className="hidden md:inline">週期: {cycleCount}</span>
-          <span>|</span>
-          <span>{project.name}</span>
         </div>
-      </header>
 
-      {/* Controls */}
-      <SimulatorControls
-        isRunning={isRunning}
-        scanTime={scanTime}
-        cycleCount={cycleCount}
-        onStart={start}
-        onStop={stop}
-        onReset={reset}
-        onStep={step}
-        onScanTimeChange={setScanTime}
-        codeEditorVisible={codeEditorVisible}
-        onCodeEditorToggle={() => setCodeEditorVisible(!codeEditorVisible)}
-      />
+        <div className="flex items-center gap-4 text-xs font-mono">
+          {/* Status Indicators */}
+          <div className="flex items-center gap-3 px-3 py-1.5 bg-muted/30 rounded-full border border-border/50">
+            <div className="flex items-center gap-1.5">
+              <div className={cn("w-2 h-2 rounded-full", isRunning ? "bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.5)]" : "bg-zinc-400")} />
+              <span className={cn("font-medium", isRunning ? "text-green-600" : "text-zinc-500")}>
+                {isRunning ? "RUNNING" : "STOPPED"}
+              </span>
+            </div>
+            <div className="w-px h-3 bg-border" />
+            <span className="text-muted-foreground">SCAN: <span className="text-foreground font-semibold">{scanTime}</span>ms</span>
+            <div className="w-px h-3 bg-border" />
+            <span className="text-muted-foreground">CYCLE: <span className="text-foreground font-semibold">{cycleCount}</span></span>
+          </div>
+
+          <div className="flex items-center gap-2 text-muted-foreground">
+            <span className="opacity-50">|</span>
+            <span>{project.name}</span>
+          </div>
+        </div>
+
+        <ProjectListDialog
+          open={loadDialogOpen}
+          onOpenChange={setLoadDialogOpen}
+          onLoad={loadProject}
+        />
+      </header>
 
       {/* Error Display */}
       {error && (
-        <div className="px-4 py-2 bg-destructive/10 border-b border-destructive/30 text-destructive text-sm">
-          <span className="font-semibold">錯誤:</span> {error}
+        <div className="px-4 py-1.5 bg-red-500/10 border-b border-red-500/20 text-red-600 text-xs flex items-center justify-center">
+          <span className="font-semibold mr-2">Error:</span> {error}
         </div>
       )}
 
@@ -340,19 +358,31 @@ const Index: React.FC = () => {
       <MainLayout
         leftPanel={LeftPanelContent}
         centerPanel={CenterPanelContent}
-        rightPanel={<PropertyPanel />}
+        rightPanel={null} // Removed Property Panel from here
       />
 
       {/* Footer */}
-      <footer className="px-4 py-1.5 bg-card border-t border-border flex items-center justify-between text-xs text-muted-foreground">
-        <div className="flex items-center gap-4">
-          <span>掃描週期: {scanTime}ms</span>
-          <span>|</span>
-          <span>變數: {variables.size}</span>
-          <span>|</span>
-          <span>計時器: {timers.size}</span>
+      <footer className="h-6 px-3 bg-muted/20 border-t border-border flex items-center justify-between text-[10px] text-muted-foreground">
+        <div className="flex items-center gap-4 font-mono">
+          <span>VARs: {variables.size}</span>
+          <span>TIMERs: {timers.size}</span>
+          <div className="flex items-center gap-1 ml-2">
+            <span>Cycle Time:</span>
+            <select
+              value={scanTime}
+              onChange={e => setScanTime(Number(e.target.value))}
+              className="bg-transparent border-none p-0 h-auto text-[10px] focus:ring-0 cursor-pointer hover:text-foreground"
+            >
+              <option value={10}>10ms</option>
+              <option value={50}>50ms</option>
+              <option value={100}>100ms</option>
+              <option value={200}>200ms</option>
+              <option value={500}>500ms</option>
+              <option value={1000}>1000ms</option>
+            </select>
+          </div>
         </div>
-        <span>IEC 61131-3 ST Simulator v1.0</span>
+        <span>v1.0.0</span>
       </footer>
     </div>
   );

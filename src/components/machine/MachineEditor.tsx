@@ -7,6 +7,7 @@ import MachinePropertyPanel from './MachinePropertyPanel';
 import { useMachineEditor } from '@/hooks/useMachineEditor';
 import type { MachineStation, MachineElement } from '@/types/machine-editor';
 import type { MachineRuntimeState } from '@/types/renderer';
+import MachineToolbox from './MachineToolbox';
 
 interface MachineEditorProps {
   // Runtime props from simulator
@@ -33,6 +34,10 @@ const MachineEditor: React.FC<MachineEditorProps> = ({
     selectElements,
     zoom,
     setZoom,
+    panOffset,
+    setPanOffset,
+    isPanMode,
+    setIsPanMode,
     // Grid
     gridVisible,
     setGridVisible,
@@ -364,8 +369,12 @@ const MachineEditor: React.FC<MachineEditorProps> = ({
         onModeChange={setMode}
         selectedElements={selectedElements}
         onDelete={deleteSelectedElements}
+        zoom={zoom}
+        onZoomChange={setZoom}
         onZoomIn={handleZoomIn}
         onZoomOut={handleZoomOut}
+        isPanMode={isPanMode}
+        onPanModeChange={setIsPanMode}
         onAddStation={handleAddStation}
         onAddDisc={handleAddDisc}
         onAddConveyor={handleAddConveyor}
@@ -397,8 +406,12 @@ const MachineEditor: React.FC<MachineEditorProps> = ({
       />
 
       <div className="flex-1 flex overflow-hidden">
-        {/* Component Palette (Edit mode only) */}
         {/* Component Palette moved to Left Sidebar (MachineToolbox) */}
+        {mode === 'edit' && (
+          <div className="w-64 border-r border-border bg-background z-10">
+            <MachineToolbox />
+          </div>
+        )}
 
         <div className="flex-1 relative overflow-hidden p-2">
           <div className="w-full h-full flex items-center justify-center">
@@ -408,7 +421,7 @@ const MachineEditor: React.FC<MachineEditorProps> = ({
               state={runtimeState}
               mode={mode}
               zoom={zoom}
-              panOffset={{ x: 0, y: 0 }}
+              panOffset={panOffset}
               selectedElements={selectedElements}
               onSelectElement={selectElement}
               onSelectElements={selectElements}
@@ -418,23 +431,9 @@ const MachineEditor: React.FC<MachineEditorProps> = ({
               gridVisible={gridVisible}
               gridSize={gridSize}
               snapToGrid={snapToGrid}
+              isPanMode={isPanMode}
+              onPanOffsetChange={setPanOffset}
             />
-            {/* SVG fallback (commented out)
-            <MachineCanvas
-              layout={layout}
-              mode={mode}
-              selectedElement={selectedElement}
-              onSelectElement={selectElement}
-              onMoveElement={moveElement}
-              zoom={zoom}
-              panOffset={{ x: 0, y: 0 }}
-              discAngle={discAngle}
-              feederActive={feederActive}
-              isRunning={isRunning}
-              products={products}
-              stationStates={stationStates}
-            />
-            */}
           </div>
 
           {/* Property Panel - Only show if exactly one element is selected */}
