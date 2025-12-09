@@ -675,8 +675,17 @@ export function useMachineLogic() {
     setLayout(layoutHistory[newIndex]);
   }, [historyIndex, layoutHistory]);
 
+  // Load layout (for persistence)
+  const loadLayout = useCallback((newLayout: MachineLayout) => {
+    setLayout(newLayout);
+    setLayoutHistory([newLayout]);
+    setHistoryIndex(0);
+    setSelectedElements([]);
+  }, []);
+
   return {
     layout,
+    loadLayout, // Expose this
     mode,
     setMode,
     selectedElements,

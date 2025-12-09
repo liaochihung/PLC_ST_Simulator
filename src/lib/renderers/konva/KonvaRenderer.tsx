@@ -27,6 +27,7 @@ interface KonvaRendererProps {
     snapToGrid: boolean;
     isPanMode?: boolean;
     onPanOffsetChange?: (offset: { x: number; y: number }) => void;
+    onNodeDblClick?: (node: any) => void;
 }
 
 const KonvaRenderer: React.FC<KonvaRendererProps> = ({
@@ -46,6 +47,7 @@ const KonvaRenderer: React.FC<KonvaRendererProps> = ({
     snapToGrid,
     isPanMode = false,
     onPanOffsetChange,
+    onNodeDblClick,
 }) => {
     const [stageSize, setStageSize] = useState({ width: 500, height: 500 });
     const stageRef = useRef<Konva.Stage>(null);
@@ -381,7 +383,8 @@ const KonvaRenderer: React.FC<KonvaRendererProps> = ({
                     onMoveElement({ type: item.elementType, data: item }, deltaX, deltaY);
                 }
             },
-            onUpdateElement: (updates: any) => onUpdateElement?.(item.id, item.elementType, updates)
+            onUpdateElement: (updates: any) => onUpdateElement?.(item.id, item.elementType, updates),
+            onNodeDblClick: onNodeDblClick
         };
 
         // Disable draggable if inside group

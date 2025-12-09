@@ -182,7 +182,8 @@ const MachineToolbox = () => {
             name: 'Image',
             type: 'image',
             icon: <Image className="w-4 h-4" />,
-            category: 'shapes' // Putting image in shapes for now or new category
+            category: 'shapes',
+            extraData: { width: 100, height: 100, src: 'https://placehold.co/100' }
         },
     ];
 
@@ -241,11 +242,10 @@ const MachineToolbox = () => {
                                             >
                                                 <Button
                                                     variant="outline"
-                                                    className={`w-full text-xs flex items-center gap-2 bg-card hover:bg-accent hover:border-accent-foreground/50 transition-all shadow-sm ${
-                                                        viewMode === 'list' 
-                                                            ? 'justify-start h-9 px-2' 
+                                                    className={`w-full text-xs flex items-center gap-2 bg-card hover:bg-accent hover:border-accent-foreground/50 transition-all shadow-sm ${viewMode === 'list'
+                                                            ? 'justify-start h-9 px-2'
                                                             : 'justify-center h-9 px-0'
-                                                    }`}
+                                                        }`}
                                                 >
                                                     {item.icon}
                                                     {viewMode === 'list' && <span className="truncate">{item.name}</span>}

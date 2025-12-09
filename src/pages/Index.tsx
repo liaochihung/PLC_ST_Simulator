@@ -65,7 +65,14 @@ const Index: React.FC = () => {
   const [loadDialogOpen, setLoadDialogOpen] = useState(false);
 
   // Machine Editor for layout management
-  const { layout } = useMachineEditor();
+  const { layout, loadLayout } = useMachineEditor();
+
+  // Load layout when project layout changes (persistence restore)
+  useEffect(() => {
+    if (project.visualDesign?.layout && project.visualDesign.layout.id !== layout.id) {
+      loadLayout(project.visualDesign.layout);
+    }
+  }, [project.visualDesign, loadLayout]);
 
   // I/O Binding - automatically bind PLC variables to machine visualization
   const bindingResult = useIOBinding(interpreter, layout);
@@ -309,7 +316,7 @@ const Index: React.FC = () => {
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => saveProject()}
+              onClick={() => saveProject(layout)}
               disabled={isSaving}
               className="h-8 text-xs gap-2"
             >

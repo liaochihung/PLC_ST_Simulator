@@ -1,5 +1,6 @@
 import React from 'react';
-import { Rect, Circle, Line, Text, RegularPolygon, Ellipse } from 'react-konva';
+import { Rect, Circle, Line, Text, RegularPolygon, Ellipse, Image as KonvaImage } from 'react-konva';
+import useImage from 'use-image';
 import type { BasicShape } from '@/types/machine-editor';
 
 interface KonvaBasicShapeProps {
@@ -9,7 +10,28 @@ interface KonvaBasicShapeProps {
     onSelect: () => void;
     onDragEnd: (x: number, y: number) => void;
     onUpdateElement?: (updates: Partial<BasicShape>) => void;
+    onNodeDblClick?: (shape: BasicShape) => void;
 }
+
+// Helper component for Image to use hook efficiently
+const KonvaMainImage = ({ shape, commonProps, selectionStyle }: { shape: BasicShape, commonProps: any, selectionStyle: any }) => {
+    // Determine source, fallback to placeholder if empty
+    const src = shape.src || 'https://placehold.co/100x100?text=Image';
+    const [image] = useImage(src);
+
+    return (
+        <KonvaImage
+            id={shape.id}
+            image={image}
+            x={shape.x}
+            y={shape.y}
+            width={shape.width || 100}
+            height={shape.height || 100}
+            {...commonProps}
+            {...selectionStyle}
+        />
+    );
+};
 
 const KonvaBasicShape: React.FC<KonvaBasicShapeProps> = ({
     shape,
@@ -18,10 +40,12 @@ const KonvaBasicShape: React.FC<KonvaBasicShapeProps> = ({
     onSelect,
     onDragEnd,
     onUpdateElement,
+    onNodeDblClick,
 }) => {
     const commonProps = {
         onClick: onSelect,
         onTap: onSelect,
+        onDblClick: () => onNodeDblClick?.(shape),
         draggable: mode === 'edit',
         onDragEnd: (e: any) => {
             onDragEnd(e.target.x(), e.target.y());
@@ -48,7 +72,7 @@ const KonvaBasicShape: React.FC<KonvaBasicShapeProps> = ({
                     const unscaledRadius = (node as any).radius ? (node as any).radius() : (node.width() / 2);
                     const newRadius = unscaledRadius * scaleX;
                     updates.radius = newRadius;
-                } else if (shape.type === 'rectangle' || shape.type === 'ellipse') {
+                } else if (shape.type === 'rectangle' || shape.type === 'ellipse' || shape.type === 'image') {
                     updates.width = node.width() * scaleX;
                     updates.height = node.height() * scaleY;
                 } else if (shape.type === 'text') {
@@ -161,6 +185,15 @@ const KonvaBasicShape: React.FC<KonvaBasicShapeProps> = ({
                     fill={shape.fill || '#ffffff'}
                     {...commonProps}
                     {...selectionStyle}
+                />
+            );
+
+        case 'image':
+            return (
+                <KonvaMainImage
+                    shape={shape}
+                    commonProps={commonProps}
+                    selectionStyle={selectionStyle}
                 />
             );
 

@@ -313,8 +313,10 @@ const MachinePropertyPanel: React.FC<MachinePropertyPanelProps> = ({
           {shape.type === 'line' && '線條'}
           {shape.type === 'text' && '文字'}
           {shape.type === 'triangle' && '三角形'}
+
           {shape.type === 'hexagon' && '六邊形'}
           {shape.type === 'ellipse' && '橢圓'}
+          {shape.type === 'image' && '圖片'}
         </div>
       </div>
       <div className="grid grid-cols-2 gap-2">
@@ -338,7 +340,7 @@ const MachinePropertyPanel: React.FC<MachinePropertyPanelProps> = ({
         </div>
       </div>
 
-      {(shape.type === 'rectangle' || shape.type === 'ellipse') && (
+      {(shape.type === 'rectangle' || shape.type === 'ellipse' || shape.type === 'image') && (
         <div className="grid grid-cols-2 gap-2">
           <div className="space-y-1.5">
             <Label className="text-xs">寬度</Label>
@@ -358,6 +360,62 @@ const MachinePropertyPanel: React.FC<MachinePropertyPanelProps> = ({
               className="h-8 text-xs"
             />
           </div>
+        </div>
+      )}
+
+      {shape.type === 'image' && (
+        <div className="space-y-1.5 ">
+          <Label className="text-xs">圖片來源</Label>
+          <div className="flex gap-2">
+            <Input
+              type="text"
+              value={shape.src || ''}
+              onClick={(e) => (e.target as HTMLInputElement).select()}
+              readOnly
+              className="h-8 text-xs flex-1 bg-muted"
+              placeholder="使用下方按鈕上傳"
+            />
+          </div>
+          <div className="flex gap-2">
+            <input
+              type="file"
+              accept="image/*"
+              className="hidden"
+              id={`image-upload-${element.data.id}`}
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file) {
+                  const reader = new FileReader();
+                  reader.onload = (event) => {
+                    const result = event.target?.result as string;
+                    // Optional: Load image to get dimensions
+                    const img = new Image();
+                    img.onload = () => {
+                      onUpdate({
+                        src: result,
+                        // Optional: Update dimensions if it's a new image and we want to fit it?
+                        // For now, let's keep user defined dimensions or maybe set aspect ratio?
+                        // Let's just update src.
+                      });
+                    };
+                    img.src = result;
+                  };
+                  reader.readAsDataURL(file);
+                }
+              }}
+            />
+            <Button
+              variant="secondary"
+              size="sm"
+              className="w-full h-8 text-xs"
+              onClick={() => document.getElementById(`image-upload-${element.data.id}`)?.click()}
+            >
+              更換圖片 (Upload)
+            </Button>
+          </div>
+          <p className="text-[10px] text-muted-foreground">
+            支援雙擊畫布上的圖片進行更換
+          </p>
         </div>
       )}
 

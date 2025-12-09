@@ -1,6 +1,6 @@
-
 import { useState, useCallback } from 'react';
 import { ProgramProject, ProgramBlock } from '@/types/program-blocks';
+import { MachineLayout } from '@/types/machine-editor';
 import { DEFAULT_PROJECT } from '@/lib/default-project';
 
 export function useProgramBlocks() {
@@ -159,17 +159,18 @@ export function useProgramBlocks() {
     }
   }, []);
 
-  const saveProject = useCallback(async (asNew = false) => {
+  const saveProject = useCallback(async (currentLayout?: MachineLayout) => {
     setIsSaving(true);
     try {
       const { ProjectService } = await import('@/lib/services/ProjectService');
 
       const projectToSave = {
         ...project,
-        activeBlockId // Ensure current active block is saved
+        activeBlockId, // Ensure current active block is saved
+        visualDesign: currentLayout ? { layout: currentLayout } : project.visualDesign
       };
 
-      if (currentProjectId && !asNew) {
+      if (currentProjectId) {
         // Update existing
         projectToSave.id = currentProjectId;
         await ProjectService.updateProject(projectToSave);

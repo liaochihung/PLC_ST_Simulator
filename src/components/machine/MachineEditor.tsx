@@ -275,7 +275,8 @@ const MachineEditor: React.FC<MachineEditorProps> = ({
       case 'text':
       case 'triangle':
       case 'hexagon':
-      case 'ellipse': {
+      case 'ellipse':
+      case 'image': {
         const shape = {
           type: type as any,
           x,
@@ -436,6 +437,23 @@ const MachineEditor: React.FC<MachineEditorProps> = ({
               snapToGrid={snapToGrid}
               isPanMode={isPanMode}
               onPanOffsetChange={setPanOffset}
+              onNodeDblClick={(node) => {
+                if (mode !== 'edit') return;
+                // If image, try to find the upload input
+                // node here is the shape object from KonvaBasicShape (BasicShape)
+                if (node.type === 'image') {
+                  const inputId = `image-upload-${node.id}`;
+                  const input = document.getElementById(inputId);
+                  if (input) {
+                    input.click();
+                  } else {
+                    // Property panel might be mounting
+                    setTimeout(() => {
+                      document.getElementById(inputId)?.click();
+                    }, 50);
+                  }
+                }
+              }}
             />
           </div>
 
