@@ -2,26 +2,10 @@ import React from 'react';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
-import {
-    Square,
-    Circle,
-    Minus,
-    Type,
-    Box,
-    ArrowRight,
-    Disc,
-    Package,
-} from 'lucide-react';
+import PaletteIcon from '@/components/ui/PaletteIcon';
+import { DEFAULT_COMPONENTS } from '@/lib/registry/default-components';
 import type { BasicShape } from '@/types/machine-editor';
-
-// Extensible component configuration
-interface ComponentItem {
-    id: string;
-    name: string;
-    icon: React.ReactNode;
-    category: 'shapes' | 'machine';
-    onAdd: () => void;
-}
+import { ComponentDefinition } from '@/types/component-registry';
 
 interface ComponentPaletteProps {
     onAddShape: (shape: Omit<BasicShape, 'id'>) => void;
@@ -40,107 +24,92 @@ const ComponentPalette: React.FC<ComponentPaletteProps> = ({
     onAddFeeder,
     layoutCenter,
 }) => {
-    // Extensible component configuration
-    const components: ComponentItem[] = [
-        // Basic Shapes
-        {
-            id: 'rectangle',
-            name: '矩形',
-            icon: <Square className="w-4 h-4" />,
-            category: 'shapes',
-            onAdd: () => onAddShape({
-                type: 'rectangle',
+    const handleAddComponent = (component: ComponentDefinition) => {
+        if (component.actionType === 'createShape' && component.shapeType) {
+            // Default properties for shapes
+            const defaultShapeProps = {
                 x: layoutCenter.x,
                 y: layoutCenter.y,
-                width: 80,
-                height: 60,
-                fill: '#3b82f6',
-                stroke: '#1e40af',
                 strokeWidth: 2,
-            }),
-        },
-        {
-            id: 'circle',
-            name: '圓形',
-            icon: <Circle className="w-4 h-4" />,
-            category: 'shapes',
-            onAdd: () => onAddShape({
-                type: 'circle',
-                x: layoutCenter.x,
-                y: layoutCenter.y,
-                radius: 40,
-                fill: '#10b981',
-                stroke: '#059669',
-                strokeWidth: 2,
-            }),
-        },
-        {
-            id: 'line',
-            name: '線條',
-            icon: <Minus className="w-4 h-4" />,
-            category: 'shapes',
-            onAdd: () => onAddShape({
-                type: 'line',
-                x: layoutCenter.x - 40,
-                y: layoutCenter.y,
-                endX: layoutCenter.x + 40,
-                endY: layoutCenter.y,
-                stroke: '#6366f1',
-                strokeWidth: 3,
-            }),
-        },
-        {
-            id: 'text',
-            name: '文字',
-            icon: <Type className="w-4 h-4" />,
-            category: 'shapes',
-            onAdd: () => onAddShape({
-                type: 'text',
-                x: layoutCenter.x,
-                y: layoutCenter.y,
-                text: '文字',
-                fontSize: 16,
-                fill: '#ffffff',
-            }),
-        },
-        // Machine Components
-        {
-            id: 'station',
-            name: '工作站',
-            icon: <Square className="w-4 h-4 text-station-feed" />,
-            category: 'machine',
-            onAdd: () => onAddStation('custom'),
-        },
-        {
-            id: 'disc',
-            name: '轉盤',
-            icon: <Disc className="w-4 h-4" />,
-            category: 'machine',
-            onAdd: onAddDisc,
-        },
-        {
-            id: 'conveyor',
-            name: '輸送帶',
-            icon: <ArrowRight className="w-4 h-4" />,
-            category: 'machine',
-            onAdd: onAddConveyor,
-        },
-        {
-            id: 'feeder',
-            name: '送料機',
-            icon: <Package className="w-4 h-4" />,
-            category: 'machine',
-            onAdd: onAddFeeder,
-        },
-    ];
+            };
 
-    const shapeComponents = components.filter(c => c.category === 'shapes');
-    const machineComponents = components.filter(c => c.category === 'machine');
+            switch (component.shapeType) {
+                case 'rectangle':
+                    onAddShape({
+                        ...defaultShapeProps,
+                        type: 'rectangle',
+                        width: 80,
+                        height: 60,
+                        fill: '#3b82f6',
+                        stroke: '#1e40af',
+                    });
+                    break;
+                case 'circle':
+                    onAddShape({
+                        ...defaultShapeProps,
+                        type: 'circle',
+                        radius: 40,
+                        fill: '#10b981',
+                        stroke: '#059669',
+                    });
+                    break;
+                case 'line':
+                    onAddShape({
+                        ...defaultShapeProps,
+                        type: 'line',
+                        x: layoutCenter.x - 40,
+                        y: layoutCenter.y,
+                        endX: layoutCenter.x + 40,
+                        endY: layoutCenter.y,
+                        stroke: '#6366f1',
+                        strokeWidth: 3,
+                    });
+                    break;
+                case 'text':
+                    onAddShape({
+                        ...defaultShapeProps,
+                        type: 'text',
+                        text: '文字',
+                        fontSize: 16,
+                        fill: '#ffffff',
+                    });
+                    break;
+                default:
+                    console.warn(`Unknown shapeType: ${component.shapeType}`);
+            }
+        } else if (component.actionType === 'createMachinePart' && component.machinePartType) {
+            switch (component.machinePartType) {
+                case 'station':
+                    onAddStation('custom');
+                    break;
+                case 'disc':
+                    onAddDisc();
+                    break;
+                case 'conveyor':
+                    onAddConveyor();
+                    break;
+                case 'feeder':
+                    onAddFeeder();
+                    break;
+                default:
+                    console.warn(`Unknown machinePartType: ${component.machinePartType}`);
+            }
+        }
+    };
 
-    const handleDragStart = (e: React.DragEvent, type: string, extraData?: any) => {
-        e.dataTransfer.setData('application/json', JSON.stringify({ type, ...extraData }));
+    const handleDragStart = (e: React.DragEvent, component: ComponentDefinition) => {
+        // When dragging, we only care about the type of component to create,
+        // not its specific properties, as these will be determined on drop.
+        e.dataTransfer.setData('application/json', JSON.stringify({
+            actionType: component.actionType,
+            shapeType: component.shapeType,
+            machinePartType: component.machinePartType,
+        }));
         e.dataTransfer.effectAllowed = 'copy';
     };
+
+    const shapeComponents = DEFAULT_COMPONENTS.filter(c => c.actionType === 'createShape');
+    const machineComponents = DEFAULT_COMPONENTS.filter(c => c.actionType === 'createMachinePart');
 
     return (
         <div className="w-56 bg-card border-r border-border flex flex-col h-full">
@@ -158,16 +127,16 @@ const ComponentPalette: React.FC<ComponentPaletteProps> = ({
                                 <div
                                     key={component.id}
                                     draggable
-                                    onDragStart={(e) => handleDragStart(e, component.id)}
+                                    onDragStart={(e) => handleDragStart(e, component)}
                                     className="cursor-move"
                                 >
                                     <Button
                                         variant="ghost"
                                         size="sm"
-                                        onClick={component.onAdd}
+                                        onClick={() => handleAddComponent(component)}
                                         className="w-full justify-start h-8 px-2 text-xs pointer-events-none"
                                     >
-                                        {component.icon}
+                                        <PaletteIcon icon={component.icon} />
                                         <span className="ml-2">{component.name}</span>
                                     </Button>
                                 </div>
@@ -185,16 +154,16 @@ const ComponentPalette: React.FC<ComponentPaletteProps> = ({
                                 <div
                                     key={component.id}
                                     draggable
-                                    onDragStart={(e) => handleDragStart(e, component.id)}
+                                    onDragStart={(e) => handleDragStart(e, component)}
                                     className="cursor-move"
                                 >
                                     <Button
                                         variant="ghost"
                                         size="sm"
-                                        onClick={component.onAdd}
+                                        onClick={() => handleAddComponent(component)}
                                         className="w-full justify-start h-8 px-2 text-xs pointer-events-none"
                                     >
-                                        {component.icon}
+                                        <PaletteIcon icon={component.icon} />
                                         <span className="ml-2">{component.name}</span>
                                     </Button>
                                 </div>
