@@ -123,7 +123,7 @@ const MachineEditorToolbar: React.FC<MachineEditorToolbarProps> = ({
   const hasSelection = selectedElements.length > 0;
 
   return (
-    <div className="flex items-center gap-2 p-2 bg-card border-b border-border">
+    <div className="flex items-center gap-2 p-2 bg-card border-b border-border h-12 flex-nowrap overflow-x-auto scrollbar-hide">
       {/* Mode Toggle */}
       <div className="flex items-center bg-muted rounded-md p-0.5">
         <Button

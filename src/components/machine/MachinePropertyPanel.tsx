@@ -304,7 +304,7 @@ const MachinePropertyPanel: React.FC<MachinePropertyPanelProps> = ({
   );
 
   return (
-    <div className={className || "absolute right-2 top-2 w-56 bg-card border border-border rounded-lg shadow-lg p-3 z-10"}>
+    <div className={className || "fixed right-2 top-2 w-56 bg-card border border-border rounded-lg shadow-lg p-3 z-50 pointer-events-auto"}>
       <div className="flex items-center justify-between mb-3">
         <h3 className="text-sm font-medium">
           {element.type === 'station' && '站別屬性'}

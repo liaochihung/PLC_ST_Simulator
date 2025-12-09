@@ -82,7 +82,10 @@ const KonvaRenderer: React.FC<KonvaRendererProps> = ({
     }, [selectedElements]);
 
     const handleMouseDown = (e: Konva.KonvaEventObject<MouseEvent>) => {
-        if (e.target !== e.target.getStage() && e.target.attrs.id !== 'background') return;
+        const target = e.target;
+        const isBackground = target === target.getStage() || target.attrs.id === 'background' || target.attrs.name === 'layout-boundary';
+
+        if (!isBackground) return;
 
         const stage = e.target.getStage();
         if (!stage) return;
@@ -152,10 +155,17 @@ const KonvaRenderer: React.FC<KonvaRendererProps> = ({
     };
 
     const handleMouseUp = (e: Konva.KonvaEventObject<MouseEvent>) => {
+        const stage = e.target.getStage();
+
         // Handle pan end
         if (isPanning) {
             setIsPanning(false);
             panStart.current = null;
+            // Update pan offset via callback
+            if (stage && onPanOffsetChange) {
+                const pos = stage.position();
+                onPanOffsetChange({ x: pos.x, y: pos.y });
+            }
             return;
         }
 
@@ -168,60 +178,103 @@ const KonvaRenderer: React.FC<KonvaRendererProps> = ({
                 height: Math.abs(selectionBox.height)
             };
 
-            const newSelection: MachineElement[] = [];
+            // Check if this was just a click (minimal drag) vs actual rubber band selection
+            const isMinimalDrag = box.width < 5 && box.height < 5;
 
-            const intersects = (itemX: number, itemY: number, itemW: number, itemH: number) => {
-                return (
-                    box.x < itemX + itemW &&
-                    box.x + box.width > itemX &&
-                    box.y < itemY + itemH &&
-                    box.y + box.height > itemY
-                );
-            };
+            if (!isMinimalDrag) {
+                // Actual rubber band selection
+                const newSelection: MachineElement[] = [];
 
-            // Recursive selection check could be implemented here, but for now flat selection is fine?
-            // If we select items inside a group, normally we select the group itself unless "deep select".
-            // Let's stick to selecting Top Level items (which might be groups).
-            // But layout lists are flat. 
-            // We should only select items that do NOT have a groupId (top level), OR assume groups select their children?
-            // Standard behavior: Select Group if any child intersects.
+                const intersects = (itemX: number, itemY: number, itemW: number, itemH: number) => {
+                    return (
+                        box.x < itemX + itemW &&
+                        box.x + box.width > itemX &&
+                        box.y < itemY + itemH &&
+                        box.y + box.height > itemY
+                    );
+                };
 
-            // Simplified: Iterate all visible items. If item is in a group, ignore it (group handles it).
-            // Check Groups first.
-
-            // Check Groups
-            layout.groups.forEach(g => {
-                // Group bbox is not easily known without calculating children. 
-                // For now, let's skip strict group bbox check and check children. 
-                // If any child intersects, select the Group.
-                const childIds = new Set(g.childIds);
-                let groupIntersects = false;
-
-                // Check all children type
-                // This is O(N*M), inefficient but fine for now.
-                [...layout.stations, ...layout.discs, ...layout.conveyors, ...layout.feeders, ...layout.shapes].forEach(child => {
-                    if (childIds.has(child.id)) {
-                        let cx = child.x + g.x; // Absolute pos approximation? No, child.x is relative if groupId set.
-                        // Actually, in our logic, if groupId is set, child.x is relative to group.
-                        // So absolute X = g.x + child.x
-                        let cy = child.y + g.y;
-                        // Dimensions...
-                        // This is getting complicated.
-                        // Let's defer advanced rubber band for groups.
-                        // Just fallback to old behavior: select individual items, logic will fail if they are grouped.
-                        // Wait, if we select an item that is part of a group, we should select the GROUP.
+                // Check all top-level items (not in groups)
+                layout.stations.forEach(s => {
+                    if (!s.groupId && intersects(s.x, s.y, s.width, s.height)) {
+                        newSelection.push({ type: 'station', data: s });
                     }
                 });
-            });
 
-            // Flat check for now, fixing later
-            layout.stations.forEach(s => {
-                if (!s.groupId && intersects(s.x, s.y, s.width, s.height)) newSelection.push({ type: 'station', data: s });
-            });
-            // ... similar for others ...
+                layout.discs.forEach(d => {
+                    if (!d.groupId && intersects(d.x - d.radius, d.y - d.radius, d.radius * 2, d.radius * 2)) {
+                        newSelection.push({ type: 'disc', data: d });
+                    }
+                });
 
-            // IMPORTANT: For this task, rubber band might be broken for groups. Focusing on Rendering first.
-            // onSelectElements(newSelection);
+                layout.feeders.forEach(f => {
+                    if (!f.groupId && intersects(f.x, f.y, f.width, f.height)) {
+                        newSelection.push({ type: 'feeder', data: f });
+                    }
+                });
+
+                layout.conveyors.forEach(c => {
+                    if (!c.groupId) {
+                        const minX = Math.min(c.startX, c.endX);
+                        const minY = Math.min(c.startY, c.endY);
+                        const maxX = Math.max(c.startX, c.endX);
+                        const maxY = Math.max(c.startY, c.endY);
+                        if (intersects(minX, minY, maxX - minX, maxY - minY)) {
+                            newSelection.push({ type: 'conveyor', data: c });
+                        }
+                    }
+                });
+
+                layout.shapes.forEach(s => {
+                    if (!s.groupId && intersects(s.x, s.y, s.width || 0, s.height || 0)) {
+                        newSelection.push({ type: 'shape', data: s });
+                    }
+                });
+
+                // Check groups
+                layout.groups.forEach(g => {
+                    // For groups, check if any child intersects
+                    const childIds = new Set(g.childIds);
+                    let groupIntersects = false;
+
+                    [...layout.stations, ...layout.discs, ...layout.conveyors, ...layout.feeders, ...layout.shapes].forEach(child => {
+                        if (childIds.has(child.id)) {
+                            // Type guard for elements with x, y properties
+                            if ('x' in child && 'y' in child && 'width' in child && 'height' in child) {
+                                const cx = g.x + child.x;
+                                const cy = g.y + child.y;
+                                if (intersects(cx, cy, child.width, child.height)) {
+                                    groupIntersects = true;
+                                }
+                            } else if ('startX' in child && 'startY' in child) {
+                                // Handle conveyor
+                                const minX = Math.min(child.startX, child.endX);
+                                const minY = Math.min(child.startY, child.endY);
+                                const maxX = Math.max(child.startX, child.endX);
+                                const maxY = Math.max(child.startY, child.endY);
+                                if (intersects(g.x + minX, g.y + minY, maxX - minX, maxY - minY)) {
+                                    groupIntersects = true;
+                                }
+                            }
+                        }
+                    });
+
+                    if (groupIntersects) {
+                        newSelection.push({ type: 'group', data: g });
+                    }
+                });
+
+                // Apply selection
+                if (newSelection.length > 0) {
+                    onSelectElements(newSelection);
+                } else {
+                    // Empty selection box - deselect all
+                    onSelectElement(null);
+                }
+            } else {
+                // Minimal drag - treat as click on empty space, deselect
+                onSelectElement(null);
+            }
 
             setSelectionBox(null);
             isSelecting.current = false;
@@ -230,7 +283,12 @@ const KonvaRenderer: React.FC<KonvaRendererProps> = ({
 
         // Handle click on empty space to deselect (only in edit mode)
         if (mode === 'edit' && !isPanMode) {
-            const clickedOnEmpty = e.target === e.target.getStage() || e.target.attrs.id === 'background';
+            const target = e.target;
+            const clickedOnEmpty =
+                target === target.getStage() ||
+                target.attrs.id === 'background' ||
+                target.attrs.name === 'layout-boundary';
+
             if (clickedOnEmpty) {
                 onSelectElement(null);
             }
@@ -451,6 +509,7 @@ const KonvaRenderer: React.FC<KonvaRendererProps> = ({
 
                 <Layer x={offsetX} y={offsetY}>
                     <Rect
+                        name="layout-boundary"
                         x={0}
                         y={0}
                         width={layout.width}
