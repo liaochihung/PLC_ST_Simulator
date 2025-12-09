@@ -2,7 +2,7 @@ import React from 'react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import type { MachineElement, MachineStation, MachineDisc, MachineFeeder, MachineConveyor } from '@/types/machine-editor';
+import type { MachineElement, MachineStation, MachineDisc, MachineFeeder, MachineConveyor, BasicShape } from '@/types/machine-editor';
 import { X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import IOBindingEditor from '@/components/IOBindingEditor';
@@ -10,7 +10,7 @@ import { Separator } from '@/components/ui/separator';
 
 interface MachinePropertyPanelProps {
   element: MachineElement;
-  onUpdate: (updates: Partial<MachineStation | MachineDisc | MachineFeeder | MachineConveyor>) => void;
+  onUpdate: (updates: Partial<MachineStation | MachineDisc | MachineFeeder | MachineConveyor | BasicShape>) => void;
   onClose: () => void;
   className?: string; // Added prop
 }
@@ -303,14 +303,206 @@ const MachinePropertyPanel: React.FC<MachinePropertyPanelProps> = ({
     </>
   );
 
+  const renderShapeProperties = (shape: BasicShape) => (
+    <>
+      <div className="space-y-1.5">
+        <Label className="text-xs">類型</Label>
+        <div className="text-xs text-muted-foreground">
+          {shape.type === 'rectangle' && '矩形'}
+          {shape.type === 'circle' && '圓形'}
+          {shape.type === 'line' && '線條'}
+          {shape.type === 'text' && '文字'}
+        </div>
+      </div>
+      <div className="grid grid-cols-2 gap-2">
+        <div className="space-y-1.5">
+          <Label className="text-xs">X</Label>
+          <Input
+            type="number"
+            value={shape.x}
+            onChange={(e) => onUpdate({ x: Number(e.target.value) })}
+            className="h-8 text-xs"
+          />
+        </div>
+        <div className="space-y-1.5">
+          <Label className="text-xs">Y</Label>
+          <Input
+            type="number"
+            value={shape.y}
+            onChange={(e) => onUpdate({ y: Number(e.target.value) })}
+            className="h-8 text-xs"
+          />
+        </div>
+      </div>
+
+      {shape.type === 'rectangle' && (
+        <div className="grid grid-cols-2 gap-2">
+          <div className="space-y-1.5">
+            <Label className="text-xs">寬度</Label>
+            <Input
+              type="number"
+              value={shape.width || 80}
+              onChange={(e) => onUpdate({ width: Number(e.target.value) })}
+              className="h-8 text-xs"
+            />
+          </div>
+          <div className="space-y-1.5">
+            <Label className="text-xs">高度</Label>
+            <Input
+              type="number"
+              value={shape.height || 60}
+              onChange={(e) => onUpdate({ height: Number(e.target.value) })}
+              className="h-8 text-xs"
+            />
+          </div>
+        </div>
+      )}
+
+      {shape.type === 'circle' && (
+        <div className="space-y-1.5">
+          <Label className="text-xs">半徑</Label>
+          <Input
+            type="number"
+            value={shape.radius || 40}
+            onChange={(e) => onUpdate({ radius: Number(e.target.value) })}
+            className="h-8 text-xs"
+          />
+        </div>
+      )}
+
+      {shape.type === 'line' && (
+        <div className="grid grid-cols-2 gap-2">
+          <div className="space-y-1.5">
+            <Label className="text-xs">終點 X</Label>
+            <Input
+              type="number"
+              value={shape.endX || shape.x + 80}
+              onChange={(e) => onUpdate({ endX: Number(e.target.value) })}
+              className="h-8 text-xs"
+            />
+          </div>
+          <div className="space-y-1.5">
+            <Label className="text-xs">終點 Y</Label>
+            <Input
+              type="number"
+              value={shape.endY || shape.y}
+              onChange={(e) => onUpdate({ endY: Number(e.target.value) })}
+              className="h-8 text-xs"
+            />
+          </div>
+        </div>
+      )}
+
+      {shape.type === 'text' && (
+        <>
+          <div className="space-y-1.5">
+            <Label className="text-xs">文字內容</Label>
+            <Input
+              type="text"
+              value={shape.text || '文字'}
+              onChange={(e) => onUpdate({ text: e.target.value })}
+              className="h-8 text-xs"
+            />
+          </div>
+          <div className="space-y-1.5">
+            <Label className="text-xs">字型大小</Label>
+            <Input
+              type="number"
+              value={shape.fontSize || 16}
+              onChange={(e) => onUpdate({ fontSize: Number(e.target.value) })}
+              className="h-8 text-xs"
+            />
+          </div>
+        </>
+      )}
+
+      {(shape.type === 'rectangle' || shape.type === 'circle') && (
+        <>
+          <div className="space-y-1.5">
+            <Label className="text-xs">填滿顏色</Label>
+            <div className="flex gap-2">
+              <Input
+                type="color"
+                value={shape.fill || '#3b82f6'}
+                onChange={(e) => onUpdate({ fill: e.target.value })}
+                className="h-8 w-16 p-1"
+              />
+              <Input
+                type="text"
+                value={shape.fill || '#3b82f6'}
+                onChange={(e) => onUpdate({ fill: e.target.value })}
+                className="h-8 text-xs flex-1"
+                placeholder="#3b82f6"
+              />
+            </div>
+          </div>
+        </>
+      )}
+
+      {(shape.type === 'rectangle' || shape.type === 'circle' || shape.type === 'line') && (
+        <>
+          <div className="space-y-1.5">
+            <Label className="text-xs">邊框顏色</Label>
+            <div className="flex gap-2">
+              <Input
+                type="color"
+                value={shape.stroke || '#1e40af'}
+                onChange={(e) => onUpdate({ stroke: e.target.value })}
+                className="h-8 w-16 p-1"
+              />
+              <Input
+                type="text"
+                value={shape.stroke || '#1e40af'}
+                onChange={(e) => onUpdate({ stroke: e.target.value })}
+                className="h-8 text-xs flex-1"
+                placeholder="#1e40af"
+              />
+            </div>
+          </div>
+          <div className="space-y-1.5">
+            <Label className="text-xs">邊框寬度</Label>
+            <Input
+              type="number"
+              value={shape.strokeWidth || 2}
+              onChange={(e) => onUpdate({ strokeWidth: Number(e.target.value) })}
+              className="h-8 text-xs"
+            />
+          </div>
+        </>
+      )}
+
+      {shape.type === 'text' && (
+        <div className="space-y-1.5">
+          <Label className="text-xs">文字顏色</Label>
+          <div className="flex gap-2">
+            <Input
+              type="color"
+              value={shape.fill || '#ffffff'}
+              onChange={(e) => onUpdate({ fill: e.target.value })}
+              className="h-8 w-16 p-1"
+            />
+            <Input
+              type="text"
+              value={shape.fill || '#ffffff'}
+              onChange={(e) => onUpdate({ fill: e.target.value })}
+              className="h-8 text-xs flex-1"
+              placeholder="#ffffff"
+            />
+          </div>
+        </div>
+      )}
+    </>
+  );
+
   return (
-    <div className={className || "fixed right-2 top-2 w-56 bg-card border border-border rounded-lg shadow-lg p-3 z-50 pointer-events-auto"}>
+    <div className={className || "absolute right-2 top-2 w-56 bg-card border border-border rounded-lg shadow-lg p-3 z-50 pointer-events-auto"}>
       <div className="flex items-center justify-between mb-3">
         <h3 className="text-sm font-medium">
           {element.type === 'station' && '站別屬性'}
           {element.type === 'disc' && '轉盤屬性'}
           {element.type === 'feeder' && '送料機屬性'}
           {element.type === 'conveyor' && '輸送帶屬性'}
+          {element.type === 'shape' && '物件屬性'}
         </h3>
         <Button variant="ghost" size="icon" onClick={onClose} className="h-6 w-6">
           <X className="w-3 h-3" />
@@ -321,6 +513,7 @@ const MachinePropertyPanel: React.FC<MachinePropertyPanelProps> = ({
         {element.type === 'disc' && renderDiscProperties(element.data)}
         {element.type === 'feeder' && renderFeederProperties(element.data)}
         {element.type === 'conveyor' && renderConveyorProperties(element.data)}
+        {element.type === 'shape' && renderShapeProperties(element.data)}
       </div>
     </div>
   );

@@ -64,7 +64,11 @@ export const useEditorStore = create<EditorState>((set) => ({
                     newElement.fill = 'black';
                 }
 
-                return { elements: [...state.elements, newElement] };
+                // Auto-select the newly created element
+                return { 
+                    elements: [...state.elements, newElement],
+                    selectedIds: [newElement.id]
+                };
             }),
         updateElement: (id, attrs) =>
             set((state) => ({

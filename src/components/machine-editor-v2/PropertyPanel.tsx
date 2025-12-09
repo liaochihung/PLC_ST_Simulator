@@ -64,6 +64,61 @@ export const PropertyPanel = () => {
                         />
                     </div>
 
+                    {selectedElement.type === 'rect' && (
+                        <>
+                            <div className="grid grid-cols-2 gap-2">
+                                <div className="space-y-1">
+                                    <Label>Width</Label>
+                                    <Input
+                                        type="number"
+                                        value={selectedElement.width || 0}
+                                        onChange={(e) => handleChange('width', Number(e.target.value))}
+                                    />
+                                </div>
+                                <div className="space-y-1">
+                                    <Label>Height</Label>
+                                    <Input
+                                        type="number"
+                                        value={selectedElement.height || 0}
+                                        onChange={(e) => handleChange('height', Number(e.target.value))}
+                                    />
+                                </div>
+                            </div>
+                        </>
+                    )}
+
+                    {selectedElement.type === 'circle' && (
+                        <div className="space-y-1">
+                            <Label>Radius</Label>
+                            <Input
+                                type="number"
+                                value={selectedElement.radius || 0}
+                                onChange={(e) => handleChange('radius', Number(e.target.value))}
+                            />
+                        </div>
+                    )}
+
+                    {selectedElement.type === 'text' && (
+                        <>
+                            <div className="space-y-1">
+                                <Label>Text</Label>
+                                <Input
+                                    type="text"
+                                    value={selectedElement.text || ''}
+                                    onChange={(e) => handleChange('text', e.target.value)}
+                                />
+                            </div>
+                            <div className="space-y-1">
+                                <Label>Font Size</Label>
+                                <Input
+                                    type="number"
+                                    value={selectedElement.fontSize || 20}
+                                    onChange={(e) => handleChange('fontSize', Number(e.target.value))}
+                                />
+                            </div>
+                        </>
+                    )}
+
                     <div className="space-y-1">
                         <Label>Rotation</Label>
                         <Input
