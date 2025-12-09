@@ -171,7 +171,7 @@ const BlockItem: React.FC<BlockItemProps> = ({
                   className="text-destructive focus:text-destructive"
                 >
                   <Trash2 className="w-3 h-3 mr-2" />
-                  刪除
+                Delete
                 </DropdownMenuItem>
               </>
             )}

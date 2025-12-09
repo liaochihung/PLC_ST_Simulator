@@ -137,7 +137,7 @@ const MachineEditorToolbar: React.FC<MachineEditorToolbarProps> = ({
           )}
         >
           <Pencil className="w-3 h-3 mr-1" />
-          編輯
+           Edit
         </Button>
         <Button
           variant="ghost"
@@ -149,7 +149,7 @@ const MachineEditorToolbar: React.FC<MachineEditorToolbarProps> = ({
           )}
         >
           <Play className="w-3 h-3 mr-1" />
-          執行
+          View
         </Button>
       </div>
 
@@ -163,7 +163,7 @@ const MachineEditorToolbar: React.FC<MachineEditorToolbarProps> = ({
             <DropdownMenuTrigger asChild>
               <Button variant="outline" size="sm" className="h-7 px-2 text-xs">
                 <Plus className="w-3 h-3 mr-1" />
-                新增
+                Add
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="start">
@@ -211,7 +211,7 @@ const MachineEditorToolbar: React.FC<MachineEditorToolbarProps> = ({
             className="h-7 px-2 text-xs text-destructive hover:text-destructive"
           >
             <Trash2 className="w-3 h-3 mr-1" />
-            刪除
+            Delete
           </Button>
 
           <div className="w-px h-6 bg-border" />
