@@ -312,6 +312,9 @@ const MachinePropertyPanel: React.FC<MachinePropertyPanelProps> = ({
           {shape.type === 'circle' && '圓形'}
           {shape.type === 'line' && '線條'}
           {shape.type === 'text' && '文字'}
+          {shape.type === 'triangle' && '三角形'}
+          {shape.type === 'hexagon' && '六邊形'}
+          {shape.type === 'ellipse' && '橢圓'}
         </div>
       </div>
       <div className="grid grid-cols-2 gap-2">
@@ -335,7 +338,7 @@ const MachinePropertyPanel: React.FC<MachinePropertyPanelProps> = ({
         </div>
       </div>
 
-      {shape.type === 'rectangle' && (
+      {(shape.type === 'rectangle' || shape.type === 'ellipse') && (
         <div className="grid grid-cols-2 gap-2">
           <div className="space-y-1.5">
             <Label className="text-xs">寬度</Label>
@@ -358,7 +361,7 @@ const MachinePropertyPanel: React.FC<MachinePropertyPanelProps> = ({
         </div>
       )}
 
-      {shape.type === 'circle' && (
+      {(shape.type === 'circle' || shape.type === 'triangle' || shape.type === 'hexagon') && (
         <div className="space-y-1.5">
           <Label className="text-xs">半徑</Label>
           <Input
@@ -416,7 +419,7 @@ const MachinePropertyPanel: React.FC<MachinePropertyPanelProps> = ({
         </>
       )}
 
-      {(shape.type === 'rectangle' || shape.type === 'circle') && (
+      {(shape.type === 'rectangle' || shape.type === 'circle' || shape.type === 'triangle' || shape.type === 'hexagon' || shape.type === 'ellipse') && (
         <>
           <div className="space-y-1.5">
             <Label className="text-xs">填滿顏色</Label>
@@ -439,7 +442,7 @@ const MachinePropertyPanel: React.FC<MachinePropertyPanelProps> = ({
         </>
       )}
 
-      {(shape.type === 'rectangle' || shape.type === 'circle' || shape.type === 'line') && (
+      {(shape.type === 'rectangle' || shape.type === 'circle' || shape.type === 'line' || shape.type === 'triangle' || shape.type === 'hexagon' || shape.type === 'ellipse') && (
         <>
           <div className="space-y-1.5">
             <Label className="text-xs">邊框顏色</Label>

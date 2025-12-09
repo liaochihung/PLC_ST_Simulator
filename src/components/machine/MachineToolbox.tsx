@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
     Square,
     Circle,
@@ -13,7 +13,12 @@ import {
     Gauge,
     Link,
     Image,
-    LayoutTemplate
+    LayoutTemplate,
+    List,
+    LayoutGrid,
+    Triangle,
+    Hexagon,
+    Orbit
 } from 'lucide-react';
 import {
     Accordion,
@@ -35,6 +40,8 @@ interface ComponentItem {
 }
 
 const MachineToolbox = () => {
+    const [viewMode, setViewMode] = useState<'list' | 'grid'>('grid');
+
     // Defines available components mimicking Fuxa categories
     // Note: Some of these are placeholders for future implementation
     const components: ComponentItem[] = [
@@ -108,6 +115,30 @@ const MachineToolbox = () => {
             category: 'shapes',
             extraData: { text: 'Text', fontSize: 16 }
         },
+        {
+            id: 'triangle',
+            name: 'Triangle',
+            type: 'triangle',
+            icon: <Triangle className="w-4 h-4" />,
+            category: 'shapes',
+            extraData: { radius: 40, fill: '#8b5cf6', sides: 3 }
+        },
+        {
+            id: 'hexagon',
+            name: 'Hexagon',
+            type: 'hexagon',
+            icon: <Hexagon className="w-4 h-4" />,
+            category: 'shapes',
+            extraData: { radius: 40, fill: '#ec4899', sides: 6 }
+        },
+        {
+            id: 'ellipse',
+            name: 'Ellipse',
+            type: 'ellipse',
+            icon: <Circle className="w-4 h-4 scale-x-150" />, // Using Circle with transform for ellipse
+            category: 'shapes',
+            extraData: { width: 80, height: 40, fill: '#06b6d4' }
+        },
         // --- 4. CONTROLS (Placeholder) ---
         {
             id: 'button',
@@ -177,8 +208,17 @@ const MachineToolbox = () => {
 
     return (
         <div className="h-full flex flex-col bg-background">
-            <div className="p-3 border-b border-border bg-muted/20">
+            <div className="p-3 border-b border-border bg-muted/20 flex items-center justify-between">
                 <h3 className="font-semibold text-sm">Toolbox</h3>
+                <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-6 w-6"
+                    onClick={() => setViewMode(prev => prev === 'list' ? 'grid' : 'list')}
+                    title={viewMode === 'list' ? 'Switch to Grid View' : 'Switch to List View'}
+                >
+                    {viewMode === 'list' ? <LayoutGrid className="h-4 w-4" /> : <List className="h-4 w-4" />}
+                </Button>
             </div>
 
             <ScrollArea className="flex-1">
@@ -190,20 +230,25 @@ const MachineToolbox = () => {
                                     {cat.label}
                                 </AccordionTrigger>
                                 <AccordionContent className="pb-2">
-                                    <div className="grid grid-cols-2 gap-2 p-1">
+                                    <div className={`grid gap-2 p-1 ${viewMode === 'list' ? 'grid-cols-2' : 'grid-cols-4'}`}>
                                         {getComponentsByCategory(cat.id).map(item => (
                                             <div
                                                 key={item.id}
                                                 draggable
                                                 onDragStart={(e) => handleDragStart(e, item)}
                                                 className="cursor-move"
+                                                title={viewMode === 'grid' ? item.name : undefined}
                                             >
                                                 <Button
                                                     variant="outline"
-                                                    className="w-full justify-start h-9 px-2 text-xs flex items-center gap-2 bg-card hover:bg-accent hover:border-accent-foreground/50 transition-all shadow-sm"
+                                                    className={`w-full text-xs flex items-center gap-2 bg-card hover:bg-accent hover:border-accent-foreground/50 transition-all shadow-sm ${
+                                                        viewMode === 'list' 
+                                                            ? 'justify-start h-9 px-2' 
+                                                            : 'justify-center h-9 px-0'
+                                                    }`}
                                                 >
                                                     {item.icon}
-                                                    <span className="truncate">{item.name}</span>
+                                                    {viewMode === 'list' && <span className="truncate">{item.name}</span>}
                                                 </Button>
                                             </div>
                                         ))}

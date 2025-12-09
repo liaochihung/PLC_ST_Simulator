@@ -57,7 +57,7 @@ export interface MachineFeeder {
 // Basic shapes for component palette
 export interface BasicShape {
   id: string;
-  type: 'rectangle' | 'circle' | 'line' | 'text';
+  type: 'rectangle' | 'circle' | 'line' | 'text' | 'triangle' | 'hexagon' | 'ellipse';
   x: number;
   y: number;
   width?: number;
@@ -68,6 +68,7 @@ export interface BasicShape {
   fill?: string;
   stroke?: string;
   strokeWidth?: number;
+  sides?: number;
   // For line type
   endX?: number;
   endY?: number;

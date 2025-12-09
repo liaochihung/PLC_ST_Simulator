@@ -272,7 +272,10 @@ const MachineEditor: React.FC<MachineEditorProps> = ({
       case 'rectangle':
       case 'circle':
       case 'line':
-      case 'text': {
+      case 'text':
+      case 'triangle':
+      case 'hexagon':
+      case 'ellipse': {
         const shape = {
           type: type as any,
           x,

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Rect, Circle, Line, Text } from 'react-konva';
+import { Rect, Circle, Line, Text, RegularPolygon, Ellipse } from 'react-konva';
 import type { BasicShape } from '@/types/machine-editor';
 
 interface KonvaBasicShapeProps {
@@ -43,14 +43,12 @@ const KonvaBasicShape: React.FC<KonvaBasicShapeProps> = ({
                     // If we add rotation to BasicShape interface later, we can sync it.
                 };
 
-                if (shape.type === 'circle') {
-                    // Circle radius is scaled
-                    // Use node.width() which is 2*radius for circle in Konva
-                    // effectiveWidth = node.width() * scaleX
-                    // newRadius = effectiveWidth / 2
-                    const newRadius = (node.width() * scaleX) / 2;
+                if (shape.type === 'circle' || shape.type === 'triangle' || shape.type === 'hexagon') {
+                    // Use radius() * scaleX for accuracy (especially for polygons where width != 2*radius)
+                    const unscaledRadius = (node as any).radius ? (node as any).radius() : (node.width() / 2);
+                    const newRadius = unscaledRadius * scaleX;
                     updates.radius = newRadius;
-                } else if (shape.type === 'rectangle') {
+                } else if (shape.type === 'rectangle' || shape.type === 'ellipse') {
                     updates.width = node.width() * scaleX;
                     updates.height = node.height() * scaleY;
                 } else if (shape.type === 'text') {
@@ -114,6 +112,39 @@ const KonvaBasicShape: React.FC<KonvaBasicShapeProps> = ({
                     ]}
                     stroke={shape.stroke || '#6366f1'}
                     strokeWidth={shape.strokeWidth || 3}
+                    {...commonProps}
+                    {...selectionStyle}
+                />
+            );
+
+        case 'triangle':
+        case 'hexagon':
+            return (
+                <RegularPolygon
+                    id={shape.id}
+                    x={shape.x}
+                    y={shape.y}
+                    sides={shape.sides || (shape.type === 'triangle' ? 3 : 6)}
+                    radius={shape.radius || 40}
+                    fill={shape.fill || '#8b5cf6'}
+                    stroke={shape.stroke || '#7c3aed'}
+                    strokeWidth={shape.strokeWidth || 2}
+                    {...commonProps}
+                    {...selectionStyle}
+                />
+            );
+
+        case 'ellipse':
+            return (
+                <Ellipse
+                    id={shape.id}
+                    x={shape.x}
+                    y={shape.y}
+                    radiusX={(shape.width || 80) / 2}
+                    radiusY={(shape.height || 60) / 2}
+                    fill={shape.fill || '#06b6d4'}
+                    stroke={shape.stroke || '#0891b2'}
+                    strokeWidth={shape.strokeWidth || 2}
                     {...commonProps}
                     {...selectionStyle}
                 />
