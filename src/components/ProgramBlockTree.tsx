@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { cn } from '@/lib/utils';
-import { 
-  ChevronRight, 
+import {
+  ChevronRight,
   ChevronDown,
   Zap,
   RefreshCw,
@@ -12,11 +12,13 @@ import {
   Trash2,
   Copy,
   Edit2,
-  Power
+  Power,
+  Database,
+  Globe
 } from 'lucide-react';
-import { 
-  ProgramBlock, 
-  ProgramProject, 
+import {
+  ProgramBlock,
+  ProgramProject,
   BlockType,
   getBlockTypeName,
   getBlockTypeColor,
@@ -43,7 +45,7 @@ interface ProgramBlockTreeProps {
 
 const BlockIcon: React.FC<{ type: BlockType; className?: string }> = ({ type, className }) => {
   const iconClass = cn("w-4 h-4", getBlockTypeColor(type), className);
-  
+
   switch (type) {
     case 'init':
       return <Zap className={iconClass} />;
@@ -53,6 +55,10 @@ const BlockIcon: React.FC<{ type: BlockType; className?: string }> = ({ type, cl
       return <Code className={iconClass} />;
     case 'function-block':
       return <Box className={iconClass} />;
+    case 'data-type':
+      return <Database className={iconClass} />;
+    case 'global-var':
+      return <Globe className={iconClass} />;
   }
 };
 
@@ -166,12 +172,12 @@ const BlockItem: React.FC<BlockItemProps> = ({
             {block.type !== 'init' && (
               <>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem 
+                <DropdownMenuItem
                   onClick={onDelete}
                   className="text-destructive focus:text-destructive"
                 >
                   <Trash2 className="w-3 h-3 mr-2" />
-                Delete
+                  Delete
                 </DropdownMenuItem>
               </>
             )}
@@ -218,6 +224,8 @@ const ProgramBlockTree: React.FC<ProgramBlockTreeProps> = ({
   const initBlocks = project.blocks.filter(b => b.type === 'init');
   const scanBlocks = project.blocks.filter(b => b.type === 'scan');
   const fbBlocks = project.blocks.filter(b => b.type === 'function-block');
+  const typeBlocks = project.blocks.filter(b => b.type === 'data-type');
+  const globalVarBlocks = project.blocks.filter(b => b.type === 'global-var');
 
   return (
     <div className="h-full flex flex-col bg-card text-foreground">
@@ -243,6 +251,14 @@ const ProgramBlockTree: React.FC<ProgramBlockTreeProps> = ({
                 <Box className="w-3 h-3 mr-2 text-chart-4" />
                 新增功能塊
               </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => onBlockAdd('data-type')}>
+                <Database className="w-3 h-3 mr-2 text-purple-500" />
+                新增資料型別
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => onBlockAdd('global-var')}>
+                <Globe className="w-3 h-3 mr-2 text-orange-500" />
+                新增全域變數
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
@@ -250,6 +266,26 @@ const ProgramBlockTree: React.FC<ProgramBlockTreeProps> = ({
 
       {/* 區塊列表 */}
       <div className="flex-1 overflow-y-auto p-2 space-y-4">
+        {/* 資料型別 */}
+        {typeBlocks.length > 0 && (
+          <div>
+            <div className="px-2 py-1 text-xs font-medium text-muted-foreground uppercase tracking-wider">
+              資料型別
+            </div>
+            {typeBlocks.map(block => renderBlock(block))}
+          </div>
+        )}
+
+        {/* 全域變數 */}
+        {globalVarBlocks.length > 0 && (
+          <div>
+            <div className="px-2 py-1 text-xs font-medium text-muted-foreground uppercase tracking-wider">
+              全域變數
+            </div>
+            {globalVarBlocks.map(block => renderBlock(block))}
+          </div>
+        )}
+
         {/* 初始化區塊 */}
         {initBlocks.length > 0 && (
           <div>

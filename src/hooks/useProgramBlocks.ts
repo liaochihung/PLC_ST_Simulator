@@ -39,7 +39,9 @@ export function useProgramBlocks() {
       code: type === 'init' ? 'VAR_GLOBAL\nEND_VAR' :
         type === 'scan' ? 'PROGRAM NewProgram\n  VAR\n  END_VAR\n\n  (* Logic *)\nEND_PROGRAM' :
           type === 'function-block' ? 'FUNCTION_BLOCK NewFB\n  VAR_INPUT\n  END_VAR\n  VAR_OUTPUT\n  END_VAR\n  VAR\n  END_VAR\nEND_FUNCTION_BLOCK' :
-            '(* Subroutine *)\n',
+            type === 'data-type' ? 'TYPE NewType :\n  STRUCT\n    Member : BOOL;\n  END_STRUCT;\nEND_TYPE' :
+              type === 'global-var' ? 'VAR_GLOBAL\n  MyVar : BOOL;\nEND_VAR' :
+                '(* Subroutine *)\n',
       enabled: true,
       scanInterval: type === 'scan' ? 100 : undefined
     };
@@ -124,27 +126,120 @@ export function useProgramBlocks() {
     });
   }, []);
 
+  // Code Assembly Logic
   const getCombinedCode = useCallback(() => {
-    const flatten = (blocks: ProgramBlock[]): ProgramBlock[] => {
-      let res: ProgramBlock[] = [];
-      for (const b of blocks) {
-        if (b.enabled) {
-          res.push(b);
-          if (b.children) res = res.concat(flatten(b.children));
+    // 1. Collect all Function Blocks first (they must be defined before use)
+    const findBlocksByType = (blocks: ProgramBlock[], type: ProgramBlock['type']): ProgramBlock[] => {
+      let results: ProgramBlock[] = [];
+      for (const block of blocks) {
+        if (block.type === type) {
+          results.push(block);
+        }
+        if (block.children) {
+          results = results.concat(findBlocksByType(block.children, type));
         }
       }
-      return res;
+      return results;
     };
 
-    const allBlocks = flatten(project.blocks);
+    const typeBlocks = findBlocksByType(project.blocks, 'data-type');
+    const typeCode = typeBlocks
+      .filter(b => b.enabled)
+      .map(b => b.code)
+      .join('\n\n');
 
-    const globals = allBlocks.filter(b => b.type === 'init').map(b => b.code).join('\n\n');
-    const fbs = allBlocks.filter(b => b.type === 'function-block').map(b => b.code).join('\n\n');
-    const programs = allBlocks.filter(b => b.type === 'scan').map(b => b.code).join('\n\n');
-    const subroutines = allBlocks.filter(b => b.type === 'subroutine').map(b => b.code).join('\n\n');
+    const fbBlocks = findBlocksByType(project.blocks, 'function-block');
+    const fbCode = fbBlocks
+      .filter(b => b.enabled)
+      .map(b => b.code)
+      .join('\n\n');
 
-    return [globals, fbs, programs, subroutines].filter(s => s).join('\n\n');
-    return [globals, fbs, programs, subroutines].filter(s => s).join('\n\n');
+    // 2. Parse and merge Main Program blocks (Init and Scan)
+    const initBlocks = findBlocksByType(project.blocks, 'init');
+
+    // Helper to extract VAR...END_VAR and Body
+    const parseBlock = (code: string) => {
+      // Updated regex to handle VAR, VAR_GLOBAL, VAR_INPUT, etc.
+      const varRegex = /(?:VAR|VAR_GLOBAL|VAR_INPUT|VAR_OUTPUT)([\s\S]*?)END_VAR/g;
+      let vars: string[] = [];
+      let body = code;
+
+      let match;
+      while ((match = varRegex.exec(code)) !== null) {
+        if (match[1]) {
+          const varContent = match[1].trim();
+          if (varContent) vars.push(varContent);
+        }
+      }
+
+      body = body.replace(varRegex, '').trim();
+      return { vars, body };
+    };
+
+    let mainVars: string[] = ['_init_done : BOOL := FALSE;', 'idx : INT; (* General Index *)'];
+    let mainBodyParts: string[] = [];
+
+    // Process Global Variable Blocks
+    const globalVarBlocks = findBlocksByType(project.blocks, 'global-var');
+    globalVarBlocks.filter(b => b.enabled).forEach(b => {
+      const { vars } = parseBlock(b.code);
+      mainVars.push(...vars);
+    });
+
+    // Process Init Blocks
+    if (initBlocks.length > 0) {
+      let initBodies: string[] = [];
+      initBlocks.filter(b => b.enabled).forEach(b => {
+        const { vars, body } = parseBlock(b.code);
+        mainVars.push(...vars);
+        if (body) initBodies.push(body);
+      });
+
+      if (initBodies.length > 0) {
+        mainBodyParts.push(`
+    (* Initialization Block *)
+    IF NOT _init_done THEN
+        ${initBodies.join('\n\n        ')}
+        
+        _init_done := TRUE;
+    END_IF;
+            `);
+      }
+    }
+
+    // Process Scan Blocks in Tree Order
+    const collectScanCode = (blocks: ProgramBlock[]): void => {
+      for (const block of blocks) {
+        if (!block.enabled) continue;
+
+        if (block.type === 'scan') {
+          const { vars, body } = parseBlock(block.code);
+          mainVars.push(...vars);
+          if (body) {
+            mainBodyParts.push(`    (* Block: ${block.name} *)\n    ${body}`);
+          }
+        }
+
+        if (block.children && block.children.length > 0) {
+          collectScanCode(block.children);
+        }
+      }
+    };
+
+    collectScanCode(project.blocks);
+
+    const mainProgram = `
+PROGRAM Main
+    VAR
+        ${mainVars.join('\n        ')}
+    END_VAR
+
+${mainBodyParts.join('\n\n')}
+
+END_PROGRAM
+`;
+
+    return `${typeCode}\n\n${fbCode}\n\n${mainProgram}`;
   }, [project.blocks]);
 
   // Project Management Functions

@@ -1,7 +1,27 @@
 
-import { ProgramProject } from '@/types/program-blocks';
+import { ProgramProject, ProgramBlock } from '@/types/program-blocks';
 
-// Constants for default code
+// Import raw ST files for Standard Library
+import cy0x1yRaw from './library/standard/FbCylinder0x1y.st?raw';
+import cy1x1yRaw from './library/standard/FbCylinder1x1y.st?raw';
+import cy2x1yRaw from './library/standard/FbCylinder2x1y.st?raw';
+import rotateRaw from './library/standard/FbRotateTable.st?raw';
+import feederRaw from './library/standard/FbFeeder.st?raw';
+import axisZeroRaw from './library/standard/FbAxisZero.st?raw';
+import axisAbsRaw from './library/standard/FbAxisAbs.st?raw';
+import towerLightRaw from './library/standard/FbTowerLight.st?raw';
+import sysProcessRaw from './library/standard/FbSysStateProcess.st?raw';
+
+// Import raw ST files for Project Logic
+import initRaw from './library/standard/Init.st?raw';
+import alwaysRaw from './library/standard/Always.st?raw';
+import autoRaw from './library/standard/Auto.st?raw';
+import manualRaw from './library/standard/Manual.st?raw';
+import errorRaw from './library/standard/Error.st?raw';
+import st1Raw from './library/standard/St1.st?raw';
+
+// Constants for default code (Global Variables definition)
+// Kept inline for simplicity as it defines the data structure types for the parser
 const GLOBAL_VARS = `VAR_GLOBAL CONSTANT
     OK_STEP : INT := 10000;
     NG_STEP : INT := -1;
@@ -412,6 +432,7 @@ VAR_GLOBAL
     manSt1LF : BOOL; (* 0 *)
 END_VAR`;
 
+
 const GLOBAL_IO = `VAR_GLOBAL
     xSt3ServoOrg : BOOL; (* X0 *)
     xSt3StepPL : BOOL; (* X1 *)
@@ -504,432 +525,97 @@ const GLOBAL_IO = `VAR_GLOBAL
     ySt5Vacuum : BOOL; (* Y56 *)
 END_VAR`;
 
-const MAIN_PROGRAM = `PROGRAM Main
-VAR
-    calcA1Speed : BOOL;
-    calcA2Speed : BOOL;
-    a2HadDone : BOOL;
-    axis2ZeroIdx : INT;
-    axis1ZeroIdx : INT;
-    tmpBool : BOOL;
-    st3NextPosIdx : INT;
-    manSt5PF : BOOL;
-    manSt5LF : BOOL;
-    st3StepGoPosIdx : INT;
-    idx : INT;
-    tmrWaitLetAxis2Down : TON;
-END_VAR
 
-    (* Init Area: Run only once when system starting up *)
-    yLight := TRUE;
-    sys.ManMode := TRUE;
-    (* gCanChangePage := TRUE; *)
-    
-    ySt3ServoServoBrake := TRUE;
-    ySt3ServoServoOn := TRUE;
-    
-    IF dwSt3Seperation = 0 THEN
-        dwSt3Seperation := 4;
-    END_IF;
-    
-    SM8049 := TRUE;
+const DS_SYS_STATUS = `TYPE dsSysStatus :
+  STRUCT
+    ManMode : BOOL;
+    AutoMode : BOOL;
+    EMG : BOOL;
+    HasError : BOOL;
+    HasWarning : BOOL;
+    Error : BOOL;
+  END_STRUCT;
+END_TYPE`;
 
-    (* Scan Code *)
-    tmrSysInit(IN := SM8000, PT:= T#10s);
-    
-    sys.EMG := NOT xEmg OR F0;
-    
-    IF NOT tmrSysInit.Q THEN
-        RETURN;
-    END_IF;
-     
-    IF sys.EMG THEN
-        gSt3NextSide := 0;
-        gSt3NeedCheck := TRUE;
-    END_IF;
-    
-    IF LDP(TRUE, sys.ManMode) THEN		
-        St1PutDone := FALSE;
-        St3Done := FALSE;
-        St5PutDone := FALSE;
-        St6Done := FALSE;
-        St7Done := FALSE;
-        St8GetDone := FALSE;
-        St8NeedGet := FALSE;
-        
-        gSt1Seperate := FALSE;
-        gSt5Seperate := FALSE;
-        
-        St8GetDone := FALSE;
-    END_IF;
-    
-    ALTP(uiLight, yLight);
-    
-    gAutoCanGoNext := NOT sys.HasError;
-    
-    gCanChangePage := gAllStCanCycle;
-    
-    tmrSt10Chk(IN:=xSt10Check AND gRotateArrived, PT:=T#0.5s);
-    IF gRotateArrived THEN
-        IF tmrSt10Chk.Q THEN
-            F3 := TRUE;
-        END_IF;
-    END_IF;
-    
-    IF ((uiStartAuto AND (NOT sys.AutoMode)) OR gClearTool) AND 
-        NOT F3 THEN
-        
-        IF NOT sys.HasError AND 
-            NOT gWaitStopAuto AND gAllStCanCycle AND 
-            NOT F6 AND 
-            NOT F7 THEN
-            sys.AutoMode := TRUE;
-            sys.ManMode := FALSE;
-        END_IF;
-    END_IF;
-    
-    gWaitStopAuto := sys.AutoMode AND uiStopAuto AND NOT gWaitStopAuto;
-    gClearTool := gClearTool AND NOT (sys.AutoMode AND uiStopAuto);
+const DS_TOWER_LIGHT = `TYPE dsTowerLight :
+  STRUCT
+    Red : BOOL;
+    Yellow : BOOL;
+    Green : BOOL;
+    Buzzer : BOOL;
+  END_STRUCT;
+END_TYPE`;
 
-    (*
-    IF uiClearTool AND NOT F3 THEN
-        IF CheckHasTool(wDataArray) THEN
-            gClearTool := TRUE;
-        END_IF;
-    END_IF;
-    *)
-    
-    gAllStCycleDone := 
-        (NOT St1Cycle OR St1PutDone) AND 
-        (NOT St3Cycle (* OR St3Done*)) AND
-        (NOT St5Cycle OR St5PutDone) AND
-        
-        ((NOT UseSt6) OR 
-        (UseSt6 AND NOT St6Cycle)) AND 
-        
-        NOT St7Cycle AND 
-        (NOT St8NeedGet OR (St8NeedGet AND St8GetDone)) AND 
-        NOT St9Cycle;
-    
-    gAllStCanCycle := 
-        St1InOrg AND 
-        St3InOrg AND 
-        St5InOrg AND 
-        
-        ((NOT UseSt6) OR 
-        (UseSt6 AND St6InOrg)) AND 
-        
-        (* St7InOrg AND *)
-        St8InOrg AND 
-        St9InOrg;
-    
-    (*
-    gLight.Yellow := 
-        F54 OR 
-        F55 OR
-        F56 OR
-        F57;
-    
-    gLight.Green := 
-        (sys.ManMode AND SM8013) OR 
-        (sys.AutoMode);
-    
-    gLight.Red := 
-        SM8013 AND (sys.EMG OR sys.HasError OR sys.HasWarning);
-    *)
-    
-    gBuzzerEnable := NOT uiEnBuzzer;
-    gLight.Buzzer := gBuzzerEnable AND 
-        SM8013 AND (sys.HasWarning OR sys.HasError);
-    
-    IF manRotate THEN
-        gRotate := TRUE;
-        manRotate := FALSE;
-    END_IF;
-    
-    IF LDP(TRUE, uiFeeder) THEN
-        gSt1RotatoryFeeder := TRUE;
-        gSt5RotatoryFeeder := TRUE;
-        
-        gSt3Feed := gAllAxisZeroDone AND gA1IO.xReady;
-    END_IF;
-    
-    IF LDF(TRUE, uiFeeder) THEN
-        gSt1RotatoryFeeder := FALSE;
-        gSt5RotatoryFeeder := FALSE;
-        gSt3Feed := FALSE;
-            
-        gSt1Vacuum := FALSE;
-        gSt5SquareVacuum := FALSE;
-    END_IF;
-    
-    IF gClearDataArray THEN
-        FOR idx := 0 TO 9 BY 1 DO
-            wDataArray[idx] := 0;
-        END_FOR;
-        gClearDataArray := FALSE;
-    END_IF;
+const DS_AXIS_IO = `TYPE dsAxisIO :
+  STRUCT
+    xReady : BOOL;
+  END_STRUCT;
+END_TYPE`;
 
-    (*
-    RotateTable(
-        iOrigPos:= xIndexOrg,
-        iActPos:= xIndexAct,
-        iRun:= gRotate AND (NOT sys.Error),
-        iRotateTO:= wRotateTO,
-        iInPosWaitTime:= wRotateOnPosWaitT,
-        iReset := ResetAlarm,
-        oDevice => yIndex);
-        
-    gRotate := FALSE;	
-    gRotateArrived := RotateTable.oArrived;
-    *)
-
-    (* Cylinder function block calls here (omitted for brevity, assume similar structure) *)
-    
-END_PROGRAM`;
-
-const FBS = [
-    {
-        id: 'fb_cylinder_0x1y',
-        name: 'FbCylinder0x1y',
-        type: 'function_block' as const,
-        code: `FUNCTION_BLOCK FbCylinder0x1y
-VAR_INPUT
-    iAct : BOOL; (* Action Cmd *)
-    iOnDelay : INT; (* Sensor On Delay *)
-    iOffDelay : INT; (* Sensor Off Delay *)
-END_VAR
-VAR_OUTPUT
-    oDevice : BOOL; (* Target Device *)
-    oOn : BOOL;
-    oOff : BOOL;
-END_VAR
-VAR
-    tmrOnDelay : TON;
-    tmrOffDelay : TON;
-END_VAR
-
-    oDevice := iAct;
-    
-    tmrOnDelay(IN := oDevice, PT := INT_TO_TIME(iOnDelay*10));
-    oOn := tmrOnDelay.Q;
-    
-    tmrOffDelay(IN := NOT oDevice, PT := INT_TO_TIME(iOffDelay*10));
-    oOff := tmrOffDelay.Q;
-
-END_FUNCTION_BLOCK`
-    },
-    {
-        id: 'fb_cylinder_1x1y',
-        name: 'FbCylinder1x1y',
-        type: 'function_block' as const,
-        code: `FUNCTION_BLOCK FbCylinder1x1y
-VAR_INPUT
-    iAct : BOOL;
-    iRst : BOOL;
-    iOnDelay : INT;
-    iOffDelay : INT;
-    iOnTO : INT;
-    iOffTO : INT;
-    iLimit1 : BOOL;
-END_VAR
-VAR_OUTPUT
-    oDevice : BOOL;
-    oOn : BOOL;
-    oOff : BOOL;
-    oErr : BOOL;
-    oErrId : INT;
-END_VAR
-VAR
-    tmrOn : TON;
-    tmrOff : TON;
-    tmrOnDelay : TON;
-    tmrOffDelay : TON;
-END_VAR
-
-    oDevice := iAct;
-    
-    tmrOn(IN := oDevice AND NOT iLimit1, PT:= INT_TO_TIME(iOnTO*10));
-    tmrOff(IN := NOT oDevice AND iLimit1, PT:= INT_TO_TIME(iOffTO*10));
-    
-    IF iRst AND oErr THEN
-      oErr := FALSE;
-    END_IF;
-    
-    IF tmrOn.Q OR tmrOff.Q THEN
-      oErr := TRUE;
-    END_IF;
-    
-    IF oErr THEN
-        IF tmrOff.Q THEN
-            oErrId := 20;
-        ELSIF tmrOn.Q THEN
-            oErrId := 10;
-        END_IF;
-    ELSE	
-        oErrId := 0;
-    END_IF;
-    
-    tmrOnDelay(IN := oDevice AND iLimit1, PT := INT_TO_TIME(iOnDelay*10));
-    oOn := tmrOnDelay.Q;
-    
-    tmrOffDelay(IN := NOT oDevice, PT := INT_TO_TIME(iOffDelay*10));
-    oOff := tmrOffDelay.Q;
-
-END_FUNCTION_BLOCK`
-    },
-    {
-        id: 'fb_cylinder_2x1y',
-        name: 'FbCylinder2x1y',
-        type: 'function_block' as const,
-        code: `FUNCTION_BLOCK FbCylinder2x1y
-VAR_INPUT
-    iAct : BOOL;
-    iRst : BOOL;
-    iOnDelay : INT;
-    iOffDelay : INT;
-    iOnTO : INT;
-    iOffTO : INT;
-    iLimit1 : BOOL;
-    iLimit2 : BOOL;
-END_VAR
-VAR_OUTPUT
-    oDevice : BOOL;
-    oOn : BOOL;
-    oOff : BOOL;
-    oErr : BOOL;
-    oErrId : INT;
-END_VAR
-VAR
-    tmrOn : TON;
-    tmrOff : TON;
-    tmrErr : TON;
-    tmrOnDelay : TON;
-    tmrOffDelay : TON;
-END_VAR
-
-    oDevice := iAct;
-    
-    tmrOn(IN := oDevice AND NOT iLimit2, PT:= INT_TO_TIME(iOnTO * 10));
-    tmrOff(IN := NOT oDevice AND NOT iLimit1, PT := INT_TO_TIME(iOffTO * 10));
-    tmrErr(IN := iLimit1 AND iLimit2, PT := T#10s);
-    
-    IF iRst AND oErr THEN
-       oErr := FALSE;
-    END_IF;
-
-    IF tmrOn.Q OR tmrOff.Q OR tmrErr.Q THEN
-       oErr := TRUE;
-    END_IF;
-    
-    IF (oErr) THEN
-        IF tmrOn.Q THEN
-            oErrId := 10;
-        ELSIF  tmrOff.Q THEN
-            oErrId := 20;
-        END_IF;
-        
-        IF tmrErr.Q THEN
-            oErrId := 30;
-        END_IF;
-    ELSE
-        oErrId := 0;
-    END_IF;
-    
-    tmrOnDelay(IN := oDevice AND iLimit2, PT := INT_TO_TIME(iOnDelay*10));
-    oOn := tmrOnDelay.Q;
-    
-    tmrOffDelay(IN := NOT oDevice AND iLimit1, PT := INT_TO_TIME(iOffDelay*10));
-    oOff := tmrOffDelay.Q;
-
-END_FUNCTION_BLOCK`
-    },
-    {
-        id: 'fb_rotate_table',
-        name: 'FbRotateTable',
-        type: 'function_block' as const,
-        code: `FUNCTION_BLOCK FbRotateTable
-VAR_INPUT
-    iOrigPos : BOOL;
-    iActPos : BOOL;
-    iStop : BOOL;
-    iRun : BOOL;
-    iReset : BOOL;
-    iRotateTO : INT;
-    iInPosWaitTime : INT;
-END_VAR
-VAR_OUTPUT
-    oDevice : BOOL;
-    oBusy : BOOL;
-    oErr : BOOL;
-    oArrived : BOOL;
-END_VAR
-VAR
-    rotating : BOOL;
-    tmrWaitInPos : TON;
-    inPos : BOOL;
-    waitInPos : BOOL;
-    arrived : BOOL;
-    rotate : BOOL;
-    reset : BOOL;
-    tmrTimeOut : TON;
-    tmp : BOOL;
-END_VAR
-
-    (* Logic based on sample, converted roughly *)
-    IF iRun AND NOT rotate THEN
-        rotate := TRUE;
-    ELSE
-        rotate := FALSE;
-    END_IF;
-    
-    tmp := (NOT arrived) AND (NOT iStop) AND (rotate OR rotating);
-    rotating := tmp;
-    oDevice := (NOT oErr) AND tmp;
-    
-    reset := iReset;
-    tmrTimeOut(IN := oDevice AND NOT reset, PT := INT_TO_TIME(iRotateTO * 100));
-    
-    oErr := NOT reset AND (tmrTimeOut.Q OR oErr);
-    
-    IF tmrWaitInPos.Q THEN 
-       oArrived := TRUE;
-    END_IF;
-    
-    IF rotate THEN
-       oArrived := FALSE;
-    END_IF;
-
-END_FUNCTION_BLOCK`
-    }
+const LIB_BLOCKS: ProgramBlock[] = [
+    { id: 'dt_sys_status', name: 'dsSysStatus', type: 'data-type', code: DS_SYS_STATUS, enabled: true },
+    { id: 'dt_tower_light', name: 'dsTowerLight', type: 'data-type', code: DS_TOWER_LIGHT, enabled: true },
+    { id: 'dt_axis_io', name: 'dsAxisIO', type: 'data-type', code: DS_AXIS_IO, enabled: true },
+    { id: 'fb_cylinder_0x1y', name: 'FbCylinder0x1y', type: 'function-block', code: cy0x1yRaw, enabled: true },
+    { id: 'fb_cylinder_1x1y', name: 'FbCylinder1x1y', type: 'function-block', code: cy1x1yRaw, enabled: true },
+    { id: 'fb_cylinder_2x1y', name: 'FbCylinder2x1y', type: 'function-block', code: cy2x1yRaw, enabled: true },
+    { id: 'fb_rotate_table', name: 'FbRotateTable', type: 'function-block', code: rotateRaw, enabled: true },
+    { id: 'fb_feeder', name: 'FbFeeder', type: 'function-block', code: feederRaw, enabled: true },
+    { id: 'fb_axis_zero', name: 'FbAxisZero', type: 'function-block', code: axisZeroRaw, enabled: true },
+    { id: 'fb_axis_abs', name: 'FbAxisAbs', type: 'function-block', code: axisAbsRaw, enabled: true },
+    { id: 'fb_tower_light', name: 'FbTowerLight', type: 'function-block', code: towerLightRaw, enabled: true },
+    { id: 'fb_sys_process', name: 'FbSysStateProcess', type: 'function-block', code: sysProcessRaw, enabled: true },
 ];
-
 
 export const DEFAULT_PROJECT: ProgramProject = {
     id: 'project-default',
     name: '圓盤分度機',
-    activeBlockId: 'main-program',
+    activeBlockId: 'scan-always', // Changed to Always
     blocks: [
         {
             id: 'global-vars',
-            name: '全域變數',
-            type: 'init',
-            code: GLOBAL_VARS + '\n\n' + GLOBAL_IO,
+            name: '定義變數',
+            type: 'global-var',
+            code: GLOBAL_VARS,
             enabled: true
         },
-        ...FBS.map(fb => ({
-            ...fb,
-            type: 'function-block' as const,
-            enabled: true,
-            parentId: undefined
-        })),
         {
-            id: 'main-program',
-            name: '主程式',
-            type: 'scan',
-            code: MAIN_PROGRAM,
-            scanInterval: 10,
+            id: 'global-io',
+            name: '定義IO',
+            type: 'global-var',
+            code: GLOBAL_IO,
             enabled: true
+        },
+        ...LIB_BLOCKS,
+        {
+            id: 'main-init-logic',
+            name: 'Init Logic',
+            type: 'init',
+            code: initRaw,
+            enabled: true
+        },
+        {
+            id: 'main-scan-cycle',
+            name: 'Main Cycle',
+            type: 'scan',
+            code: '(* Main Scan Cycle Entry *)',
+            enabled: true,
+            children: [
+                { id: 'scan-always', name: 'Always', type: 'scan', code: alwaysRaw, enabled: true },
+                { id: 'scan-auto', name: 'Auto', type: 'scan', code: autoRaw, enabled: true },
+                { id: 'scan-manual', name: 'Manual', type: 'scan', code: manualRaw, enabled: true },
+                { id: 'scan-error', name: 'Error', type: 'scan', code: errorRaw, enabled: true },
+                {
+                    id: 'scan-stations',
+                    name: 'Stations',
+                    type: 'scan',
+                    code: '(* Stations Logic *)',
+                    enabled: true,
+                    children: [
+                        { id: 'scan-st1', name: 'Station 1', type: 'scan', code: st1Raw, enabled: true }
+                    ]
+                }
+            ]
         }
     ]
 };

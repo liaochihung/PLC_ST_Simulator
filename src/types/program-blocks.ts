@@ -1,7 +1,7 @@
 import { MachineLayout } from './machine-editor';
 
 // 程式區塊類型定義
-export type BlockType = 'init' | 'scan' | 'subroutine' | 'function-block';
+export type BlockType = 'init' | 'scan' | 'subroutine' | 'function-block' | 'data-type' | 'global-var';
 
 export type ScanInterval = 10 | 50 | 100 | 500 | 1000;
 
@@ -192,6 +192,8 @@ export function createDefaultProject(): ProgramProject {
 // 取得區塊類型顯示名稱
 export function getBlockTypeName(type: BlockType): string {
   switch (type) {
+    case 'data-type': return '資料型別';
+    case 'global-var': return '全域變數';
     case 'init': return '初始化';
     case 'scan': return '掃描區塊';
     case 'subroutine': return '子程式';
@@ -202,6 +204,8 @@ export function getBlockTypeName(type: BlockType): string {
 // 取得區塊類型圖示顏色
 export function getBlockTypeColor(type: BlockType): string {
   switch (type) {
+    case 'data-type': return 'text-purple-500';
+    case 'global-var': return 'text-orange-500';
     case 'init': return 'text-station-feed';
     case 'scan': return 'text-primary';
     case 'subroutine': return 'text-station-assembly';
