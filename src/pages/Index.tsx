@@ -53,6 +53,7 @@ const Index: React.FC = () => {
     deleteBlock,
     toggleBlock,
     renameBlock,
+    duplicateBlock,
     updateBlockCode,
     getCombinedCode,
     saveProject,
@@ -107,6 +108,7 @@ const Index: React.FC = () => {
           onBlockDelete={deleteBlock}
           onBlockToggle={toggleBlock}
           onBlockRename={renameBlock}
+          onBlockDuplicate={duplicateBlock}
           isRunning={isRunning}
         />
       </div>

@@ -16,6 +16,8 @@ import {
   Database,
   Globe
 } from 'lucide-react';
+import RenameDialog from '@/components/RenameDialog';
+import ConfirmDialog from '@/components/ConfirmDialog';
 import {
   ProgramBlock,
   ProgramProject,
@@ -40,6 +42,7 @@ interface ProgramBlockTreeProps {
   onBlockDelete: (blockId: string) => void;
   onBlockToggle: (blockId: string) => void;
   onBlockRename: (blockId: string, newName: string) => void;
+  onBlockDuplicate: (blockId: string) => void;
   isRunning: boolean;
 }
 
@@ -70,8 +73,11 @@ interface BlockItemProps {
   onSelect: () => void;
   onDelete: () => void;
   onToggle: () => void;
+  onRename: (newName: string) => void;
+  onDuplicate: () => void;
   onAddChild?: () => void;
   children?: React.ReactNode;
+  isDefaultGlobalVar?: boolean;
 }
 
 const BlockItem: React.FC<BlockItemProps> = ({
@@ -82,12 +88,24 @@ const BlockItem: React.FC<BlockItemProps> = ({
   onSelect,
   onDelete,
   onToggle,
+  onRename,
+  onDuplicate,
   onAddChild,
-  children
+  children,
+  isDefaultGlobalVar = false
 }) => {
   const [isExpanded, setIsExpanded] = useState(true);
+  const [renameDialogOpen, setRenameDialogOpen] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const hasChildren = block.children && block.children.length > 0;
   const canAddChild = block.type === 'scan';
+
+  // Determine which menu items to show based on block type
+  const showRename = block.type !== 'init' && !isDefaultGlobalVar;
+  const showDuplicate = block.type !== 'init';
+  const showDisable = block.type === 'init' || block.type === 'scan' || block.type === 'subroutine';
+  const showToggleInMenu = block.type === 'init'; // Only show in menu for init
+  const canDelete = block.type !== 'init';
 
   return (
     <div>
@@ -137,6 +155,25 @@ const BlockItem: React.FC<BlockItemProps> = ({
           <div className="w-2 h-2 rounded-full bg-success animate-industrial-pulse" />
         )}
 
+        {/* Toggle Switch */}
+        {(block.type === 'scan' || block.type === 'subroutine') && (
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onToggle();
+            }}
+            className={cn(
+              "p-1 rounded hover:bg-muted transition-all",
+              block.enabled
+                ? "text-primary"
+                : "text-muted-foreground opacity-50 hover:opacity-100 hover:text-foreground"
+            )}
+            title={block.enabled ? "Disable" : "Enable"}
+          >
+            <Power className="w-3.5 h-3.5" />
+          </button>
+        )}
+
         {/* Operation Menu */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -157,23 +194,29 @@ const BlockItem: React.FC<BlockItemProps> = ({
                 <DropdownMenuSeparator />
               </>
             )}
-            <DropdownMenuItem onClick={onToggle}>
-              <Power className="w-3 h-3 mr-2" />
-              {block.enabled ? 'Disable' : 'Enable'}
-            </DropdownMenuItem>
-            <DropdownMenuItem>
-              <Copy className="w-3 h-3 mr-2" />
-              Copy
-            </DropdownMenuItem>
-            <DropdownMenuItem>
-              <Edit2 className="w-3 h-3 mr-2" />
-              Rename
-            </DropdownMenuItem>
-            {block.type !== 'init' && (
+            {showToggleInMenu && (
+              <DropdownMenuItem onClick={onToggle}>
+                <Power className="w-3 h-3 mr-2" />
+                {block.enabled ? 'Disable' : 'Enable'}
+              </DropdownMenuItem>
+            )}
+            {showDuplicate && (
+              <DropdownMenuItem onClick={onDuplicate}>
+                <Copy className="w-3 h-3 mr-2" />
+                Duplicate
+              </DropdownMenuItem>
+            )}
+            {showRename && (
+              <DropdownMenuItem onClick={() => setRenameDialogOpen(true)}>
+                <Edit2 className="w-3 h-3 mr-2" />
+                Rename
+              </DropdownMenuItem>
+            )}
+            {canDelete && (
               <>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
-                  onClick={onDelete}
+                  onClick={() => setDeleteDialogOpen(true)}
                   className="text-destructive focus:text-destructive"
                 >
                   <Trash2 className="w-3 h-3 mr-2" />
@@ -184,6 +227,27 @@ const BlockItem: React.FC<BlockItemProps> = ({
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
+
+      {/* Rename Dialog */}
+      <RenameDialog
+        open={renameDialogOpen}
+        onOpenChange={setRenameDialogOpen}
+        currentName={block.name}
+        onConfirm={onRename}
+        title="Rename Block"
+        description="Enter a new name for this block."
+      />
+
+      {/* Delete Confirmation Dialog */}
+      <ConfirmDialog
+        open={deleteDialogOpen}
+        onOpenChange={setDeleteDialogOpen}
+        onConfirm={onDelete}
+        title="Delete Block"
+        description={`Are you sure you want to delete "${block.name}"? This action cannot be undone.`}
+        confirmText="Delete"
+        variant="destructive"
+      />
 
       {/* Children */}
       {hasChildren && isExpanded && (
@@ -200,9 +264,10 @@ const ProgramBlockTree: React.FC<ProgramBlockTreeProps> = ({
   onBlockDelete,
   onBlockToggle,
   onBlockRename,
+  onBlockDuplicate,
   isRunning
 }) => {
-  const renderBlock = (block: ProgramBlock, depth: number = 0) => {
+  const renderBlock = (block: ProgramBlock, depth: number = 0, isDefaultGlobalVar: boolean = false) => {
     return (
       <BlockItem
         key={block.id}
@@ -213,7 +278,10 @@ const ProgramBlockTree: React.FC<ProgramBlockTreeProps> = ({
         onSelect={() => onBlockSelect(block.id)}
         onDelete={() => onBlockDelete(block.id)}
         onToggle={() => onBlockToggle(block.id)}
+        onRename={(newName) => onBlockRename(block.id, newName)}
+        onDuplicate={() => onBlockDuplicate(block.id)}
         onAddChild={block.type === 'scan' ? () => onBlockAdd('subroutine', block.id) : undefined}
+        isDefaultGlobalVar={isDefaultGlobalVar}
       >
         {block.children?.map(child => renderBlock(child, depth + 1))}
       </BlockItem>
@@ -269,8 +337,18 @@ const ProgramBlockTree: React.FC<ProgramBlockTreeProps> = ({
         {/* Data Types */}
         {typeBlocks.length > 0 && (
           <div>
-            <div className="px-2 py-1 text-xs font-medium text-muted-foreground uppercase tracking-wider">
-              Data Types
+            <div className="px-2 py-1 flex items-center justify-between">
+              <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                Data Types
+              </span>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-5 w-5"
+                onClick={() => onBlockAdd('data-type')}
+              >
+                <Plus className="w-3 h-3" />
+              </Button>
             </div>
             {typeBlocks.map(block => renderBlock(block))}
           </div>
@@ -282,7 +360,11 @@ const ProgramBlockTree: React.FC<ProgramBlockTreeProps> = ({
             <div className="px-2 py-1 text-xs font-medium text-muted-foreground uppercase tracking-wider">
               Global Variables
             </div>
-            {globalVarBlocks.map(block => renderBlock(block))}
+            {globalVarBlocks.map(block => {
+              // Check if this is a default global variable (Variables or IO Mapping)
+              const isDefault = block.name === 'Variables' || block.name === 'IO Mapping';
+              return renderBlock(block, 0, isDefault);
+            })}
           </div>
         )}
 

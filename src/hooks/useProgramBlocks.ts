@@ -113,6 +113,63 @@ export function useProgramBlocks() {
     });
   }, []);
 
+  const duplicateBlock = useCallback((id: string) => {
+    setProject(prev => {
+      const findAndDuplicateBlock = (blocks: ProgramBlock[]): { blocks: ProgramBlock[], duplicated?: ProgramBlock } => {
+        for (let i = 0; i < blocks.length; i++) {
+          const block = blocks[i];
+
+          if (block.id === id) {
+            // Found the block to duplicate
+            const newId = `block_${Date.now()}`;
+            const duplicatedBlock: ProgramBlock = {
+              ...block,
+              id: newId,
+              name: `${block.name}_copy`,
+              children: block.children ? duplicateChildren(block.children) : undefined
+            };
+
+            // Insert duplicated block right after the original
+            const newBlocks = [...blocks];
+            newBlocks.splice(i + 1, 0, duplicatedBlock);
+
+            return { blocks: newBlocks, duplicated: duplicatedBlock };
+          }
+
+          // Check children
+          if (block.children) {
+            const result = findAndDuplicateBlock(block.children);
+            if (result.duplicated) {
+              return {
+                blocks: blocks.map(b => b.id === block.id ? { ...b, children: result.blocks } : b),
+                duplicated: result.duplicated
+              };
+            }
+          }
+        }
+
+        return { blocks };
+      };
+
+      // Helper to duplicate children recursively
+      const duplicateChildren = (children: ProgramBlock[]): ProgramBlock[] => {
+        return children.map(child => ({
+          ...child,
+          id: `block_${Date.now()}_${Math.random()}`,
+          children: child.children ? duplicateChildren(child.children) : undefined
+        }));
+      };
+
+      const result = findAndDuplicateBlock(prev.blocks);
+      if (result.duplicated) {
+        // Select the newly duplicated block
+        setActiveBlockId(result.duplicated.id);
+      }
+
+      return { ...prev, blocks: result.blocks };
+    });
+  }, []);
+
   const updateBlockCode = useCallback((id: string, code: string) => {
     setProject(prev => {
       const updateInBlocks = (blocks: ProgramBlock[]): ProgramBlock[] => {
@@ -142,11 +199,14 @@ export function useProgramBlocks() {
       return results;
     };
 
-    const typeBlocks = findBlocksByType(project.blocks, 'data-type');
-    const typeCode = typeBlocks
-      .filter(b => b.enabled)
-      .map(b => b.code)
-      .join('\n\n');
+    // NOTE: Data Types are currently not included in the combined code
+    // because the ST parser does not support TYPE definitions yet.
+    // This prevents parser errors when renaming or modifying data types.
+    // const typeBlocks = findBlocksByType(project.blocks, 'data-type');
+    // const typeCode = typeBlocks
+    //   .filter(b => b.enabled)
+    //   .map(b => b.code)
+    //   .join('\n\n');
 
     const fbBlocks = findBlocksByType(project.blocks, 'function-block');
     const fbCode = fbBlocks
@@ -212,7 +272,7 @@ export function useProgramBlocks() {
       for (const block of blocks) {
         if (!block.enabled) continue;
 
-        if (block.type === 'scan') {
+        if (block.type === 'scan' || block.type === 'subroutine') {
           const { vars, body } = parseBlock(block.code);
           mainVars.push(...vars);
           if (body) {
@@ -239,7 +299,8 @@ ${mainBodyParts.join('\n\n')}
 END_PROGRAM
 `;
 
-    return `${typeCode}\n\n${fbCode}\n\n${mainProgram}`;
+    // NOTE: typeCode is excluded (see comment above)
+    return `${fbCode}\n\n${mainProgram}`;
   }, [project.blocks]);
 
   // Project Management Functions
@@ -297,6 +358,7 @@ END_PROGRAM
     deleteBlock,
     toggleBlock,
     renameBlock,
+    duplicateBlock,
     updateBlockCode,
     getCombinedCode,
     // Project Mgmt
