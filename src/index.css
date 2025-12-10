@@ -6,6 +6,76 @@
 
 @layer base {
   :root {
+    --background: 0 0% 98%;
+    --foreground: 220 20% 15%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 220 20% 15%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 20% 15%;
+
+    --primary: 160 84% 39%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 220 14% 92%;
+    --secondary-foreground: 220 20% 25%;
+
+    --muted: 220 14% 95%;
+    --muted-foreground: 215 15% 45%;
+
+    --accent: 35 100% 50%;
+    --accent-foreground: 220 20% 10%;
+
+    --destructive: 0 72% 50%;
+    --destructive-foreground: 0 0% 100%;
+
+    --success: 142 76% 40%;
+    --success-foreground: 0 0% 100%;
+
+    --warning: 35 100% 50%;
+    --warning-foreground: 220 20% 10%;
+
+    --border: 220 14% 88%;
+    --input: 220 14% 92%;
+    --ring: 160 84% 39%;
+
+    --radius: 0.5rem;
+
+    /* Custom Industrial Colors */
+    --industrial-green: 160 84% 39%;
+    --industrial-red: 0 72% 50%;
+    --industrial-yellow: 45 100% 50%;
+    --industrial-blue: 210 90% 50%;
+    --industrial-orange: 25 100% 50%;
+    
+    /* Station Colors */
+    --station-feed: 200 85% 45%;
+    --station-assembly: 280 70% 50%;
+    --station-ok: 142 76% 40%;
+    --station-ng: 0 72% 50%;
+    
+    /* Syntax Highlighting */
+    --syntax-keyword: 280 80% 55%;
+    --syntax-string: 35 100% 45%;
+    --syntax-number: 160 70% 40%;
+    --syntax-comment: 215 15% 55%;
+    --syntax-function: 200 85% 50%;
+    --syntax-variable: 220 20% 25%;
+    --syntax-type: 160 84% 45%;
+    --syntax-operator: 0 70% 55%;
+
+    --sidebar-background: 220 14% 96%;
+    --sidebar-foreground: 220 20% 20%;
+    --sidebar-primary: 160 84% 39%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 220 14% 92%;
+    --sidebar-accent-foreground: 220 20% 20%;
+    --sidebar-border: 220 14% 88%;
+    --sidebar-ring: 160 84% 39%;
+  }
+
+  .dark {
     --background: 220 20% 10%;
     --foreground: 210 20% 90%;
 
@@ -40,8 +110,6 @@
     --input: 220 15% 18%;
     --ring: 160 84% 45%;
 
-    --radius: 0.5rem;
-
     /* Custom Industrial Colors */
     --industrial-green: 160 84% 45%;
     --industrial-red: 0 72% 55%;
@@ -73,11 +141,6 @@
     --sidebar-accent-foreground: 240 4.8% 95.9%;
     --sidebar-border: 220 15% 20%;
     --sidebar-ring: 160 84% 45%;
-  }
-
-  .dark {
-    --background: 220 20% 10%;
-    --foreground: 210 20% 90%;
   }
 }
 

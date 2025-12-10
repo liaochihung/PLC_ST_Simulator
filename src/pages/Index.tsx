@@ -9,6 +9,7 @@ import { useProgramBlocks } from '@/hooks/useProgramBlocks';
 import { useMachineEditor } from '@/hooks/useMachineEditor';
 import { useIOBinding } from '@/hooks/useIOBinding';
 import { Cpu, Code2, Activity, Eye, PanelLeftClose, PanelLeft, BookOpen, Save, Loader2, FolderOpen, Play, Square, StepForward, RotateCcw } from 'lucide-react';
+import { ThemeToggle } from '@/components/ui/ThemeToggle';
 import { LibraryBrowser } from '@/components/LibraryBrowser';
 import { ProjectListDialog } from '@/components/ProjectListDialog';
 import { cn } from '@/lib/utils';
@@ -345,6 +346,8 @@ const Index: React.FC = () => {
             <span className="opacity-50">|</span>
             <span>{project.name}</span>
           </div>
+
+          <ThemeToggle />
         </div>
 
         <ProjectListDialog

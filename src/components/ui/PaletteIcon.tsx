@@ -41,7 +41,6 @@ const PaletteIcon: React.FC<PaletteIconProps> = ({ icon, className, ...props }) 
       <div
         dangerouslySetInnerHTML={{ __html: icon.content }}
         className={cn('w-4 h-4 flex items-center justify-center', className)}
-        {...props}
       />
     );
   }
