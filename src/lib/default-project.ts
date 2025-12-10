@@ -564,8 +564,26 @@ const LIB_BLOCKS: ProgramBlock[] = [
     { id: 'fb_feeder', name: 'FbFeeder', type: 'function-block', code: feederRaw, enabled: true },
     { id: 'fb_axis_zero', name: 'FbAxisZero', type: 'function-block', code: axisZeroRaw, enabled: true },
     { id: 'fb_axis_abs', name: 'FbAxisAbs', type: 'function-block', code: axisAbsRaw, enabled: true },
-    { id: 'fb_tower_light', name: 'FbTowerLight', type: 'function-block', code: towerLightRaw, enabled: true },
-    { id: 'fb_sys_process', name: 'FbSysStateProcess', type: 'function-block', code: sysProcessRaw, enabled: true },
+    {
+        id: 'fb_tower_light', name: 'FbTowerLight', type: 'function-block', code: `FUNCTION_BLOCK FbTowerLight
+    VAR_INPUT
+        iStopBuzzer : BOOL;
+    END_VAR
+    VAR_OUTPUT
+        hasErr : BOOL;
+    END_VAR
+    VAR
+        keepStopBuzzer : BOOL;
+    END_VAR
+
+    hasErr := FALSE;
+END_FUNCTION_BLOCK`, enabled: true
+    },
+    {
+        id: 'fb_sys_process', name: 'FbSysStateProcess', type: 'function-block', code: `FUNCTION_BLOCK FbSysStateProcess
+    (* Mock logic *)
+END_FUNCTION_BLOCK`, enabled: true
+    },
 ];
 
 export const DEFAULT_PROJECT: ProgramProject = {

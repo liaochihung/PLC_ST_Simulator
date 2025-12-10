@@ -66,7 +66,16 @@ export class Interpreter {
 
         // Clone regex to avoid state issues or just use matchAll/exec loop
         // We will replace matches with whitespace to preserve line numbers
+        let iterations = 0;
+        const MAX_ITERATIONS = 1000;
+
         while ((match = typeBlockRegex.exec(code)) !== null) {
+            iterations++;
+            if (iterations > MAX_ITERATIONS) {
+                console.error('Possible infinite loop in extractAndRegisterTypes');
+                break;
+            }
+
             const blockContent = match[1];
             const fullMatch = match[0];
 
@@ -243,8 +252,9 @@ export class Interpreter {
 
     reset(): void {
         this.memory.reset();
+        this.symbolTable = new SymbolTable(this.memory);
+        this.programAST = null;
         this.isRunning = false;
-        // Re-init symbols?
     }
 
     executeScan(): void {

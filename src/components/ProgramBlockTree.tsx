@@ -16,7 +16,6 @@ import {
   Database,
   Globe
 } from 'lucide-react';
-import RenameDialog from '@/components/RenameDialog';
 import ConfirmDialog from '@/components/ConfirmDialog';
 import {
   ProgramBlock,
@@ -68,12 +67,15 @@ const BlockIcon: React.FC<{ type: BlockType; className?: string }> = ({ type, cl
 interface BlockItemProps {
   block: ProgramBlock;
   isActive: boolean;
+  isRenaming: boolean;
   isRunning: boolean;
   depth: number;
   onSelect: () => void;
   onDelete: () => void;
   onToggle: () => void;
-  onRename: (newName: string) => void;
+  onRenameStart: () => void;
+  onRenameSubmit: (newName: string) => void;
+  onRenameCancel: () => void;
   onDuplicate: () => void;
   onAddChild?: () => void;
   children?: React.ReactNode;
@@ -83,20 +85,31 @@ interface BlockItemProps {
 const BlockItem: React.FC<BlockItemProps> = ({
   block,
   isActive,
+  isRenaming,
   isRunning,
   depth,
   onSelect,
   onDelete,
   onToggle,
-  onRename,
+  onRenameStart,
+  onRenameSubmit,
+  onRenameCancel,
   onDuplicate,
   onAddChild,
   children,
   isDefaultGlobalVar = false
 }) => {
   const [isExpanded, setIsExpanded] = useState(true);
-  const [renameDialogOpen, setRenameDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [tempName, setTempName] = useState(block.name);
+
+  // Sync temp name when block name changes or rename starts
+  React.useEffect(() => {
+    if (isRenaming) {
+      setTempName(block.name);
+    }
+  }, [isRenaming, block.name]);
+
   const hasChildren = block.children && block.children.length > 0;
   const canAddChild = block.type === 'scan';
 
@@ -106,6 +119,16 @@ const BlockItem: React.FC<BlockItemProps> = ({
   const showDisable = block.type === 'init' || block.type === 'scan' || block.type === 'subroutine';
   const showToggleInMenu = block.type === 'init'; // Only show in menu for init
   const canDelete = block.type !== 'init';
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      e.stopPropagation();
+      onRenameSubmit(tempName);
+    } else if (e.key === 'Escape') {
+      e.stopPropagation();
+      onRenameCancel();
+    }
+  };
 
   return (
     <div>
@@ -140,8 +163,21 @@ const BlockItem: React.FC<BlockItemProps> = ({
         {/* Block Icon */}
         <BlockIcon type={block.type} />
 
-        {/* Block Name */}
-        <span className="flex-1 text-sm truncate">{block.name}</span>
+        {/* Block Name or Input */}
+        {isRenaming ? (
+          <input
+            autoFocus
+            type="text"
+            value={tempName}
+            onChange={(e) => setTempName(e.target.value)}
+            onBlur={() => onRenameSubmit(tempName)}
+            onKeyDown={handleKeyDown}
+            onClick={(e) => e.stopPropagation()}
+            className="flex-1 text-sm bg-background border border-primary rounded px-1 min-w-0 outline-none h-5"
+          />
+        ) : (
+          <span className="flex-1 text-sm truncate" onDoubleClick={(e) => { e.stopPropagation(); if (showRename) onRenameStart(); }}>{block.name}</span>
+        )}
 
         {/* Scan Interval Label */}
         {block.type === 'scan' && block.scanInterval && (
@@ -207,7 +243,7 @@ const BlockItem: React.FC<BlockItemProps> = ({
               </DropdownMenuItem>
             )}
             {showRename && (
-              <DropdownMenuItem onClick={() => setRenameDialogOpen(true)}>
+              <DropdownMenuItem onClick={() => onRenameStart()}>
                 <Edit2 className="w-3 h-3 mr-2" />
                 Rename
               </DropdownMenuItem>
@@ -227,16 +263,6 @@ const BlockItem: React.FC<BlockItemProps> = ({
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-
-      {/* Rename Dialog */}
-      <RenameDialog
-        open={renameDialogOpen}
-        onOpenChange={setRenameDialogOpen}
-        currentName={block.name}
-        onConfirm={onRename}
-        title="Rename Block"
-        description="Enter a new name for this block."
-      />
 
       {/* Delete Confirmation Dialog */}
       <ConfirmDialog
@@ -267,18 +293,59 @@ const ProgramBlockTree: React.FC<ProgramBlockTreeProps> = ({
   onBlockDuplicate,
   isRunning
 }) => {
+  const [renamingBlockId, setRenamingBlockId] = useState<string | null>(null);
+
+  React.useEffect(() => {
+    const handleGlobalKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'F2' && project.activeBlockId) {
+        // Check if allowed (not init, etc)
+        // Just set it, validation is inside BlockItem render logic regarding showing rename option, 
+        // but here we might try to rename something not renamable. 
+        // Ideally we check if it is renamable.
+        // For now simple check:
+        const block = findBlockById(project.blocks, project.activeBlockId);
+        if (block && block.type !== 'init' && block.name !== 'Variables' && block.name !== 'IO Mapping') {
+          setRenamingBlockId(project.activeBlockId);
+        }
+      }
+    };
+    window.addEventListener('keydown', handleGlobalKeyDown);
+    return () => window.removeEventListener('keydown', handleGlobalKeyDown);
+  }, [project.activeBlockId, project.blocks]);
+
+  const findBlockById = (blocks: ProgramBlock[], id: string): ProgramBlock | undefined => {
+    for (const b of blocks) {
+      if (b.id === id) return b;
+      if (b.children) {
+        const found = findBlockById(b.children, id);
+        if (found) return found;
+      }
+    }
+    return undefined;
+  };
+
+  const handleRenameSubmit = (id: string, newName: string) => {
+    if (newName && newName.trim() !== '') {
+      onBlockRename(id, newName);
+    }
+    setRenamingBlockId(null);
+  };
+
   const renderBlock = (block: ProgramBlock, depth: number = 0, isDefaultGlobalVar: boolean = false) => {
     return (
       <BlockItem
         key={block.id}
         block={block}
         isActive={project.activeBlockId === block.id}
+        isRenaming={renamingBlockId === block.id}
         isRunning={isRunning}
         depth={depth}
         onSelect={() => onBlockSelect(block.id)}
         onDelete={() => onBlockDelete(block.id)}
         onToggle={() => onBlockToggle(block.id)}
-        onRename={(newName) => onBlockRename(block.id, newName)}
+        onRenameStart={() => setRenamingBlockId(block.id)}
+        onRenameSubmit={(newName) => handleRenameSubmit(block.id, newName)}
+        onRenameCancel={() => setRenamingBlockId(null)}
         onDuplicate={() => onBlockDuplicate(block.id)}
         onAddChild={block.type === 'scan' ? () => onBlockAdd('subroutine', block.id) : undefined}
         isDefaultGlobalVar={isDefaultGlobalVar}

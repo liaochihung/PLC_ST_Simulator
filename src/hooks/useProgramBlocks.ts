@@ -36,9 +36,9 @@ export function useProgramBlocks() {
       id,
       name: 'New Block',
       type,
-      code: type === 'init' ? 'VAR_GLOBAL\nEND_VAR' :
-        type === 'scan' ? 'PROGRAM NewProgram\n  VAR\n  END_VAR\n\n  (* Logic *)\nEND_PROGRAM' :
-          type === 'function-block' ? 'FUNCTION_BLOCK NewFB\n  VAR_INPUT\n  END_VAR\n  VAR_OUTPUT\n  END_VAR\n  VAR\n  END_VAR\nEND_FUNCTION_BLOCK' :
+      code: type === 'init' ? 'VAR_GLOBAL\n  (* Variables *)\nEND_VAR' :
+        type === 'scan' ? 'PROGRAM NewProgram\n  (* Logic *)\nEND_PROGRAM' :
+          type === 'function-block' ? 'FUNCTION_BLOCK NewFB\n  (* Logic *)\nEND_FUNCTION_BLOCK' :
             type === 'data-type' ? 'TYPE NewType :\n  STRUCT\n    Member : BOOL;\n  END_STRUCT;\nEND_TYPE' :
               type === 'global-var' ? 'VAR_GLOBAL\n  MyVar : BOOL;\nEND_VAR' :
                 '(* Subroutine *)\n',
@@ -200,6 +200,22 @@ export function useProgramBlocks() {
     };
 
     // Include Data Types (TYPE ... END_TYPE)
+    // Helper to remove empty VAR blocks from source code before concatenation
+    // This is needed because the parser expects at least one variable in a VAR block
+    const removeEmptyVarBlocks = (code: string): string => {
+      // Regex to find VAR...END_VAR blocks (non-greedy match for content)
+      return code.replace(/(VAR(?:_INPUT|_OUTPUT|_IN_OUT|_GLOBAL|_EXTERNAL)?)([\s\S]*?)END_VAR/gi, (match, type, content) => {
+        // Check if content is effectively empty (only whitespace or comments)
+        const cleanContent = content
+          .replace(/\(\*[\s\S]*?\*\)/g, '')
+          .replace(/\/\/.*/g, '')
+          .trim();
+
+        if (!cleanContent) return ''; // Remove entirely if empty
+        return match;
+      });
+    };
+
     const typeBlocks = findBlocksByType(project.blocks, 'data-type');
     const typeCode = typeBlocks
       .filter(b => b.enabled)
@@ -209,7 +225,7 @@ export function useProgramBlocks() {
     const fbBlocks = findBlocksByType(project.blocks, 'function-block');
     const fbCode = fbBlocks
       .filter(b => b.enabled)
-      .map(b => b.code)
+      .map(b => removeEmptyVarBlocks(b.code))
       .join('\n\n');
 
     // 2. Parse and merge Main Program blocks (Init and Scan)
@@ -217,39 +233,67 @@ export function useProgramBlocks() {
 
     // Helper to extract VAR...END_VAR and Body
     const parseBlock = (code: string) => {
-      // Updated regex to handle VAR, VAR_GLOBAL, VAR_INPUT, etc.
-      const varRegex = /(?:VAR|VAR_GLOBAL|VAR_INPUT|VAR_OUTPUT)([\s\S]*?)END_VAR/g;
-      let vars: string[] = [];
+      const varBlockRegex = /(VAR_GLOBAL|VAR_INPUT|VAR_OUTPUT|VAR_IN_OUT|VAR(?:\s+(?:CONSTANT|RETAIN|NON_RETAIN))?)([\s\S]*?)END_VAR/gi;
+      let declarations: string[] = [];
       let body = code;
 
       let match;
-      while ((match = varRegex.exec(code)) !== null) {
-        if (match[1]) {
-          const varContent = match[1].trim();
-          if (varContent) vars.push(varContent);
+      let iterations = 0;
+      const MAX_ITERATIONS = 100; // Safety guard
+
+      while ((match = varBlockRegex.exec(code)) !== null) {
+        iterations++;
+        if (iterations > MAX_ITERATIONS) {
+          console.error('Possible infinite loop in parseBlock');
+          break;
         }
+        const type = match[1].toUpperCase().trim();
+        const normalizedType = type.replace(/\s+/g, ' ');
+        const content = match[2].trim();
+
+        if (!content) continue;
+
+        // Ensure content is not just comments
+        const cleanContent = content
+          .replace(/\(\*[\s\S]*?\*\)/g, '')
+          .replace(/\/\/.*/g, '')
+          .trim();
+
+        if (!cleanContent) continue;
+
+        // Normalize VAR_GLOBAL -> VAR for Main program scope
+        let finalType = normalizedType;
+        if (normalizedType === 'VAR_GLOBAL') finalType = 'VAR';
+
+        declarations.push(`${finalType}\n  ${content}\nEND_VAR`);
       }
 
-      body = body.replace(varRegex, '').trim();
-      return { vars, body };
+      body = body.replace(varBlockRegex, '').trim();
+
+      // Strip PROGRAM/FUNCTION_BLOCK wrapper
+      body = body.replace(/^\s*(?:PROGRAM|FUNCTION_BLOCK|CONFIGURATION)\s+[\w]+\s*/i, '');
+      body = body.replace(/\s*(?:END_PROGRAM|END_FUNCTION_BLOCK|END_CONFIGURATION)\s*$/i, '');
+
+      return { declarations, body };
     };
 
-    let mainVars: string[] = ['_init_done : BOOL := FALSE;', 'idx : INT; (* General Index *)'];
+    let mainLocalVars: string[] = ['_init_done : BOOL := FALSE;', 'idx : INT; (* General Index *)'];
+    let mainDeclarations: string[] = [];
     let mainBodyParts: string[] = [];
 
     // Process Global Variable Blocks
     const globalVarBlocks = findBlocksByType(project.blocks, 'global-var');
     globalVarBlocks.filter(b => b.enabled).forEach(b => {
-      const { vars } = parseBlock(b.code);
-      mainVars.push(...vars);
+      const { declarations } = parseBlock(b.code);
+      mainDeclarations.push(...declarations);
     });
 
     // Process Init Blocks
     if (initBlocks.length > 0) {
       let initBodies: string[] = [];
       initBlocks.filter(b => b.enabled).forEach(b => {
-        const { vars, body } = parseBlock(b.code);
-        mainVars.push(...vars);
+        const { declarations, body } = parseBlock(b.code);
+        mainDeclarations.push(...declarations);
         if (body) initBodies.push(body);
       });
 
@@ -271,8 +315,8 @@ export function useProgramBlocks() {
         if (!block.enabled) continue;
 
         if (block.type === 'scan' || block.type === 'subroutine') {
-          const { vars, body } = parseBlock(block.code);
-          mainVars.push(...vars);
+          const { declarations, body } = parseBlock(block.code);
+          mainDeclarations.push(...declarations);
           if (body) {
             mainBodyParts.push(`    (* Block: ${block.name} *)\n    ${body}`);
           }
@@ -289,8 +333,10 @@ export function useProgramBlocks() {
     const mainProgram = `
 PROGRAM Main
     VAR
-        ${mainVars.join('\n        ')}
+        ${mainLocalVars.join('\n        ')}
     END_VAR
+
+    ${mainDeclarations.join('\n\n    ')}
 
 ${mainBodyParts.join('\n\n')}
 
