@@ -1,6 +1,7 @@
 import React from 'react';
 import { Rect, Text, Circle, Group } from 'react-konva';
 import type { MachineFeeder } from '@/types/machine-editor';
+import type { ThemeColors } from '@/hooks/useThemeColors';
 
 interface KonvaFeederProps {
     feeder: MachineFeeder;
@@ -11,6 +12,7 @@ interface KonvaFeederProps {
     onSelect: () => void;
     onDragEnd: (x: number, y: number) => void;
     onUpdateElement?: (updates: Partial<MachineFeeder>) => void;
+    themeColors: ThemeColors;
 }
 
 const KonvaFeeder: React.FC<KonvaFeederProps> = ({
@@ -22,8 +24,9 @@ const KonvaFeeder: React.FC<KonvaFeederProps> = ({
     onSelect,
     onDragEnd,
     onUpdateElement,
+    themeColors,
 }) => {
-    const strokeColor = selected ? '#6366f1' : (active ? '#10b981' : '#27272a');
+    const strokeColor = selected ? themeColors.selection : (active ? themeColors.stationFeed : themeColors.border);
     const strokeWidth = selected ? 3 : 2;
 
     return (
@@ -50,10 +53,6 @@ const KonvaFeeder: React.FC<KonvaFeederProps> = ({
                     onUpdateElement({
                         x: node.x(),
                         y: node.y(),
-                        // Feeder doesn't have rotation in standard type? Check it. 
-                        // If it has angle, add it.
-                        // MachineFeeder has x,y,width,height. No angle in type definition I recall?
-                        // Let's check type if needed. Assuming width/height resize.
                         width: Math.max(5, feeder.width * scaleX),
                         height: Math.max(5, feeder.height * scaleY),
                     });
@@ -67,11 +66,11 @@ const KonvaFeeder: React.FC<KonvaFeederProps> = ({
                 width={feeder.width}
                 height={feeder.height}
                 cornerRadius={4}
-                fill="#27272a"
+                fill={themeColors.secondary}
                 stroke={strokeColor}
                 strokeWidth={strokeWidth}
                 shadowBlur={selected ? 10 : 0}
-                shadowColor="#6366f1"
+                shadowColor={themeColors.selection}
                 shadowOpacity={0.8}
             />
 
@@ -82,7 +81,7 @@ const KonvaFeeder: React.FC<KonvaFeederProps> = ({
                 width={feeder.width}
                 text={feeder.name.slice(0, 2)}
                 fontSize={10}
-                fill="#fafafa"
+                fill={themeColors.inactiveText}
                 align="center"
             />
 
@@ -92,7 +91,7 @@ const KonvaFeeder: React.FC<KonvaFeederProps> = ({
                 width={feeder.width}
                 text={feeder.name.slice(2, 4)}
                 fontSize={10}
-                fill="#fafafa"
+                fill={themeColors.inactiveText}
                 align="center"
             />
 
@@ -101,9 +100,9 @@ const KonvaFeeder: React.FC<KonvaFeederProps> = ({
                 x={-feeder.width / 2 + 10}
                 y={-feeder.height / 2 + 10}
                 radius={4}
-                fill={active && isRunning ? '#10b981' : '#52525b'}
+                fill={active && isRunning ? themeColors.stationFeed : themeColors.ledInactive}
                 shadowBlur={active && isRunning ? 6 : 0}
-                shadowColor="#10b981"
+                shadowColor={themeColors.stationFeed}
                 shadowOpacity={1}
             />
         </Group>

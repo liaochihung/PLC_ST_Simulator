@@ -1,6 +1,7 @@
 import React from 'react';
 import { Line, Rect, Text, Group } from 'react-konva';
 import type { MachineConveyor } from '@/types/machine-editor';
+import type { ThemeColors } from '@/hooks/useThemeColors';
 
 interface KonvaConveyorProps {
     conveyor: MachineConveyor;
@@ -10,6 +11,7 @@ interface KonvaConveyorProps {
     onSelect: () => void;
     onDragEnd: (startX: number, startY: number, endX: number, endY: number) => void;
     onUpdateElement?: (updates: Partial<MachineConveyor>) => void;
+    themeColors: ThemeColors;
 }
 
 const KonvaConveyor: React.FC<KonvaConveyorProps> = ({
@@ -20,17 +22,18 @@ const KonvaConveyor: React.FC<KonvaConveyorProps> = ({
     onSelect,
     onDragEnd,
     onUpdateElement,
+    themeColors,
 }) => {
     const getConveyorColor = (type: MachineConveyor['type']) => {
         switch (type) {
-            case 'ok': return '#22c55e';
-            case 'ng': return '#ef4444';
-            default: return '#6366f1';
+            case 'ok': return themeColors.stationOk;
+            case 'ng': return themeColors.stationNg;
+            default: return themeColors.selection;
         }
     };
 
     const color = getConveyorColor(conveyor.type);
-    const strokeColor = selected ? '#6366f1' : '#27272a';
+    const strokeColor = selected ? themeColors.selection : themeColors.border;
     const strokeWidth = selected ? 6 : 4;
 
     const label = conveyor.type === 'ok' ? 'OK Outfeed' :
@@ -62,7 +65,7 @@ const KonvaConveyor: React.FC<KonvaConveyorProps> = ({
                 strokeWidth={strokeWidth}
                 dash={isRunning ? [5, 5] : undefined}
                 shadowBlur={selected ? 10 : 0}
-                shadowColor="#6366f1"
+                shadowColor={themeColors.selection}
                 shadowOpacity={0.8}
             />
 
@@ -73,7 +76,7 @@ const KonvaConveyor: React.FC<KonvaConveyorProps> = ({
                 width={60}
                 height={30}
                 cornerRadius={4}
-                fill="#27272a"
+                fill={themeColors.secondary}
                 stroke={color}
                 strokeWidth={2}
             />

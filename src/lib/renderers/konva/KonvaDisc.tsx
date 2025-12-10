@@ -2,6 +2,7 @@ import React, { useRef, useEffect } from 'react';
 import { Circle, Line, Group } from 'react-konva';
 import type { MachineDisc } from '@/types/machine-editor';
 import type Konva from 'konva/lib/Core';
+import type { ThemeColors } from '@/hooks/useThemeColors';
 
 interface KonvaDiscProps {
     disc: MachineDisc;
@@ -11,6 +12,7 @@ interface KonvaDiscProps {
     onSelect: () => void;
     onDragEnd: (x: number, y: number) => void;
     onUpdateElement?: (updates: Partial<MachineDisc>) => void;
+    themeColors: ThemeColors;
 }
 
 const KonvaDisc: React.FC<KonvaDiscProps> = ({
@@ -21,6 +23,7 @@ const KonvaDisc: React.FC<KonvaDiscProps> = ({
     onSelect,
     onDragEnd,
     onUpdateElement,
+    themeColors,
 }) => {
     const groupRef = useRef<Konva.Group>(null);
 
@@ -57,18 +60,10 @@ const KonvaDisc: React.FC<KonvaDiscProps> = ({
             }}
             onTransformEnd={(e) => {
                 const node = e.target;
-                // For disc, we just sync rotation and position
-                // Resizing logic for disc (radius) is tricky with generic transformer (which does width/height)
-                // We'll stick to position and rotation for now, or implement custom radius logic later
-                // But transformer will change scaleX/scaleY.
                 const scaleX = node.scaleX();
                 node.scaleX(1);
                 node.scaleY(1);
-
-                // Call onUpdate if we have it (need to add to props)
-                // For now just position/rotation
                 onDragEnd(node.x(), node.y());
-                // Angle update is handled by property panel for now or we need onUpdate prop
             }}
         >
             <Group ref={groupRef}>
@@ -77,11 +72,11 @@ const KonvaDisc: React.FC<KonvaDiscProps> = ({
                     x={0}
                     y={0}
                     radius={disc.radius}
-                    fill="#18181b" // card
-                    stroke={selected ? '#6366f1' : '#27272a'} // primary : border
+                    fill={themeColors.card}
+                    stroke={selected ? themeColors.selection : themeColors.border}
                     strokeWidth={selected ? 4 : 3}
                     shadowBlur={selected ? 10 : 0}
-                    shadowColor="#6366f1"
+                    shadowColor={themeColors.selection}
                     shadowOpacity={0.8}
                 />
 
@@ -91,7 +86,7 @@ const KonvaDisc: React.FC<KonvaDiscProps> = ({
                         {/* Segment line */}
                         <Line
                             points={[0, 0, slot.lineX, slot.lineY]}
-                            stroke="#27272a"
+                            stroke={themeColors.border}
                             strokeWidth={1}
                             opacity={0.5}
                         />
@@ -101,8 +96,8 @@ const KonvaDisc: React.FC<KonvaDiscProps> = ({
                             x={slot.slotX}
                             y={slot.slotY}
                             radius={12}
-                            fill="#52525b"
-                            stroke="#27272a"
+                            fill={themeColors.muted}
+                            stroke={themeColors.border}
                             strokeWidth={1}
                             opacity={0.5}
                         />
@@ -114,8 +109,8 @@ const KonvaDisc: React.FC<KonvaDiscProps> = ({
                     x={0}
                     y={0}
                     radius={20}
-                    fill="#27272a"
-                    stroke="#6366f1"
+                    fill={themeColors.secondary}
+                    stroke={themeColors.selection}
                     strokeWidth={2}
                 />
             </Group>

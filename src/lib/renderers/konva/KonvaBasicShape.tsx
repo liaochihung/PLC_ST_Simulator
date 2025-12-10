@@ -2,6 +2,7 @@ import React from 'react';
 import { Rect, Circle, Line, Text, RegularPolygon, Ellipse, Image as KonvaImage } from 'react-konva';
 import useImage from 'use-image';
 import type { BasicShape } from '@/types/machine-editor';
+import type { ThemeColors } from '@/hooks/useThemeColors';
 
 interface KonvaBasicShapeProps {
     shape: BasicShape;
@@ -11,6 +12,7 @@ interface KonvaBasicShapeProps {
     onDragEnd: (x: number, y: number) => void;
     onUpdateElement?: (updates: Partial<BasicShape>) => void;
     onNodeDblClick?: (shape: BasicShape) => void;
+    themeColors: ThemeColors;
 }
 
 // Helper component for Image to use hook efficiently
@@ -41,6 +43,7 @@ const KonvaBasicShape: React.FC<KonvaBasicShapeProps> = ({
     onDragEnd,
     onUpdateElement,
     onNodeDblClick,
+    themeColors,
 }) => {
     const commonProps = {
         onClick: onSelect,
@@ -86,7 +89,7 @@ const KonvaBasicShape: React.FC<KonvaBasicShapeProps> = ({
 
     const selectionStyle = selected
         ? {
-            shadowColor: '#6366f1',
+            shadowColor: themeColors.selection,
             shadowBlur: 10,
             shadowOpacity: 0.8,
         }

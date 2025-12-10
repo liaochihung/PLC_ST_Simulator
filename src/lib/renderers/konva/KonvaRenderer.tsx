@@ -9,6 +9,7 @@ import KonvaBasicShape from './KonvaBasicShape';
 import KonvaGroup from './KonvaGroup';
 import type { MachineLayout, MachineElement, EditorMode } from '@/types/machine-editor';
 import type { MachineRuntimeState } from '@/types/renderer';
+import { useThemeColors, type ThemeColors } from '@/hooks/useThemeColors';
 
 interface KonvaRendererProps {
     layout: MachineLayout;
@@ -52,6 +53,7 @@ const KonvaRenderer: React.FC<KonvaRendererProps> = ({
     const [stageSize, setStageSize] = useState({ width: 500, height: 500 });
     const stageRef = useRef<Konva.Stage>(null);
     const trRef = useRef<Konva.Transformer>(null);
+    const themeColors = useThemeColors();
 
     // Rubber band selection state
     const [selectionBox, setSelectionBox] = useState<{ startX: number; startY: number; width: number; height: number } | null>(null);
@@ -399,15 +401,15 @@ const KonvaRenderer: React.FC<KonvaRendererProps> = ({
             case 'station':
                 const stationState = state.stationStates.get(item.id);
                 const active = stationState ? Object.values(stationState).some(v => v === true) : false;
-                return <KonvaStation key={item.id} {...commonProps} station={item} active={active} />;
+                return <KonvaStation key={item.id} {...commonProps} station={item} active={active} themeColors={themeColors} />;
             case 'disc':
-                return <KonvaDisc key={item.id} {...commonProps} disc={item} angle={state.discAngles.get(item.id) || 0} />;
+                return <KonvaDisc key={item.id} {...commonProps} disc={item} angle={state.discAngles.get(item.id) || 0} themeColors={themeColors} />;
             case 'feeder':
-                return <KonvaFeeder key={item.id} {...commonProps} feeder={item} active={state.feederStates.get(item.id) || false} />;
+                return <KonvaFeeder key={item.id} {...commonProps} feeder={item} active={state.feederStates.get(item.id) || false} themeColors={themeColors} />;
             case 'conveyor':
-                return <KonvaConveyor key={item.id} {...commonProps} conveyor={item} />;
+                return <KonvaConveyor key={item.id} {...commonProps} conveyor={item} themeColors={themeColors} />;
             case 'shape':
-                return <KonvaBasicShape key={item.id} {...commonProps} shape={item} />;
+                return <KonvaBasicShape key={item.id} {...commonProps} shape={item} themeColors={themeColors} />;
             case 'group':
                 // Find children
                 const children = [
@@ -457,7 +459,8 @@ const KonvaRenderer: React.FC<KonvaRendererProps> = ({
     return (
         <div
             id="konva-container"
-            className="w-full h-full flex items-center justify-center bg-zinc-950"
+            className="w-full h-full flex items-center justify-center"
+            style={{ backgroundColor: themeColors.background }}
             onDragOver={handleDragOver}
             onDrop={handleDrop}
         >
@@ -478,7 +481,7 @@ const KonvaRenderer: React.FC<KonvaRendererProps> = ({
                         y={-offsetY * 10}
                         width={stageSize.width / zoom + offsetX * 20}
                         height={stageSize.height / zoom + offsetY * 20}
-                        fill="#09090b"
+                        fill={themeColors.background}
                     />
                     {gridVisible && (
                         <>
@@ -489,7 +492,7 @@ const KonvaRenderer: React.FC<KonvaRendererProps> = ({
                                         y={-offsetY}
                                         width={1}
                                         height={stageSize.height / zoom + offsetY * 2}
-                                        fill="#27272a"
+                                        fill={themeColors.gridLine}
                                         opacity={0.3}
                                     />
                                 </React.Fragment>
@@ -501,7 +504,7 @@ const KonvaRenderer: React.FC<KonvaRendererProps> = ({
                                         y={(i * gridSize) - (offsetY % gridSize)}
                                         width={stageSize.width / zoom + offsetX * 2}
                                         height={1}
-                                        fill="#27272a"
+                                        fill={themeColors.gridLine}
                                         opacity={0.3}
                                     />
                                 </React.Fragment>
@@ -517,7 +520,7 @@ const KonvaRenderer: React.FC<KonvaRendererProps> = ({
                         y={0}
                         width={layout.width}
                         height={layout.height}
-                        stroke="#27272a"
+                        stroke={themeColors.border}
                         strokeWidth={2}
                         dash={[5, 5]}
                         opacity={0.5}
@@ -564,9 +567,9 @@ const KonvaRenderer: React.FC<KonvaRendererProps> = ({
                             x={stageSize.width / zoom - 20}
                             y={20}
                             radius={8}
-                            fill="#22c55e"
+                            fill={themeColors.runningIndicator}
                             shadowBlur={8}
-                            shadowColor="#22c55e"
+                            shadowColor={themeColors.runningIndicator}
                             shadowOpacity={1}
                         />
                     )}
@@ -577,7 +580,7 @@ const KonvaRenderer: React.FC<KonvaRendererProps> = ({
                             text="Edit Mode"
                             fontSize={12}
                             fontStyle="600"
-                            fill="#6366f1"
+                            fill={themeColors.selection}
                         />
                     )}
                 </Layer>

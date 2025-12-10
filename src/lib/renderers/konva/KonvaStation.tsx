@@ -1,6 +1,7 @@
 import React from 'react';
 import { Rect, Text, Circle, Group } from 'react-konva';
 import type { MachineStation } from '@/types/machine-editor';
+import type { ThemeColors } from '@/hooks/useThemeColors';
 
 interface KonvaStationProps {
     station: MachineStation;
@@ -11,6 +12,7 @@ interface KonvaStationProps {
     onSelect: (e: any) => void;
     onDragEnd: (x: number, y: number) => void;
     onUpdateElement?: (updates: Partial<MachineStation>) => void;
+    themeColors: ThemeColors;
 }
 
 const KonvaStation: React.FC<KonvaStationProps> = ({
@@ -22,20 +24,21 @@ const KonvaStation: React.FC<KonvaStationProps> = ({
     onSelect,
     onDragEnd,
     onUpdateElement,
+    themeColors,
 }) => {
     const getStationColor = (type: MachineStation['type']) => {
         switch (type) {
-            case 'feed': return '#10b981'; // green
-            case 'assembly': return '#3b82f6'; // blue
-            case 'ok': return '#22c55e'; // green
-            case 'ng': return '#ef4444'; // red
-            default: return '#6366f1'; // primary
+            case 'feed': return themeColors.stationFeed;
+            case 'assembly': return themeColors.stationAssembly;
+            case 'ok': return themeColors.stationOk;
+            case 'ng': return themeColors.stationNg;
+            default: return themeColors.selection;
         }
     };
 
     const color = getStationColor(station.type);
-    const fillColor = active ? color : '#27272a'; // secondary
-    const strokeColor = selected ? '#6366f1' : color;
+    const fillColor = active ? color : themeColors.secondary;
+    const strokeColor = selected ? themeColors.selection : color;
     const strokeWidth = selected ? 3 : 2;
     const opacity = active ? 1 : 0.6;
 
@@ -84,7 +87,7 @@ const KonvaStation: React.FC<KonvaStationProps> = ({
                 strokeWidth={strokeWidth}
                 opacity={opacity}
                 shadowBlur={selected ? 10 : (active && isRunning ? 8 : 0)}
-                shadowColor={selected ? '#6366f1' : color}
+                shadowColor={selected ? themeColors.selection : color}
                 shadowOpacity={0.8}
             />
 
@@ -96,7 +99,7 @@ const KonvaStation: React.FC<KonvaStationProps> = ({
                 text={station.id.toUpperCase()}
                 fontSize={10}
                 fontStyle="600"
-                fill={active ? '#ffffff' : '#fafafa'}
+                fill={active ? themeColors.activeText : themeColors.inactiveText}
                 align="center"
             />
 
@@ -107,7 +110,7 @@ const KonvaStation: React.FC<KonvaStationProps> = ({
                 width={station.width}
                 text={station.name}
                 fontSize={8}
-                fill={active ? '#ffffff' : '#a1a1aa'}
+                fill={active ? themeColors.activeText : themeColors.inactiveSecondaryText}
                 align="center"
             />
 
@@ -116,7 +119,7 @@ const KonvaStation: React.FC<KonvaStationProps> = ({
                 x={station.width / 2 - 8}
                 y={-station.height / 2 + 8}
                 radius={3}
-                fill={active && isRunning ? color : '#52525b'}
+                fill={active && isRunning ? color : themeColors.ledInactive}
                 shadowBlur={active && isRunning ? 6 : 0}
                 shadowColor={color}
                 shadowOpacity={1}
