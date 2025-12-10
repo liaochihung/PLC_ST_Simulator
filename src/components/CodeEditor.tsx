@@ -4,6 +4,7 @@ import type { editor } from 'monaco-editor';
 import { Button } from '@/components/ui/button';
 import { setupMonacoSTLanguage } from '@/lib/monaco-st-setup';
 import { Copy, Scissors, Clipboard } from 'lucide-react';
+import { useTheme } from 'next-themes';
 
 interface CodeEditorProps {
   value: string;
@@ -15,6 +16,7 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ value, onChange, readOnly = fal
   const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null);
   const [isLanguageReady, setIsLanguageReady] = useState(false);
   const setupPromiseRef = useRef<Promise<void> | null>(null);
+  const { resolvedTheme } = useTheme();
 
   // Initialize language setup once
   useEffect(() => {
@@ -66,7 +68,7 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ value, onChange, readOnly = fal
       </div>
       <div className="flex-grow">
         {!isLanguageReady ? (
-          <div className="h-full w-full flex items-center justify-center bg-[#1e1e1e] text-gray-400">
+          <div className="h-full w-full flex items-center justify-center bg-muted text-muted-foreground">
             Loading editor...
           </div>
         ) : (
@@ -74,7 +76,7 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ value, onChange, readOnly = fal
             width="100%"
             height="100%"
             language="structured-text"
-            theme="vs-dark"
+            theme={resolvedTheme === 'dark' ? 'vs-dark' : 'light'}
             value={value}
             onChange={handleEditorChange}
             onMount={handleEditorDidMount}
