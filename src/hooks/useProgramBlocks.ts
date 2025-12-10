@@ -199,14 +199,12 @@ export function useProgramBlocks() {
       return results;
     };
 
-    // NOTE: Data Types are currently not included in the combined code
-    // because the ST parser does not support TYPE definitions yet.
-    // This prevents parser errors when renaming or modifying data types.
-    // const typeBlocks = findBlocksByType(project.blocks, 'data-type');
-    // const typeCode = typeBlocks
-    //   .filter(b => b.enabled)
-    //   .map(b => b.code)
-    //   .join('\n\n');
+    // Include Data Types (TYPE ... END_TYPE)
+    const typeBlocks = findBlocksByType(project.blocks, 'data-type');
+    const typeCode = typeBlocks
+      .filter(b => b.enabled)
+      .map(b => b.code)
+      .join('\n\n');
 
     const fbBlocks = findBlocksByType(project.blocks, 'function-block');
     const fbCode = fbBlocks
@@ -299,8 +297,8 @@ ${mainBodyParts.join('\n\n')}
 END_PROGRAM
 `;
 
-    // NOTE: typeCode is excluded (see comment above)
-    return `${fbCode}\n\n${mainProgram}`;
+    // Combine all: Types -> FBs -> Main Program
+    return `${typeCode}\n\n${fbCode}\n\n${mainProgram}`;
   }, [project.blocks]);
 
   // Project Management Functions
