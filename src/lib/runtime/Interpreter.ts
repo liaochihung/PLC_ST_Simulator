@@ -24,8 +24,14 @@ export class Interpreter {
 
     loadCode(code: string): void {
         try {
-            // 1. Parse
-            const inputStream = CharStreams.fromString(code);
+            this.reset(); // Clear previous state
+
+            // 0. Pre-process: Parse and Extract TYPE definitions
+            // This is a Hybrid approach: Manually parse TYPE blocks because ANTLR grammar doesn't support them yet.
+            const { cleanCode } = this.extractAndRegisterTypes(code);
+
+            // 1. Parse remaining code with ANTLR
+            const inputStream = CharStreams.fromString(cleanCode);
             const lexer = new IEC61131Lexer(inputStream);
             const tokenStream = new CommonTokenStream(lexer);
             const parser = new IEC61131Parser(tokenStream);
@@ -50,10 +56,101 @@ export class Interpreter {
         }
     }
 
+    private extractAndRegisterTypes(code: string): { cleanCode: string } {
+        const typeBlockRegex = /TYPE\s+([\s\S]*?)END_TYPE/gi;
+        let match;
+        let cleanCode = code;
+
+        // Clone regex to avoid state issues or just use matchAll/exec loop
+        // We will replace matches with whitespace to preserve line numbers
+        while ((match = typeBlockRegex.exec(code)) !== null) {
+            const blockContent = match[1];
+            const fullMatch = match[0];
+
+            // Replace with newlines to keep line counts if possible, or just spaces
+            // Simple approach: replace match in cleanCode with spaces/newlines
+            // Getting accurate line numbers requires more care, for now just replace with empty string??
+            // Better: replace with equivalent number of newlines
+            const newlines = fullMatch.split('\n').length - 1;
+            const replacement = '\n'.repeat(newlines);
+            // This global replace might be risky if duplicated, but usually unique enough
+            // Using split/join or specific index replacement is safer but for now:
+            cleanCode = cleanCode.replace(fullMatch, replacement);
+
+            this.parseTypeBlock(blockContent);
+        }
+
+        return { cleanCode };
+    }
+
+    private parseTypeBlock(content: string) {
+        const cleanBlock = content.trim();
+        if (!cleanBlock) return;
+
+        // Extract Name: "MyType : STRUCT ..."
+        const colonIndex = cleanBlock.indexOf(':');
+        if (colonIndex === -1) return;
+
+        const name = cleanBlock.substring(0, colonIndex).trim();
+        let definition = cleanBlock.substring(colonIndex + 1);
+
+        // remove trailing semicolon if present
+        if (definition.trim().endsWith(';')) {
+            definition = definition.trim().slice(0, -1);
+        }
+
+        if (definition.toUpperCase().includes('STRUCT')) {
+            // Parse STRUCT
+            const members: { name: string; type: string; initialValue?: any }[] = [];
+            // Remove STRUCT and END_STRUCT
+            const structBody = definition.replace(/STRUCT/i, '').replace(/END_STRUCT/i, '').trim();
+
+            const memberLines = structBody.split(';');
+            for (const line of memberLines) {
+                const cleanLine = line.trim();
+                if (!cleanLine) continue;
+
+                // Member declaration: name : type [:= init];
+                const mMatch = cleanLine.match(/(\w+)\s*:\s*(\w+)(?:\s*:=\s*(.+))?/i);
+                if (mMatch) {
+                    const [, mName, mType, mInit] = mMatch;
+                    members.push({
+                        name: mName,
+                        type: mType.toUpperCase(),
+                        initialValue: mInit // Store raw string for now? Or parse?
+                    });
+                }
+            }
+
+            this.symbolTable.defineType({
+                name,
+                kind: 'STRUCT',
+                members
+            });
+
+        } else if (definition.includes('(') && definition.includes(')')) {
+            // ENUM (Values)
+            const content = definition.replace(/[()]/g, '');
+            const values = content.split(',').map(v => v.trim());
+
+            this.symbolTable.defineType({
+                name,
+                kind: 'ENUM',
+                values
+            });
+        } else {
+            // Alias: TYPE MyInt : INT; END_TYPE
+            const baseType = definition.trim().toUpperCase();
+            this.symbolTable.defineType({
+                name,
+                kind: 'ALIAS',
+                baseType
+            });
+        }
+    }
+
     private initializeSymbols(prog: AST.Program) {
         // Reset Symbol Table logic if needed
-        // For now, we assume global scope is fresh or we clear it? 
-        // Ideally we should reset symbolTable if reloading.
         // this.symbolTable = new SymbolTable(this.memory); 
 
         // Register Global Vars
@@ -70,12 +167,20 @@ export class Interpreter {
                 else if (decl.initialValue && decl.initialValue.type === 'Literal') {
                     initVal = decl.initialValue.value;
                 } else {
+                    // Check if it's a User Defined Type or Standard Type
                     initVal = this.getDefaultValue(decl.dataType as ValueType);
+                }
+
+                // Decide types
+                let type: ValueType = decl.dataType as ValueType;
+                if (this.symbolTable.getType(decl.dataType)) {
+                    type = 'USER_DEFINED';
                 }
 
                 this.symbolTable.define(
                     decl.name,
-                    decl.dataType as ValueType,
+                    type, // Pass specific Type?? Or generic? SymbolTable expects known types. 'USER_DEFINED' or actual STRUCT name?
+                    // ValueType is union string. We added 'USER_DEFINED'. 
                     initVal,
                     false,
                     decl.address
@@ -84,8 +189,11 @@ export class Interpreter {
         }
     }
 
-    private getDefaultValue(type: ValueType): any {
-        switch (type) {
+    private getDefaultValue(type: string): any {
+        const uType = type.toUpperCase();
+
+        // 1. Check Standard Types
+        switch (uType) {
             case 'BOOL': return false;
             case 'INT':
             case 'DINT':
@@ -94,8 +202,31 @@ export class Interpreter {
             case 'REAL': return 0.0;
             case 'TIME': return 0;
             case 'STRING': return '';
-            default: return 0;
         }
+
+        // 2. Check User Defined Types
+        const userType = this.symbolTable.getType(uType);
+        if (userType) {
+            if (userType.kind === 'STRUCT' && userType.members) {
+                // Recursively build struct
+                const obj: any = {};
+                for (const m of userType.members) {
+                    // Logic to parse init value if string
+                    let val = this.getDefaultValue(m.type); // Recursion
+                    // TODO: Apply m.initialValue if present (e.g. parse literal)
+                    obj[m.name] = val;
+                }
+                return obj;
+            }
+            if (userType.kind === 'ENUM') {
+                return 0; // Default enum
+            }
+            if (userType.kind === 'ALIAS') {
+                return this.getDefaultValue(userType.baseType || 'INT');
+            }
+        }
+
+        return 0;
     }
 
     start(): void {
@@ -187,7 +318,7 @@ export class Interpreter {
 
         if (!root) throw new Error(`Variable ${rootName} not found`);
 
-        // Assume it's an FB
+        // Check if it's a Function Block
         if (root && typeof root === 'object' && 'inputs' in root) {
             const fb = root as FunctionBlock;
             const param = parts[1];
@@ -197,12 +328,34 @@ export class Interpreter {
                 fb.inputs[param] = value;
                 return;
             }
-            // Forcing output? Usually read-only but simulators might allow
-            // For strictness we might block, but here we allow
+            // Forcing output (Simulator usage)
             if (param in fb.outputs) {
                 fb.outputs[param] = value;
                 return;
             }
+            // Fallback: check if it has internal vars or other props?
+        }
+
+        // Handle regular Objects (Structs) or nested properties
+        // Loop through parts to find the target property
+        let current = root;
+        for (let i = 1; i < parts.length - 1; i++) {
+            const prop = parts[i];
+            if (current && typeof current === 'object' && prop in current) {
+                current = current[prop];
+            } else {
+                throw new Error(`Property ${prop} not found in ${parts.slice(0, i + 1).join('.')}`);
+            }
+        }
+
+        const lastProp = parts[parts.length - 1];
+        if (current && typeof current === 'object') {
+            // We can check if property exists to be strict, or just assign
+            // For ST Structs, it should exist if initialized correctly
+            // if (lastProp in current) {
+            current[lastProp] = value;
+            return;
+            // }
         }
 
         throw new Error(`Cannot write to property ${accessPath}`);

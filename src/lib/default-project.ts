@@ -554,9 +554,9 @@ END_TYPE`;
 
 const LIB_BLOCKS: ProgramBlock[] = [
     // NOTE: Data Types are temporarily disabled because the ST parser does not support TYPE definitions yet
-    { id: 'dt_sys_status', name: 'dsSysStatus', type: 'data-type', code: DS_SYS_STATUS, enabled: false },
-    { id: 'dt_tower_light', name: 'dsTowerLight', type: 'data-type', code: DS_TOWER_LIGHT, enabled: false },
-    { id: 'dt_axis_io', name: 'dsAxisIO', type: 'data-type', code: DS_AXIS_IO, enabled: false },
+    { id: 'dt_sys_status', name: 'dsSysStatus', type: 'data-type', code: DS_SYS_STATUS, enabled: true },
+    { id: 'dt_tower_light', name: 'dsTowerLight', type: 'data-type', code: DS_TOWER_LIGHT, enabled: true },
+    { id: 'dt_axis_io', name: 'dsAxisIO', type: 'data-type', code: DS_AXIS_IO, enabled: true },
     { id: 'fb_cylinder_0x1y', name: 'FbCylinder0x1y', type: 'function-block', code: cy0x1yRaw, enabled: true },
     { id: 'fb_cylinder_1x1y', name: 'FbCylinder1x1y', type: 'function-block', code: cy1x1yRaw, enabled: true },
     { id: 'fb_cylinder_2x1y', name: 'FbCylinder2x1y', type: 'function-block', code: cy2x1yRaw, enabled: true },

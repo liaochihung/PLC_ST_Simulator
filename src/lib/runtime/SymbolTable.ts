@@ -1,7 +1,19 @@
 
 import { MemoryMap } from './MemoryMap';
 
-export type ValueType = 'BOOL' | 'INT' | 'DINT' | 'REAL' | 'STRING' | 'TIME' | 'WORD' | 'DWORD' | 'TON' | 'TOF' | 'TP' | 'CTU' | 'CTD' | 'CTUD' | 'R_TRIG' | 'F_TRIG' | 'UNKNOWN';
+// Ported from st-parser.ts
+export interface TypeDefinition {
+    name: string;
+    kind: 'STRUCT' | 'ENUM' | 'ALIAS';
+    // For STRUCT
+    members?: { name: string; type: string; initialValue?: any }[];
+    // For ENUM
+    values?: string[];
+    // For ALIAS
+    baseType?: string;
+}
+
+export type ValueType = 'BOOL' | 'INT' | 'DINT' | 'REAL' | 'STRING' | 'TIME' | 'WORD' | 'DWORD' | 'TON' | 'TOF' | 'TP' | 'CTU' | 'CTD' | 'CTUD' | 'R_TRIG' | 'F_TRIG' | 'UNKNOWN' | 'USER_DEFINED';
 
 export interface VariableSymbol {
     name: string;
@@ -14,6 +26,7 @@ export interface VariableSymbol {
 export class SymbolTable {
     private scopes: Map<string, VariableSymbol>[] = [];
     private memory: MemoryMap;
+    private types: Map<string, TypeDefinition> = new Map(); // Registry for User Defined Types
 
     constructor(memory: MemoryMap) {
         this.memory = memory;
@@ -33,6 +46,20 @@ export class SymbolTable {
     }
 
     /**
+     * Define a new Type (STRUCT, ENUM, etc.)
+     */
+    defineType(typeDef: TypeDefinition) {
+        this.types.set(typeDef.name.toUpperCase(), typeDef);
+    }
+
+    /**
+     * Get a Type Definition
+     */
+    getType(typeName: string): TypeDefinition | undefined {
+        return this.types.get(typeName.toUpperCase());
+    }
+
+    /**
      * Get all variables in the global scope (for UI monitoring)
      */
     getGlobalVariables(): Map<string, VariableSymbol> {
@@ -48,7 +75,8 @@ export class SymbolTable {
 
         if (currentScope.has(normalizedName)) {
             // In ST, re-declaring might be an error or shadowing. We'll assume error for now in same scope.
-            throw new Error(`Variable ${name} already defined in current scope`);
+            // Warn instead of throw to be robust ??
+            console.warn(`Variable ${name} already defined in current scope, overwriting.`);
         }
 
         const symbol: VariableSymbol = { name, type, value, isConstant, address };
@@ -57,7 +85,10 @@ export class SymbolTable {
         // If it has an address and an initial value, should we write to memory?
         // Usually YES for initialization.
         if (address && value !== undefined) {
-            this.writeToAddress(address, type, value);
+            // Basic types only for memory mapping?
+            if (type !== 'USER_DEFINED') {
+                this.writeToAddress(address, type, value);
+            }
         }
     }
 
