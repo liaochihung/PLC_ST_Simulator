@@ -45,12 +45,12 @@ interface Product {
 }
 
 const DEFAULT_STATIONS: Station[] = [
-  { id: 1, name: '進料', type: 'feed', angle: 0, active: false, hasProduct: false },
-  { id: 2, name: '組裝1', type: 'assembly', angle: 300, active: false, hasProduct: false },
-  { id: 3, name: '組裝2', type: 'assembly', angle: 240, active: false, hasProduct: false },
-  { id: 4, name: '檢測', type: 'assembly', angle: 180, active: false, hasProduct: false },
-  { id: 5, name: 'OK出料', type: 'ok', angle: 120, active: false, hasProduct: false },
-  { id: 6, name: 'NG出料', type: 'ng', angle: 60, active: false, hasProduct: false },
+  { id: 1, name: 'Feed', type: 'feed', angle: 0, active: false, hasProduct: false },
+  { id: 2, name: 'Assembly 1', type: 'assembly', angle: 300, active: false, hasProduct: false },
+  { id: 3, name: 'Assembly 2', type: 'assembly', angle: 240, active: false, hasProduct: false },
+  { id: 4, name: 'Inspect', type: 'assembly', angle: 180, active: false, hasProduct: false },
+  { id: 5, name: 'OK Out', type: 'ok', angle: 120, active: false, hasProduct: false },
+  { id: 6, name: 'NG Out', type: 'ng', angle: 60, active: false, hasProduct: false },
 ];
 
 export function useSimulator() {
@@ -174,7 +174,7 @@ export function useSimulator() {
           getVar(`Station${station.id}Active`) === true
       })));
 
-      // Handle disc rotation when indexing (逆時針旋轉)
+      // Handle disc rotation when indexing (CCW)
       if (indexing) {
         setDiscAngle(prev => (prev - 1 + 360) % 360);
       }
@@ -191,7 +191,7 @@ export function useSimulator() {
   // Start simulation
   const start = useCallback(() => {
     if (!code.trim()) {
-      setError('請先輸入 ST 程式碼');
+      setError('Please enter ST code first');
       return;
     }
 

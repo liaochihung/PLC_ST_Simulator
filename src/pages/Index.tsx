@@ -192,7 +192,7 @@ const Index: React.FC = () => {
                   />
                 ) : (
                   <div className="h-full flex items-center justify-center text-muted-foreground">
-                    <p>請從左側選擇一個程式區塊</p>
+                    <p>Please select a program block from the left</p>
                   </div>
                 )}
               </div>

@@ -33,8 +33,8 @@ const KonvaConveyor: React.FC<KonvaConveyorProps> = ({
     const strokeColor = selected ? '#6366f1' : '#27272a';
     const strokeWidth = selected ? 6 : 4;
 
-    const label = conveyor.type === 'ok' ? 'OK 出料' :
-        conveyor.type === 'ng' ? 'NG 出料' : '輸送';
+    const label = conveyor.type === 'ok' ? 'OK Outfeed' :
+        conveyor.type === 'ng' ? 'NG Outfeed' : 'Conveyor';
 
     return (
         <Group

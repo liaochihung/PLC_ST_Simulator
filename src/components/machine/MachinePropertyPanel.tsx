@@ -24,7 +24,7 @@ const MachinePropertyPanel: React.FC<MachinePropertyPanelProps> = ({
   const renderStationProperties = (station: MachineStation) => (
     <>
       <div className="space-y-1.5">
-        <Label className="text-xs">名稱</Label>
+        <Label className="text-xs">Name</Label>
         <Input
           value={station.name}
           onChange={(e) => onUpdate({ name: e.target.value })}
@@ -32,7 +32,7 @@ const MachinePropertyPanel: React.FC<MachinePropertyPanelProps> = ({
         />
       </div>
       <div className="space-y-1.5">
-        <Label className="text-xs">類型</Label>
+        <Label className="text-xs">Type</Label>
         <Select
           value={station.type}
           onValueChange={(value) => onUpdate({ type: value as MachineStation['type'] })}
@@ -41,11 +41,11 @@ const MachinePropertyPanel: React.FC<MachinePropertyPanelProps> = ({
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="feed">入料站</SelectItem>
-            <SelectItem value="assembly">組裝站</SelectItem>
-            <SelectItem value="ok">良品站</SelectItem>
-            <SelectItem value="ng">不良品站</SelectItem>
-            <SelectItem value="custom">自定義</SelectItem>
+            <SelectItem value="feed">Feed Station</SelectItem>
+            <SelectItem value="assembly">Assembly Station</SelectItem>
+            <SelectItem value="ok">OK Station</SelectItem>
+            <SelectItem value="ng">NG Station</SelectItem>
+            <SelectItem value="custom">Custom</SelectItem>
           </SelectContent>
         </Select>
       </div>
@@ -71,7 +71,7 @@ const MachinePropertyPanel: React.FC<MachinePropertyPanelProps> = ({
       </div>
       <div className="grid grid-cols-2 gap-2">
         <div className="space-y-1.5">
-          <Label className="text-xs">寬度</Label>
+          <Label className="text-xs">Width</Label>
           <Input
             type="number"
             value={station.width}
@@ -80,7 +80,7 @@ const MachinePropertyPanel: React.FC<MachinePropertyPanelProps> = ({
           />
         </div>
         <div className="space-y-1.5">
-          <Label className="text-xs">高度</Label>
+          <Label className="text-xs">Height</Label>
           <Input
             type="number"
             value={station.height}
@@ -90,7 +90,7 @@ const MachinePropertyPanel: React.FC<MachinePropertyPanelProps> = ({
         </div>
       </div>
       <div className="space-y-1.5">
-        <Label className="text-xs">角度</Label>
+        <Label className="text-xs">Angle</Label>
         <Input
           type="number"
           value={station.angle}
@@ -101,9 +101,9 @@ const MachinePropertyPanel: React.FC<MachinePropertyPanelProps> = ({
 
       <Separator className="my-3" />
       <div className="space-y-3">
-        <h4 className="text-xs font-semibold">I/O 變數綁定</h4>
+        <h4 className="text-xs font-semibold">I/O Variable Binding</h4>
         <IOBindingEditor
-          label="輸入變數 (Inputs)"
+          label="Inputs"
           bindings={station.ioMapping?.inputs || []}
           onChange={(inputs) => onUpdate({
             ioMapping: {
@@ -111,10 +111,10 @@ const MachinePropertyPanel: React.FC<MachinePropertyPanelProps> = ({
               outputs: station.ioMapping?.outputs || []
             }
           })}
-          placeholder="例: X0, M10"
+          placeholder="e.g., X0, M10"
         />
         <IOBindingEditor
-          label="輸出變數 (Outputs)"
+          label="Outputs"
           bindings={station.ioMapping?.outputs || []}
           onChange={(outputs) => onUpdate({
             ioMapping: {
@@ -122,7 +122,7 @@ const MachinePropertyPanel: React.FC<MachinePropertyPanelProps> = ({
               outputs
             }
           })}
-          placeholder="例: Y0, M20"
+          placeholder="e.g., Y0, M20"
         />
       </div>
     </>
@@ -151,7 +151,7 @@ const MachinePropertyPanel: React.FC<MachinePropertyPanelProps> = ({
         </div>
       </div>
       <div className="space-y-1.5">
-        <Label className="text-xs">半徑</Label>
+        <Label className="text-xs">Radius</Label>
         <Input
           type="number"
           value={disc.radius}
@@ -160,7 +160,7 @@ const MachinePropertyPanel: React.FC<MachinePropertyPanelProps> = ({
         />
       </div>
       <div className="space-y-1.5">
-        <Label className="text-xs">槽位數</Label>
+        <Label className="text-xs">Slots</Label>
         <Input
           type="number"
           value={disc.slots}
@@ -169,11 +169,11 @@ const MachinePropertyPanel: React.FC<MachinePropertyPanelProps> = ({
         />
       </div>
       <div className="space-y-1.5">
-        <Label className="text-xs">旋轉變數</Label>
+        <Label className="text-xs">Rotation Variable</Label>
         <Input
           value={disc.rotationVariable || ''}
           onChange={(e) => onUpdate({ rotationVariable: e.target.value })}
-          placeholder="例: discAngle"
+          placeholder="e.g., discAngle"
           className="h-8 text-xs"
         />
       </div>
@@ -183,7 +183,7 @@ const MachinePropertyPanel: React.FC<MachinePropertyPanelProps> = ({
   const renderFeederProperties = (feeder: MachineFeeder) => (
     <>
       <div className="space-y-1.5">
-        <Label className="text-xs">名稱</Label>
+        <Label className="text-xs">Name</Label>
         <Input
           value={feeder.name}
           onChange={(e) => onUpdate({ name: e.target.value })}
@@ -212,7 +212,7 @@ const MachinePropertyPanel: React.FC<MachinePropertyPanelProps> = ({
       </div>
       <div className="grid grid-cols-2 gap-2">
         <div className="space-y-1.5">
-          <Label className="text-xs">寬度</Label>
+          <Label className="text-xs">Width</Label>
           <Input
             type="number"
             value={feeder.width}
@@ -221,7 +221,7 @@ const MachinePropertyPanel: React.FC<MachinePropertyPanelProps> = ({
           />
         </div>
         <div className="space-y-1.5">
-          <Label className="text-xs">高度</Label>
+          <Label className="text-xs">Height</Label>
           <Input
             type="number"
             value={feeder.height}
@@ -231,11 +231,11 @@ const MachinePropertyPanel: React.FC<MachinePropertyPanelProps> = ({
         </div>
       </div>
       <div className="space-y-1.5">
-        <Label className="text-xs">啟動變數</Label>
+        <Label className="text-xs">Active Variable</Label>
         <Input
           value={feeder.activeVariable || ''}
           onChange={(e) => onUpdate({ activeVariable: e.target.value })}
-          placeholder="例: feederActive"
+          placeholder="e.g., feederActive"
           className="h-8 text-xs"
         />
       </div>
@@ -245,7 +245,7 @@ const MachinePropertyPanel: React.FC<MachinePropertyPanelProps> = ({
   const renderConveyorProperties = (conveyor: MachineConveyor) => (
     <>
       <div className="space-y-1.5">
-        <Label className="text-xs">類型</Label>
+        <Label className="text-xs">Type</Label>
         <Select
           value={conveyor.type}
           onValueChange={(value) => onUpdate({ type: value as MachineConveyor['type'] })}
@@ -254,15 +254,15 @@ const MachinePropertyPanel: React.FC<MachinePropertyPanelProps> = ({
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="ok">良品輸送</SelectItem>
-            <SelectItem value="ng">不良品輸送</SelectItem>
-            <SelectItem value="custom">自定義</SelectItem>
+            <SelectItem value="ok">OK Conveyor</SelectItem>
+            <SelectItem value="ng">NG Conveyor</SelectItem>
+            <SelectItem value="custom">Custom</SelectItem>
           </SelectContent>
         </Select>
       </div>
       <div className="grid grid-cols-2 gap-2">
         <div className="space-y-1.5">
-          <Label className="text-xs">起點 X</Label>
+          <Label className="text-xs">Start X</Label>
           <Input
             type="number"
             value={conveyor.startX}
@@ -271,7 +271,7 @@ const MachinePropertyPanel: React.FC<MachinePropertyPanelProps> = ({
           />
         </div>
         <div className="space-y-1.5">
-          <Label className="text-xs">起點 Y</Label>
+          <Label className="text-xs">Start Y</Label>
           <Input
             type="number"
             value={conveyor.startY}
@@ -282,7 +282,7 @@ const MachinePropertyPanel: React.FC<MachinePropertyPanelProps> = ({
       </div>
       <div className="grid grid-cols-2 gap-2">
         <div className="space-y-1.5">
-          <Label className="text-xs">終點 X</Label>
+          <Label className="text-xs">End X</Label>
           <Input
             type="number"
             value={conveyor.endX}
@@ -291,7 +291,7 @@ const MachinePropertyPanel: React.FC<MachinePropertyPanelProps> = ({
           />
         </div>
         <div className="space-y-1.5">
-          <Label className="text-xs">終點 Y</Label>
+          <Label className="text-xs">End Y</Label>
           <Input
             type="number"
             value={conveyor.endY}
@@ -306,17 +306,17 @@ const MachinePropertyPanel: React.FC<MachinePropertyPanelProps> = ({
   const renderShapeProperties = (shape: BasicShape) => (
     <>
       <div className="space-y-1.5">
-        <Label className="text-xs">類型</Label>
+        <Label className="text-xs">Type</Label>
         <div className="text-xs text-muted-foreground">
-          {shape.type === 'rectangle' && '矩形'}
-          {shape.type === 'circle' && '圓形'}
-          {shape.type === 'line' && '線條'}
-          {shape.type === 'text' && '文字'}
-          {shape.type === 'triangle' && '三角形'}
+          {shape.type === 'rectangle' && 'Rectangle'}
+          {shape.type === 'circle' && 'Circle'}
+          {shape.type === 'line' && 'Line'}
+          {shape.type === 'text' && 'Text'}
+          {shape.type === 'triangle' && 'Triangle'}
 
-          {shape.type === 'hexagon' && '六邊形'}
-          {shape.type === 'ellipse' && '橢圓'}
-          {shape.type === 'image' && '圖片'}
+          {shape.type === 'hexagon' && 'Hexagon'}
+          {shape.type === 'ellipse' && 'Ellipse'}
+          {shape.type === 'image' && 'Image'}
         </div>
       </div>
       <div className="grid grid-cols-2 gap-2">
@@ -343,7 +343,7 @@ const MachinePropertyPanel: React.FC<MachinePropertyPanelProps> = ({
       {(shape.type === 'rectangle' || shape.type === 'ellipse' || shape.type === 'image') && (
         <div className="grid grid-cols-2 gap-2">
           <div className="space-y-1.5">
-            <Label className="text-xs">寬度</Label>
+            <Label className="text-xs">Width</Label>
             <Input
               type="number"
               value={shape.width || 80}
@@ -352,7 +352,7 @@ const MachinePropertyPanel: React.FC<MachinePropertyPanelProps> = ({
             />
           </div>
           <div className="space-y-1.5">
-            <Label className="text-xs">高度</Label>
+            <Label className="text-xs">Height</Label>
             <Input
               type="number"
               value={shape.height || 60}
@@ -365,7 +365,7 @@ const MachinePropertyPanel: React.FC<MachinePropertyPanelProps> = ({
 
       {shape.type === 'image' && (
         <div className="space-y-1.5 ">
-          <Label className="text-xs">圖片來源</Label>
+          <Label className="text-xs">Image Source</Label>
           <div className="flex gap-2">
             <Input
               type="text"
@@ -373,7 +373,7 @@ const MachinePropertyPanel: React.FC<MachinePropertyPanelProps> = ({
               onClick={(e) => (e.target as HTMLInputElement).select()}
               readOnly
               className="h-8 text-xs flex-1 bg-muted"
-              placeholder="使用下方按鈕上傳"
+              placeholder="Use button below to upload"
             />
           </div>
           <div className="flex gap-2">
@@ -410,18 +410,18 @@ const MachinePropertyPanel: React.FC<MachinePropertyPanelProps> = ({
               className="w-full h-8 text-xs"
               onClick={() => document.getElementById(`image-upload-${element.data.id}`)?.click()}
             >
-              更換圖片 (Upload)
+              Change Image (Upload)
             </Button>
           </div>
           <p className="text-[10px] text-muted-foreground">
-            支援雙擊畫布上的圖片進行更換
+            Double-click image on canvas to change
           </p>
         </div>
       )}
 
       {(shape.type === 'circle' || shape.type === 'triangle' || shape.type === 'hexagon') && (
         <div className="space-y-1.5">
-          <Label className="text-xs">半徑</Label>
+          <Label className="text-xs">Radius</Label>
           <Input
             type="number"
             value={shape.radius || 40}
@@ -434,7 +434,7 @@ const MachinePropertyPanel: React.FC<MachinePropertyPanelProps> = ({
       {shape.type === 'line' && (
         <div className="grid grid-cols-2 gap-2">
           <div className="space-y-1.5">
-            <Label className="text-xs">終點 X</Label>
+            <Label className="text-xs">End X</Label>
             <Input
               type="number"
               value={shape.endX || shape.x + 80}
@@ -443,7 +443,7 @@ const MachinePropertyPanel: React.FC<MachinePropertyPanelProps> = ({
             />
           </div>
           <div className="space-y-1.5">
-            <Label className="text-xs">終點 Y</Label>
+            <Label className="text-xs">End Y</Label>
             <Input
               type="number"
               value={shape.endY || shape.y}
@@ -457,16 +457,16 @@ const MachinePropertyPanel: React.FC<MachinePropertyPanelProps> = ({
       {shape.type === 'text' && (
         <>
           <div className="space-y-1.5">
-            <Label className="text-xs">文字內容</Label>
+            <Label className="text-xs">Text Content</Label>
             <Input
               type="text"
-              value={shape.text || '文字'}
+              value={shape.text || 'Text'}
               onChange={(e) => onUpdate({ text: e.target.value })}
               className="h-8 text-xs"
             />
           </div>
           <div className="space-y-1.5">
-            <Label className="text-xs">字型大小</Label>
+            <Label className="text-xs">Font Size</Label>
             <Input
               type="number"
               value={shape.fontSize || 16}
@@ -480,7 +480,7 @@ const MachinePropertyPanel: React.FC<MachinePropertyPanelProps> = ({
       {(shape.type === 'rectangle' || shape.type === 'circle' || shape.type === 'triangle' || shape.type === 'hexagon' || shape.type === 'ellipse') && (
         <>
           <div className="space-y-1.5">
-            <Label className="text-xs">填滿顏色</Label>
+            <Label className="text-xs">Fill Color</Label>
             <div className="flex gap-2">
               <Input
                 type="color"
@@ -503,7 +503,7 @@ const MachinePropertyPanel: React.FC<MachinePropertyPanelProps> = ({
       {(shape.type === 'rectangle' || shape.type === 'circle' || shape.type === 'line' || shape.type === 'triangle' || shape.type === 'hexagon' || shape.type === 'ellipse') && (
         <>
           <div className="space-y-1.5">
-            <Label className="text-xs">邊框顏色</Label>
+            <Label className="text-xs">Stroke Color</Label>
             <div className="flex gap-2">
               <Input
                 type="color"
@@ -521,7 +521,7 @@ const MachinePropertyPanel: React.FC<MachinePropertyPanelProps> = ({
             </div>
           </div>
           <div className="space-y-1.5">
-            <Label className="text-xs">邊框寬度</Label>
+            <Label className="text-xs">Stroke Width</Label>
             <Input
               type="number"
               value={shape.strokeWidth || 2}
@@ -534,7 +534,7 @@ const MachinePropertyPanel: React.FC<MachinePropertyPanelProps> = ({
 
       {shape.type === 'text' && (
         <div className="space-y-1.5">
-          <Label className="text-xs">文字顏色</Label>
+          <Label className="text-xs">Text Color</Label>
           <div className="flex gap-2">
             <Input
               type="color"
@@ -559,11 +559,11 @@ const MachinePropertyPanel: React.FC<MachinePropertyPanelProps> = ({
     <div className={className || "absolute right-2 top-2 w-56 bg-card border border-border rounded-lg shadow-lg p-3 z-50 pointer-events-auto"}>
       <div className="flex items-center justify-between mb-3">
         <h3 className="text-sm font-medium">
-          {element.type === 'station' && '站別屬性'}
-          {element.type === 'disc' && '轉盤屬性'}
-          {element.type === 'feeder' && '送料機屬性'}
-          {element.type === 'conveyor' && '輸送帶屬性'}
-          {element.type === 'shape' && '物件屬性'}
+          {element.type === 'station' && 'Station Properties'}
+          {element.type === 'disc' && 'Disc Properties'}
+          {element.type === 'feeder' && 'Feeder Properties'}
+          {element.type === 'conveyor' && 'Conveyor Properties'}
+          {element.type === 'shape' && 'Object Properties'}
         </h3>
         <Button variant="ghost" size="icon" onClick={onClose} className="h-6 w-6">
           <X className="w-3 h-3" />

@@ -106,10 +106,10 @@ const MachineVisualization: React.FC<MachineVisualizationProps> = ({
             strokeWidth="2"
           />
           <text x="50" y="200" textAnchor="middle" fill="hsl(var(--foreground))" fontSize="10" fontFamily="Inter">
-            震動
+            Vibration
           </text>
           <text x="50" y="215" textAnchor="middle" fill="hsl(var(--foreground))" fontSize="10" fontFamily="Inter">
-            送料機
+            Feeder
           </text>
           
           {/* Feeder chute */}
@@ -277,7 +277,7 @@ const MachineVisualization: React.FC<MachineVisualizationProps> = ({
             strokeWidth="2"
           />
           <text x="350" y="140" textAnchor="middle" fill="hsl(var(--station-ok))" fontSize="10" fontWeight="600">
-            OK 出料
+            OK Outfeed
           </text>
           <path
             d="M 290 150 L 320 135"
@@ -302,7 +302,7 @@ const MachineVisualization: React.FC<MachineVisualizationProps> = ({
             strokeWidth="2"
           />
           <text x="350" y="270" textAnchor="middle" fill="hsl(var(--station-ng))" fontSize="10" fontWeight="600">
-            NG 出料
+            NG Outfeed
           </text>
           <path
             d="M 290 250 L 320 265"

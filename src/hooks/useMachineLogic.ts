@@ -14,14 +14,14 @@ import type {
 // Default layout matching current visualization
 const defaultLayout: MachineLayout = {
   id: 'default',
-  name: '預設機台',
+  name: 'Default Machine',
   width: 400,
   height: 400,
   stations: [
-    { id: 's1', name: '入料', type: 'feed', x: 200, y: 40, angle: 0, width: 50, height: 40 },
-    { id: 's2', name: '組裝', type: 'assembly', x: 360, y: 200, angle: 90, width: 50, height: 40 },
-    { id: 's3', name: '良品', type: 'ok', x: 200, y: 360, angle: 180, width: 50, height: 40 },
-    { id: 's4', name: '不良', type: 'ng', x: 40, y: 200, angle: 270, width: 50, height: 40 },
+    { id: 's1', name: 'Feed', type: 'feed', x: 200, y: 40, angle: 0, width: 50, height: 40 },
+    { id: 's2', name: 'Assembly', type: 'assembly', x: 360, y: 200, angle: 90, width: 50, height: 40 },
+    { id: 's3', name: 'OK', type: 'ok', x: 200, y: 360, angle: 180, width: 50, height: 40 },
+    { id: 's4', name: 'NG', type: 'ng', x: 40, y: 200, angle: 270, width: 50, height: 40 },
   ],
   discs: [
     { id: 'd1', x: 200, y: 200, radius: 120, slots: 4 }
@@ -31,7 +31,7 @@ const defaultLayout: MachineLayout = {
     { id: 'c2', type: 'ng', startX: 290, startY: 250, endX: 380, endY: 265, width: 30 },
   ],
   feeders: [
-    { id: 'f1', name: '震動送料機', x: 50, y: 200, width: 60, height: 80 }
+    { id: 'f1', name: 'Vib Feeder', x: 50, y: 200, width: 60, height: 80 }
   ],
   shapes: [],
   groups: []

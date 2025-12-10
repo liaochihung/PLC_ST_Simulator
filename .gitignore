@@ -13,6 +13,7 @@ dist-ssr
 *.local
 
 fuxa/
+temp/
 
 # Editor directories and files
 .vscode/*

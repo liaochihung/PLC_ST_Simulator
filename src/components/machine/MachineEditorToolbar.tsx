@@ -169,35 +169,35 @@ const MachineEditorToolbar: React.FC<MachineEditorToolbarProps> = ({
             <DropdownMenuContent align="start">
               <DropdownMenuItem onClick={() => onAddStation('feed')}>
                 <Square className="w-4 h-4 mr-2 text-station-feed" />
-                入料站
+                Feed Station
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => onAddStation('assembly')}>
                 <Square className="w-4 h-4 mr-2 text-station-assembly" />
-                組裝站
+                Assembly Station
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => onAddStation('ok')}>
                 <Square className="w-4 h-4 mr-2 text-station-ok" />
-                良品站
+                OK Station
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => onAddStation('ng')}>
                 <Square className="w-4 h-4 mr-2 text-station-ng" />
-                不良品站
+                NG Station
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => onAddStation('custom')}>
                 <Square className="w-4 h-4 mr-2" />
-                自定義站
+                Custom Station
               </DropdownMenuItem>
               <DropdownMenuItem onClick={onAddDisc}>
                 <Circle className="w-4 h-4 mr-2" />
-                轉盤
+                Rotary Disc
               </DropdownMenuItem>
               <DropdownMenuItem onClick={onAddConveyor}>
                 <ArrowRight className="w-4 h-4 mr-2" />
-                輸送帶
+                Conveyor
               </DropdownMenuItem>
               <DropdownMenuItem onClick={onAddFeeder}>
                 <Box className="w-4 h-4 mr-2" />
-                送料機
+                Feeder
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -227,7 +227,7 @@ const MachineEditorToolbar: React.FC<MachineEditorToolbarProps> = ({
               size="sm"
               onClick={onToggleGrid}
               className="h-7 px-2 text-xs"
-              title="顯示/隱藏網格"
+              title="Show/Hide Grid"
             >
               <Grid3x3 className="w-3 h-3" />
             </Button>
@@ -236,7 +236,7 @@ const MachineEditorToolbar: React.FC<MachineEditorToolbarProps> = ({
               size="sm"
               onClick={onToggleSnap}
               className="h-7 px-2 text-xs"
-              title="吸附到網格"
+              title="Snap to Grid"
             >
               <Magnet className="w-3 h-3" />
             </Button>
@@ -272,7 +272,7 @@ const MachineEditorToolbar: React.FC<MachineEditorToolbarProps> = ({
             onClick={onCopy}
             disabled={!hasSelection}
             className="h-7 px-2 text-xs"
-            title="複製 (Cmd+C)"
+            title="Copy (Cmd+C)"
           >
             <Copy className="w-3 h-3" />
           </Button>
@@ -282,7 +282,7 @@ const MachineEditorToolbar: React.FC<MachineEditorToolbarProps> = ({
             onClick={onCut}
             disabled={!hasSelection}
             className="h-7 px-2 text-xs"
-            title="剪下 (Cmd+X)"
+            title="Cut (Cmd+X)"
           >
             <Scissors className="w-3 h-3" />
           </Button>
@@ -292,7 +292,7 @@ const MachineEditorToolbar: React.FC<MachineEditorToolbarProps> = ({
             onClick={onPaste}
             disabled={!hasClipboard}
             className="h-7 px-2 text-xs"
-            title="貼上 (Cmd+V)"
+            title="Paste (Cmd+V)"
           >
             <Clipboard className="w-3 h-3" />
           </Button>
@@ -302,7 +302,7 @@ const MachineEditorToolbar: React.FC<MachineEditorToolbarProps> = ({
             onClick={onDuplicate}
             disabled={!hasSelection}
             className="h-7 px-2 text-xs"
-            title="複製 (Cmd+D)"
+            title="Duplicate (Cmd+D)"
           >
             <CopyPlus className="w-3 h-3" />
           </Button>
@@ -314,38 +314,38 @@ const MachineEditorToolbar: React.FC<MachineEditorToolbarProps> = ({
       {/* Group & Align (Edit mode only) */}
       {mode === 'edit' && hasSelection && (
         <>
-          <Button variant="outline" size="sm" onClick={onGroup} className="h-7 px-2 text-xs" title="群組">
+          <Button variant="outline" size="sm" onClick={onGroup} className="h-7 px-2 text-xs" title="Group">
             <Group className="w-3 h-3" />
           </Button>
-          <Button variant="outline" size="sm" onClick={onUngroup} className="h-7 px-2 text-xs" title="解散群組">
+          <Button variant="outline" size="sm" onClick={onUngroup} className="h-7 px-2 text-xs" title="Ungroup">
             <Ungroup className="w-3 h-3" />
           </Button>
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="sm" className="h-7 px-2 text-xs" title="對齊">
+              <Button variant="outline" size="sm" className="h-7 px-2 text-xs" title="Align">
                 <AlignLeft className="w-3 h-3" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
-              <DropdownMenuItem onClick={() => onAlign('left')}><AlignLeft className="w-4 h-4 mr-2" />置左對齊</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => onAlign('center')}><AlignCenter className="w-4 h-4 mr-2" />水平置中</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => onAlign('right')}><AlignRight className="w-4 h-4 mr-2" />置右對齊</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => onAlign('top')}><ArrowUpToLine className="w-4 h-4 mr-2" />置頂對齊</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => onAlign('middle')}><AlignVerticalJustifyCenter className="w-4 h-4 mr-2" />垂直置中</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => onAlign('bottom')}><ArrowDownToLine className="w-4 h-4 mr-2" />置底對齊</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => onAlign('left')}><AlignLeft className="w-4 h-4 mr-2" />Align Left</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => onAlign('center')}><AlignCenter className="w-4 h-4 mr-2" />Align Center</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => onAlign('right')}><AlignRight className="w-4 h-4 mr-2" />Align Right</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => onAlign('top')}><ArrowUpToLine className="w-4 h-4 mr-2" />Align Top</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => onAlign('middle')}><AlignVerticalJustifyCenter className="w-4 h-4 mr-2" />Align Middle</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => onAlign('bottom')}><ArrowDownToLine className="w-4 h-4 mr-2" />Align Bottom</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="sm" className="h-7 px-2 text-xs" title="順序">
+              <Button variant="outline" size="sm" className="h-7 px-2 text-xs" title="Order">
                 <Layers className="w-3 h-3" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
-              <DropdownMenuItem onClick={() => onReorder('front')}><BringToFront className="w-4 h-4 mr-2" />移到最上層</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => onReorder('back')}><SendToBack className="w-4 h-4 mr-2" />移到最下層</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => onReorder('front')}><BringToFront className="w-4 h-4 mr-2" />Bring to Front</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => onReorder('back')}><SendToBack className="w-4 h-4 mr-2" />Send to Back</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
 
@@ -360,7 +360,7 @@ const MachineEditorToolbar: React.FC<MachineEditorToolbarProps> = ({
         onClick={onUndo}
         disabled={!canUndo}
         className="h-7 px-2 text-xs"
-        title="復原 (Cmd+Z)"
+        title="Undo (Cmd+Z)"
       >
         <Undo className="w-3 h-3" />
       </Button>
@@ -370,7 +370,7 @@ const MachineEditorToolbar: React.FC<MachineEditorToolbarProps> = ({
         onClick={onRedo}
         disabled={!canRedo}
         className="h-7 px-2 text-xs"
-        title="重做 (Cmd+Shift+Z)"
+        title="Redo (Cmd+Shift+Z)"
       >
         <Redo className="w-3 h-3" />
       </Button>
@@ -387,7 +387,7 @@ const MachineEditorToolbar: React.FC<MachineEditorToolbarProps> = ({
             "h-7 px-2 text-xs",
             !isPanMode && "bg-background shadow-sm"
           )}
-          title="選取模式 (V)"
+          title="Select Mode (V)"
         >
           <MousePointer2 className="w-3 h-3" />
         </Button>
@@ -399,7 +399,7 @@ const MachineEditorToolbar: React.FC<MachineEditorToolbarProps> = ({
             "h-7 px-2 text-xs",
             isPanMode && "bg-background shadow-sm"
           )}
-          title="平移模式 (H)"
+          title="Pan Mode (H)"
         >
           <Hand className="w-3 h-3" />
         </Button>
@@ -409,7 +409,7 @@ const MachineEditorToolbar: React.FC<MachineEditorToolbarProps> = ({
 
       {/* Zoom Controls */}
       <div className="flex items-center gap-2">
-        <Button variant="ghost" size="icon" onClick={onZoomOut} className="h-7 w-7" title="縮小">
+        <Button variant="ghost" size="icon" onClick={onZoomOut} className="h-7 w-7" title="Zoom Out">
           <ZoomOut className="w-3 h-3" />
         </Button>
         <div className="flex items-center gap-2 min-w-[120px]">
@@ -425,7 +425,7 @@ const MachineEditorToolbar: React.FC<MachineEditorToolbarProps> = ({
             {Math.round(zoom * 100)}%
           </span>
         </div>
-        <Button variant="ghost" size="icon" onClick={onZoomIn} className="h-7 w-7" title="放大">
+        <Button variant="ghost" size="icon" onClick={onZoomIn} className="h-7 w-7" title="Zoom In">
           <ZoomIn className="w-3 h-3" />
         </Button>
       </div>
@@ -437,15 +437,15 @@ const MachineEditorToolbar: React.FC<MachineEditorToolbarProps> = ({
           <span className="text-xs text-muted-foreground">
             {selectedElements.length === 1 ? (
               <>
-                已選擇: {selectedElements[0].type === 'station' && selectedElements[0].data.name}
-                {selectedElements[0].type === 'disc' && '轉盤'}
-                {selectedElements[0].type === 'conveyor' && '輸送帶'}
+                Selected: {selectedElements[0].type === 'station' && selectedElements[0].data.name}
+                {selectedElements[0].type === 'disc' && 'Rotary Disc'}
+                {selectedElements[0].type === 'conveyor' && 'Conveyor'}
                 {selectedElements[0].type === 'feeder' && selectedElements[0].data.name}
-                {selectedElements[0].type === 'shape' && `形狀 (${selectedElements[0].data.type})`}
-                {selectedElements[0].type === 'group' && '群組'}
+                {selectedElements[0].type === 'shape' && `Shape (${selectedElements[0].data.type})`}
+                {selectedElements[0].type === 'group' && 'Group'}
               </>
             ) : (
-              `已選擇 ${selectedElements.length} 個物件`
+              `${selectedElements.length} items selected`
             )}
           </span>
         </>

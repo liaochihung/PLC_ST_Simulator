@@ -16,7 +16,7 @@ const IOBindingEditor: React.FC<IOBindingEditorProps> = ({
     bindings,
     onChange,
     label,
-    placeholder = '輸入變數名稱 (例: X0, M100)',
+    placeholder = 'Enter variable name (e.g., X0, M100)',
 }) => {
     const handleAdd = () => {
         onChange([...bindings, '']);
@@ -44,13 +44,13 @@ const IOBindingEditor: React.FC<IOBindingEditorProps> = ({
                     className="h-6 px-2 text-xs"
                 >
                     <Plus className="h-3 w-3 mr-1" />
-                    新增
+                    Add
                 </Button>
             </div>
 
             {bindings.length === 0 ? (
                 <div className="text-xs text-muted-foreground text-center py-2 border border-dashed rounded">
-                    尚無綁定變數
+                    No variables bound yet
                 </div>
             ) : (
                 <ScrollArea className="max-h-32">

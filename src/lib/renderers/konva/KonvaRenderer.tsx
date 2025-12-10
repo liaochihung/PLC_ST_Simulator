@@ -574,7 +574,7 @@ const KonvaRenderer: React.FC<KonvaRendererProps> = ({
                         <Text
                             x={10}
                             y={20}
-                            text="編輯模式"
+                            text="Edit Mode"
                             fontSize={12}
                             fontStyle="600"
                             fill="#6366f1"

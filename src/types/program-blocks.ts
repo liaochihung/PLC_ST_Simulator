@@ -1,6 +1,6 @@
 import { MachineLayout } from './machine-editor';
 
-// 程式區塊類型定義
+// Program Block Type Definitions
 export type BlockType = 'init' | 'scan' | 'subroutine' | 'function-block' | 'data-type' | 'global-var';
 
 export type ScanInterval = 10 | 50 | 100 | 500 | 1000;
@@ -10,9 +10,9 @@ export interface ProgramBlock {
   name: string;
   type: BlockType;
   code: string;
-  scanInterval?: ScanInterval; // 只有 scan 類型需要
+  scanInterval?: ScanInterval; // Only required for scan type
   enabled: boolean;
-  children?: ProgramBlock[]; // 子程式
+  children?: ProgramBlock[]; // Subroutines
   parentId?: string | null;
 }
 
@@ -27,27 +27,25 @@ export interface ProgramProject {
   }
 }
 
-// 預設區塊模板
-export const DEFAULT_INIT_CODE = `(* 初始化區塊 - 僅在啟動時執行一次 *)
-(* Initialization Block - Executes once on startup *)
+// Default block templates
+export const DEFAULT_INIT_CODE = `(* Initialization Block - Executes once on startup *)
 
-(* 初始化變數 *)
+(* Initialize Variables *)
 PartCount := 0;
 OKCount := 0;
 NGCount := 0;
 CurrentStation := 1;
 MachineRunning := FALSE;
 
-(* 初始化計時器 *)
+(* Initialize Timers *)
 IndexTimer(IN := FALSE, PT := T#200ms);
 StationTimer(IN := FALSE, PT := T#500ms);
 FeederTimer(IN := FALSE, PT := T#100ms);
 `;
 
-export const DEFAULT_MAIN_SCAN_CODE = `(* 主掃描區塊 - 100ms 週期 *)
-(* Main Scan Block - 100ms cycle *)
+export const DEFAULT_MAIN_SCAN_CODE = `(* Main Scan Block - 100ms cycle *)
 
-(* 啟動/停止控制 *)
+(* Start/Stop Control *)
 IF StartButton AND NOT StopButton THEN
     MachineRunning := TRUE;
 END_IF;
@@ -56,17 +54,16 @@ IF StopButton THEN
     MachineRunning := FALSE;
 END_IF;
 
-(* 呼叫子程式 *)
+(* Call Subroutines *)
 (* CALL StationControl; *)
 (* CALL OutputControl; *)
 `;
 
-export const DEFAULT_STATION_CONTROL_CODE = `(* 站點控制子程式 *)
-(* Station Control Subroutine *)
+export const DEFAULT_STATION_CONTROL_CODE = `(* Station Control Subroutine *)
 
 IF MachineRunning THEN
     CASE CurrentStation OF
-        1: (* 進料站 *)
+        1: (* Feed Station *)
             Station1Active := TRUE;
             Station2Active := FALSE;
             Station3Active := FALSE;
@@ -77,17 +74,17 @@ IF MachineRunning THEN
                 CurrentStation := 2;
             END_IF;
             
-        2: (* 組裝站1 *)
+        2: (* Assembly Station 1 *)
             Station1Active := FALSE;
             Station2Active := TRUE;
             CurrentStation := 3;
             
-        3: (* 組裝站2 *)
+        3: (* Assembly Station 2 *)
             Station2Active := FALSE;
             Station3Active := TRUE;
             CurrentStation := 4;
             
-        4: (* 檢測站 *)
+        4: (* Inspection Station *)
             Station3Active := FALSE;
             Station4Active := TRUE;
             
@@ -99,12 +96,12 @@ IF MachineRunning THEN
                 NGCount := NGCount + 1;
             END_IF;
             
-        5: (* OK出料 *)
+        5: (* OK Outfeed *)
             Station4Active := FALSE;
             OKOutput := TRUE;
             CurrentStation := 1;
             
-        6: (* NG出料 *)
+        6: (* NG Outfeed *)
             Station4Active := FALSE;
             NGOutput := TRUE;
             CurrentStation := 1;
@@ -112,11 +109,10 @@ IF MachineRunning THEN
 END_IF;
 `;
 
-export const DEFAULT_FAST_SCAN_CODE = `(* 快速掃描區塊 - 10ms 週期 *)
-(* Fast Scan Block - 10ms cycle *)
+export const DEFAULT_FAST_SCAN_CODE = `(* Fast Scan Block - 10ms cycle *)
 
-(* 高速輸入處理 *)
-(* 緊急停止、高速計數器等 *)
+(* High Speed Input Processing *)
+(* Emergency Stop, High Speed Counters, etc. *)
 
 IF EmergencyStop THEN
     MachineRunning := FALSE;
@@ -125,11 +121,10 @@ IF EmergencyStop THEN
 END_IF;
 `;
 
-export const DEFAULT_SLOW_SCAN_CODE = `(* 慢速掃描區塊 - 1000ms 週期 *)
-(* Slow Scan Block - 1000ms cycle *)
+export const DEFAULT_SLOW_SCAN_CODE = `(* Slow Scan Block - 1000ms cycle *)
 
-(* 狀態監控、通訊處理等 *)
-(* 更新 HMI 顯示資料 *)
+(* Status Monitoring, Communication Processing, etc. *)
+(* Update HMI Display Data *)
 
 TotalPartCount := PartCount;
 TotalOKCount := OKCount;
@@ -137,23 +132,23 @@ TotalNGCount := NGCount;
 YieldRate := (OKCount * 100) / (PartCount + 1);
 `;
 
-// 建立預設專案
+// Create default project
 export function createDefaultProject(): ProgramProject {
   return {
     id: 'project-1',
-    name: '圓盤分度機',
+    name: 'Rotary Indexing Machine',
     activeBlockId: 'main-scan',
     blocks: [
       {
         id: 'init',
-        name: '初始化',
+        name: 'Initialization',
         type: 'init',
         code: DEFAULT_INIT_CODE,
         enabled: true,
       },
       {
         id: 'fast-scan',
-        name: '快速掃描',
+        name: 'Fast Scan',
         type: 'scan',
         code: DEFAULT_FAST_SCAN_CODE,
         scanInterval: 10,
@@ -161,7 +156,7 @@ export function createDefaultProject(): ProgramProject {
       },
       {
         id: 'main-scan',
-        name: '主掃描',
+        name: 'Main Scan',
         type: 'scan',
         code: DEFAULT_MAIN_SCAN_CODE,
         scanInterval: 100,
@@ -169,7 +164,7 @@ export function createDefaultProject(): ProgramProject {
         children: [
           {
             id: 'station-control',
-            name: '站點控制',
+            name: 'Station Control',
             type: 'subroutine',
             code: DEFAULT_STATION_CONTROL_CODE,
             enabled: true,
@@ -179,7 +174,7 @@ export function createDefaultProject(): ProgramProject {
       },
       {
         id: 'slow-scan',
-        name: '慢速掃描',
+        name: 'Slow Scan',
         type: 'scan',
         code: DEFAULT_SLOW_SCAN_CODE,
         scanInterval: 1000,
@@ -192,12 +187,12 @@ export function createDefaultProject(): ProgramProject {
 // 取得區塊類型顯示名稱
 export function getBlockTypeName(type: BlockType): string {
   switch (type) {
-    case 'data-type': return '資料型別';
-    case 'global-var': return '全域變數';
-    case 'init': return '初始化';
-    case 'scan': return '掃描區塊';
-    case 'subroutine': return '子程式';
-    case 'function-block': return '功能塊';
+    case 'data-type': return 'Data Type';
+    case 'global-var': return 'Global Var';
+    case 'init': return 'Init';
+    case 'scan': return 'Scan';
+    case 'subroutine': return 'Subroutine';
+    case 'function-block': return 'Function Block';
   }
 }
 

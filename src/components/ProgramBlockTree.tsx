@@ -100,7 +100,7 @@ const BlockItem: React.FC<BlockItemProps> = ({
         style={{ paddingLeft: `${depth * 12 + 8}px` }}
         onClick={onSelect}
       >
-        {/* 展開/收合按鈕 */}
+        {/* Expand/Collapse Button */}
         {hasChildren ? (
           <button
             onClick={(e) => {
@@ -119,25 +119,25 @@ const BlockItem: React.FC<BlockItemProps> = ({
           <div className="w-4" />
         )}
 
-        {/* 區塊圖示 */}
+        {/* Block Icon */}
         <BlockIcon type={block.type} />
 
-        {/* 區塊名稱 */}
+        {/* Block Name */}
         <span className="flex-1 text-sm truncate">{block.name}</span>
 
-        {/* 掃描週期標籤 */}
+        {/* Scan Interval Label */}
         {block.type === 'scan' && block.scanInterval && (
           <span className="text-xs px-1.5 py-0.5 rounded bg-primary/10 text-primary">
             {block.scanInterval}ms
           </span>
         )}
 
-        {/* 執行中指示器 */}
+        {/* Running Indicator */}
         {isRunning && block.enabled && (
           <div className="w-2 h-2 rounded-full bg-success animate-industrial-pulse" />
         )}
 
-        {/* 操作選單 */}
+        {/* Operation Menu */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <button
@@ -152,22 +152,22 @@ const BlockItem: React.FC<BlockItemProps> = ({
               <>
                 <DropdownMenuItem onClick={onAddChild}>
                   <Plus className="w-3 h-3 mr-2" />
-                  新增子程式
+                  Add Subroutine
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
               </>
             )}
             <DropdownMenuItem onClick={onToggle}>
               <Power className="w-3 h-3 mr-2" />
-              {block.enabled ? '停用' : '啟用'}
+              {block.enabled ? 'Disable' : 'Enable'}
             </DropdownMenuItem>
             <DropdownMenuItem>
               <Copy className="w-3 h-3 mr-2" />
-              複製
+              Copy
             </DropdownMenuItem>
             <DropdownMenuItem>
               <Edit2 className="w-3 h-3 mr-2" />
-              重新命名
+              Rename
             </DropdownMenuItem>
             {block.type !== 'init' && (
               <>
@@ -185,7 +185,7 @@ const BlockItem: React.FC<BlockItemProps> = ({
         </DropdownMenu>
       </div>
 
-      {/* 子項目 */}
+      {/* Children */}
       {hasChildren && isExpanded && (
         <div>{children}</div>
       )}
@@ -220,7 +220,7 @@ const ProgramBlockTree: React.FC<ProgramBlockTreeProps> = ({
     );
   };
 
-  // 分組顯示
+  // Grouped display
   const initBlocks = project.blocks.filter(b => b.type === 'init');
   const scanBlocks = project.blocks.filter(b => b.type === 'scan');
   const fbBlocks = project.blocks.filter(b => b.type === 'function-block');
@@ -229,12 +229,12 @@ const ProgramBlockTree: React.FC<ProgramBlockTreeProps> = ({
 
   return (
     <div className="h-full flex flex-col bg-card text-foreground">
-      {/* 標題 */}
+      {/* Header */}
       <div className="p-3 border-b border-border">
         <div className="flex items-center justify-between">
           <div>
             <h3 className="font-semibold text-sm">{project.name}</h3>
-            <p className="text-xs text-muted-foreground">程式區塊</p>
+            <p className="text-xs text-muted-foreground">Program Blocks</p>
           </div>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -245,86 +245,86 @@ const ProgramBlockTree: React.FC<ProgramBlockTreeProps> = ({
             <DropdownMenuContent align="end" className="bg-popover border-border">
               <DropdownMenuItem onClick={() => onBlockAdd('scan')}>
                 <RefreshCw className="w-3 h-3 mr-2 text-primary" />
-                新增掃描區塊
+                Add Scan Block
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => onBlockAdd('function-block')}>
                 <Box className="w-3 h-3 mr-2 text-chart-4" />
-                新增功能塊
+                Add Function Block
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => onBlockAdd('data-type')}>
                 <Database className="w-3 h-3 mr-2 text-purple-500" />
-                新增資料型別
+                Add Data Type
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => onBlockAdd('global-var')}>
                 <Globe className="w-3 h-3 mr-2 text-orange-500" />
-                新增全域變數
+                Add Global Variable
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
       </div>
 
-      {/* 區塊列表 */}
+      {/* Block List */}
       <div className="flex-1 overflow-y-auto p-2 space-y-4">
-        {/* 資料型別 */}
+        {/* Data Types */}
         {typeBlocks.length > 0 && (
           <div>
             <div className="px-2 py-1 text-xs font-medium text-muted-foreground uppercase tracking-wider">
-              資料型別
+              Data Types
             </div>
             {typeBlocks.map(block => renderBlock(block))}
           </div>
         )}
 
-        {/* 全域變數 */}
+        {/* Global Variables */}
         {globalVarBlocks.length > 0 && (
           <div>
             <div className="px-2 py-1 text-xs font-medium text-muted-foreground uppercase tracking-wider">
-              全域變數
+              Global Variables
             </div>
             {globalVarBlocks.map(block => renderBlock(block))}
           </div>
         )}
 
-        {/* 初始化區塊 */}
+        {/* Initialization Blocks */}
         {initBlocks.length > 0 && (
           <div>
             <div className="px-2 py-1 text-xs font-medium text-muted-foreground uppercase tracking-wider">
-              初始化
+              Initialization
             </div>
             {initBlocks.map(block => renderBlock(block))}
           </div>
         )}
 
-        {/* 掃描區塊 */}
+        {/* Scan Blocks */}
         {scanBlocks.length > 0 && (
           <div>
             <div className="px-2 py-1 text-xs font-medium text-muted-foreground uppercase tracking-wider">
-              掃描區塊
+              Scan Blocks
             </div>
             {scanBlocks.map(block => renderBlock(block))}
           </div>
         )}
 
-        {/* 功能塊 */}
+        {/* Function Blocks */}
         {fbBlocks.length > 0 && (
           <div>
             <div className="px-2 py-1 text-xs font-medium text-muted-foreground uppercase tracking-wider">
-              功能塊
+              Function Blocks
             </div>
             {fbBlocks.map(block => renderBlock(block))}
           </div>
         )}
       </div>
 
-      {/* 狀態欄 */}
+      {/* Status Bar */}
       <div className="p-2 border-t border-border text-xs text-muted-foreground">
         <div className="flex items-center justify-between">
-          <span>{project.blocks.length} 個區塊</span>
+          <span>{project.blocks.length} Blocks</span>
           {isRunning && (
             <span className="flex items-center gap-1 text-success">
               <div className="w-1.5 h-1.5 rounded-full bg-success animate-pulse" />
-              執行中
+              Running
             </span>
           )}
         </div>

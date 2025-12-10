@@ -180,7 +180,7 @@ const KonvaBasicShape: React.FC<KonvaBasicShapeProps> = ({
                     id={shape.id}
                     x={shape.x}
                     y={shape.y}
-                    text={shape.text || '文字'}
+                    text={shape.text || 'Text'}
                     fontSize={shape.fontSize || 16}
                     fill={shape.fill || '#ffffff'}
                     {...commonProps}

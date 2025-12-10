@@ -69,7 +69,7 @@ const ComponentPalette: React.FC<ComponentPaletteProps> = ({
                     onAddShape({
                         ...defaultShapeProps,
                         type: 'text',
-                        text: '文字',
+                        text: 'Text',
                         fontSize: 16,
                         fill: '#ffffff',
                     });
@@ -114,14 +114,14 @@ const ComponentPalette: React.FC<ComponentPaletteProps> = ({
     return (
         <div className="w-56 bg-card border-r border-border flex flex-col h-full">
             <div className="p-3 border-b border-border">
-                <h3 className="font-semibold text-sm">元件面板</h3>
+                <h3 className="font-semibold text-sm">                Component Palette</h3>
             </div>
 
             <ScrollArea className="flex-1">
                 <div className="p-2 space-y-4">
                     {/* Basic Shapes */}
                     <div>
-                        <h4 className="text-xs font-medium text-muted-foreground mb-2 px-2">基本形狀</h4>
+                        <h4 className="text-xs font-medium text-muted-foreground mb-2 px-2">Basic Shapes</h4>
                         <div className="space-y-1">
                             {shapeComponents.map(component => (
                                 <div
@@ -148,7 +148,7 @@ const ComponentPalette: React.FC<ComponentPaletteProps> = ({
 
                     {/* Machine Components */}
                     <div>
-                        <h4 className="text-xs font-medium text-muted-foreground mb-2 px-2">機器元件</h4>
+                        <h4 className="text-xs font-medium text-muted-foreground mb-2 px-2">Machine Components</h4>
                         <div className="space-y-1">
                             {machineComponents.map(component => (
                                 <div
@@ -175,7 +175,7 @@ const ComponentPalette: React.FC<ComponentPaletteProps> = ({
 
             <div className="p-2 border-t border-border">
                 <p className="text-xs text-muted-foreground">
-                    點擊或拖曳元件到畫布
+                    Click or drag components to the canvas
                 </p>
             </div>
         </div>

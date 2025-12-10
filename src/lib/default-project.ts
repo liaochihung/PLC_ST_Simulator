@@ -168,13 +168,13 @@ VAR_GLOBAL
     dwA2JogSpeed : DINT; (* D1086 *)
     dwSt3ShiftAngle : DINT; (* D1090 *)
     dwSt3SafeHeight : DINT; (* D1092 *)
-    dwSt3ToolCheck : DINT; (* D1094 空料檢查高度 *)
+    dwSt3ToolCheck : DINT; (* D1094 Empty Check Height *)
     dwAxis2GoUp : DINT; (* D1096 *)
     wTotalOkCnt : DWORD; (* D1100 *)
     wProductOkCount : DWORD; (* D1102 *)
     wProductNgCount : DWORD; (* D1104 *)
     wStopMachineNumber : DWORD; (* D1106 *)
-    dwSt3Seperation : DWORD; (* D1110 分割數設定 *)
+    dwSt3Seperation : DWORD; (* D1110 Division Setting *)
     wSt3ToolChkT : INT; (* D1112 *)
     wSt3NoToolChkTO : INT; (* D1113 *)
     dwSt3FeedUpSpeed : DINT; (* D1114 *)
@@ -255,8 +255,8 @@ VAR_GLOBAL
     uiStopAuto : BOOL; (* M211 *)
     uiClearTool : BOOL; (* M212 *)
     uiFeeder : BOOL; (* M213 *)
-    gA1Zero : BOOL; (* M214 伺服旋轉 *)
-    gA2Zero : BOOL; (* M215 步進上下 *)
+    gA1Zero : BOOL; (* M214 Servo Rotate *)
+    gA2Zero : BOOL; (* M215 Step Up/Down *)
     uiA1Zero : BOOL; (* M216 *)
     uiA2Zero : BOOL; (* M217 *)
     gCurrentPage : INT; (* D10 *)
@@ -283,8 +283,8 @@ VAR_GLOBAL
     dwA2MoveDist : DINT;
     dwA2MoveSpeed : DINT;
     dwA2Step : DINT; (* D66 *)
-    wA1MoveT : INT; (* D68 軸1位移時間 *)
-    wA2MoveT : INT; (* D69 軸2位移時間 *)
+    wA1MoveT : INT; (* D68 Axis 1 Move Time *)
+    wA2MoveT : INT; (* D69 Axis 2 Move Time *)
     gA1IO : dsAxisIO;
     gA2IO : dsAxisIO;
     gSt1RotatoryFeeder : BOOL;
@@ -399,7 +399,7 @@ VAR_GLOBAL
     gSt2HasTool : BOOL; (* 0 *)
     gSt4HasTool : BOOL; (* 0 *)
     tmrSt7WaitChk : TON;
-    gSt3NextSide : INT; (* D56 St3下一個工件是1-正或2-反或0-還沒檢查 *)
+    gSt3NextSide : INT; (* D56 St3 Next Part: 1-Front, 2-Back, 0-Not Checked *)
     gSt3CurIsBackSide : BOOL;
     St8GoNg : BOOL; (* 0 *)
     gSt3StepGoPos : BOOL; (* 0 *)
@@ -465,8 +465,8 @@ const GLOBAL_IO = `VAR_GLOBAL
     xSt5LF_FeedIn : BOOL; (* X37 *)
     xSt5LF_Full : BOOL; (* X40 *)
     xSt5CCDTrig : BOOL; (* X41 *)
-    xSt7KeyenceOut1 : BOOL; (* X42 有料 *)
-    xSt7KeyenceOut2 : BOOL; (* X43 正面(ok) *)
+    xSt7KeyenceOut1 : BOOL; (* X42 Has Part *)
+    xSt7KeyenceOut2 : BOOL; (* X43 Front Side (OK) *)
     xSt5DownOrg : BOOL; (* X44 *)
     xSt5DownAct : BOOL; (* X45 *)
     xSt5ForwardOrg : BOOL; (* X46 *)
@@ -569,19 +569,19 @@ const LIB_BLOCKS: ProgramBlock[] = [
 
 export const DEFAULT_PROJECT: ProgramProject = {
     id: 'project-default',
-    name: '圓盤分度機',
+    name: 'Sample Project',
     activeBlockId: 'scan-always', // Changed to Always
     blocks: [
         {
             id: 'global-vars',
-            name: '定義變數',
+            name: 'Variables',
             type: 'global-var',
             code: GLOBAL_VARS,
             enabled: true
         },
         {
             id: 'global-io',
-            name: '定義IO',
+            name: 'IO Mapping',
             type: 'global-var',
             code: GLOBAL_IO,
             enabled: true

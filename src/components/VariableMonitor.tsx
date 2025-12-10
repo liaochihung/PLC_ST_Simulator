@@ -34,7 +34,7 @@ const VariableMonitor: React.FC<VariableMonitorProps> = ({
         {/* Variables */}
         <div>
           <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">
-            變數 Variables
+            Variables
           </h4>
           <div className="space-y-1">
             {Array.from(variables.values()).map(variable => (
@@ -78,7 +78,7 @@ const VariableMonitor: React.FC<VariableMonitorProps> = ({
         {timers.size > 0 && (
           <div>
             <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">
-              計時器 Timers
+              Timers
             </h4>
             <div className="space-y-2">
               {Array.from(timers.values()).map(timer => (
@@ -138,7 +138,7 @@ const VariableMonitor: React.FC<VariableMonitorProps> = ({
         {counters.size > 0 && (
           <div>
             <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">
-              計數器 Counters
+              Counters
             </h4>
             <div className="space-y-2">
               {Array.from(counters.values()).map(counter => (

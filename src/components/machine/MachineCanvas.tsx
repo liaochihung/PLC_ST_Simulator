@@ -329,7 +329,7 @@ const MachineCanvas: React.FC<MachineCanvasProps> = ({
               fontSize="10" 
               fontWeight="600"
             >
-              {conveyor.type === 'ok' ? 'OK 出料' : conveyor.type === 'ng' ? 'NG 出料' : '輸送'}
+              {conveyor.type === 'ok' ? 'OK Outfeed' : conveyor.type === 'ng' ? 'NG Outfeed' : 'Conveyor'}
             </text>
           </g>
         );
@@ -410,7 +410,7 @@ const MachineCanvas: React.FC<MachineCanvasProps> = ({
           fontSize="12"
           fontWeight="600"
         >
-          編輯模式
+          Edit Mode
         </text>
       )}
     </svg>

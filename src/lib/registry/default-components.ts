@@ -4,28 +4,28 @@ export const DEFAULT_COMPONENTS: ComponentDefinition[] = [
   // Basic Shapes
   {
     id: 'rectangle',
-    name: '矩形',
+    name: 'Rectangle',
     icon: { type: 'lucide', name: 'Square' },
     actionType: 'createShape',
     shapeType: 'rectangle',
   },
   {
     id: 'circle',
-    name: '圓形',
+    name: 'Circle',
     icon: { type: 'lucide', name: 'Circle' },
     actionType: 'createShape',
     shapeType: 'circle',
   },
   {
     id: 'line',
-    name: '線條',
+    name: 'Line',
     icon: { type: 'lucide', name: 'Minus' },
     actionType: 'createShape',
     shapeType: 'line',
   },
   {
     id: 'text',
-    name: '文字',
+    name: 'Text',
     icon: { type: 'lucide', name: 'Type' },
     actionType: 'createShape',
     shapeType: 'text',
@@ -33,28 +33,28 @@ export const DEFAULT_COMPONENTS: ComponentDefinition[] = [
   // Machine Components
   {
     id: 'station',
-    name: '工作站',
+    name: 'Station',
     icon: { type: 'lucide', name: 'Square' }, // Using Square for station icon
     actionType: 'createMachinePart',
     machinePartType: 'station',
   },
   {
     id: 'disc',
-    name: '轉盤',
+    name: 'Disc',
     icon: { type: 'lucide', name: 'Disc' },
     actionType: 'createMachinePart',
     machinePartType: 'disc',
   },
   {
     id: 'conveyor',
-    name: '輸送帶',
+    name: 'Conveyor',
     icon: { type: 'lucide', name: 'ArrowRight' },
     actionType: 'createMachinePart',
     machinePartType: 'conveyor',
   },
   {
     id: 'feeder',
-    name: '送料機',
+    name: 'Feeder',
     icon: { type: 'lucide', name: 'Package' },
     actionType: 'createMachinePart',
     machinePartType: 'feeder',

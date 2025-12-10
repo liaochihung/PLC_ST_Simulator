@@ -115,7 +115,7 @@ const MachineEditor: React.FC<MachineEditorProps> = ({
 
   const handleAddStation = (type: MachineStation['type']) => {
     addStation({
-      name: type === 'feed' ? '入料' : type === 'assembly' ? '組裝' : type === 'ok' ? '良品' : type === 'ng' ? '不良' : '自定義',
+      name: type === 'feed' ? 'Feed' : type === 'assembly' ? 'Assembly' : type === 'ok' ? 'OK' : type === 'ng' ? 'NG' : 'Custom',
       type,
       x: layout.width / 2,
       y: layout.height / 2,
@@ -147,7 +147,7 @@ const MachineEditor: React.FC<MachineEditorProps> = ({
 
   const handleAddFeeder = () => {
     addFeeder({
-      name: '送料機',
+      name: 'Feeder',
       x: 50,
       y: layout.height / 2,
       width: 60,
@@ -217,7 +217,7 @@ const MachineEditor: React.FC<MachineEditorProps> = ({
     switch (type) {
       case 'station': {
         const station = {
-          name: '新工作站',
+          name: 'New Station',
           type: 'custom' as const,
           x,
           y,
@@ -258,7 +258,7 @@ const MachineEditor: React.FC<MachineEditorProps> = ({
       }
       case 'feeder': {
         const feeder = {
-          name: '送料機',
+          name: 'Feeder',
           x,
           y,
           width: 60,
