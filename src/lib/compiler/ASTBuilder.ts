@@ -51,14 +51,17 @@ export class ASTBuilder extends AbstractParseTreeVisitor<AST.ASTNode> implements
     }
 
     visitProgram_declaration(ctx: Parser.Program_declarationContext): AST.Program {
-        const name = ctx.ID().text;
-        const body = this.visit(ctx.body()) as AST.Block;
+        const name = ctx.ID() ? ctx.ID().text : 'UnknownProgram';
+        const bodyCtx = ctx.body();
+        const body = bodyCtx ? (this.visit(bodyCtx) as AST.Block) : { type: 'Block', statements: [] };
         const varDecls: AST.VarDecl[] = [];
 
         // Visit variable declarations
         for (const varDeclCtx of ctx.var_declarations()) {
             const decls = this.visit(varDeclCtx) as unknown as AST.VarDecl[];
-            varDecls.push(...decls);
+            if (decls) {
+                varDecls.push(...decls);
+            }
         }
 
         return {
@@ -70,13 +73,16 @@ export class ASTBuilder extends AbstractParseTreeVisitor<AST.ASTNode> implements
     }
 
     visitFunction_block_declaration(ctx: Parser.Function_block_declarationContext): AST.FunctionBlock {
-        const name = ctx.ID().text;
-        const body = this.visit(ctx.body()) as AST.Block;
+        const name = ctx.ID() ? ctx.ID().text : 'UnknownFB';
+        const bodyCtx = ctx.body();
+        const body = bodyCtx ? (this.visit(bodyCtx) as AST.Block) : { type: 'Block', statements: [] };
         const varDecls: AST.VarDecl[] = [];
 
         for (const varDeclCtx of ctx.var_declarations()) {
             const decls = this.visit(varDeclCtx) as unknown as AST.VarDecl[];
-            varDecls.push(...decls);
+            if (decls) {
+                varDecls.push(...decls);
+            }
         }
 
         return {
@@ -105,7 +111,8 @@ export class ASTBuilder extends AbstractParseTreeVisitor<AST.ASTNode> implements
     visitVar_declarations(ctx: Parser.Var_declarationsContext): AST.ASTNode {
         let type: AST.VarDecl['varType'] = 'VAR';
         if (ctx.childCount > 0) {
-            const firstToken = ctx.getChild(0).text;
+            const firstChild = ctx.getChild(0);
+            const firstToken = firstChild ? firstChild.text : '';
             if (firstToken === 'VAR_INPUT') type = 'VAR_INPUT';
             else if (firstToken === 'VAR_OUTPUT') type = 'VAR_OUTPUT';
             else if (firstToken === 'VAR_IN_OUT') type = 'VAR_IN_OUT';
@@ -127,27 +134,37 @@ export class ASTBuilder extends AbstractParseTreeVisitor<AST.ASTNode> implements
     }
 
     private buildVarDecl(ctx: Parser.Var_declContext, type: AST.VarDecl['varType'] = 'VAR'): AST.VarDecl[] {
-        const ids = ctx.identifier_list().ID().map(node => node.text);
-        const dataType = ctx.data_type().text;
+        try {
+            // Safety check for malformed AST due to parsing errors
+            if (!ctx.identifier_list() || !ctx.data_type()) {
+                return [];
+            }
 
-        let address: string | undefined;
-        if (ctx.location()) {
-            address = ctx.location()!.text.replace(/^%/, ''); // Remove % prefix if present
+            const ids = ctx.identifier_list().ID().map(node => node.text);
+            const dataType = ctx.data_type().text;
+
+            let address: string | undefined;
+            if (ctx.location()) {
+                address = ctx.location()!.text.replace(/^%/, ''); // Remove % prefix if present
+            }
+
+            let initialValue: AST.Expression | undefined;
+            if (ctx.expression()) {
+                initialValue = this.visit(ctx.expression()!) as AST.Expression;
+            }
+
+            return ids.map(name => ({
+                type: 'VarDecl',
+                name,
+                varType: type,
+                dataType,
+                address,
+                initialValue
+            }));
+        } catch (e) {
+            console.warn('ASTBuilder: Safe skipping of malformed VarDecl', e);
+            return [];
         }
-
-        let initialValue: AST.Expression | undefined;
-        if (ctx.expression()) {
-            initialValue = this.visit(ctx.expression()!) as AST.Expression;
-        }
-
-        return ids.map(name => ({
-            type: 'VarDecl',
-            name,
-            varType: type,
-            dataType,
-            address,
-            initialValue
-        }));
     }
 
     // --- Logic ---

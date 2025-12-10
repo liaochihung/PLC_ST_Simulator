@@ -23,12 +23,14 @@ export class Interpreter {
     }
 
     loadCode(code: string): void {
+        let cleanCode = '';
         try {
             this.reset(); // Clear previous state
 
             // 0. Pre-process: Parse and Extract TYPE definitions
             // This is a Hybrid approach: Manually parse TYPE blocks because ANTLR grammar doesn't support them yet.
-            const { cleanCode } = this.extractAndRegisterTypes(code);
+            const result = this.extractAndRegisterTypes(code);
+            cleanCode = result.cleanCode;
 
             // 1. Parse remaining code with ANTLR
             const inputStream = CharStreams.fromString(cleanCode);
@@ -52,6 +54,7 @@ export class Interpreter {
 
         } catch (e) {
             console.error('Parse Error:', e);
+            console.log('Clean Code used for parsing:', cleanCode);
             throw e;
         }
     }
