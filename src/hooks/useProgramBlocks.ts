@@ -349,43 +349,29 @@ END_PROGRAM
 
   // Project Management Functions
   const loadProject = useCallback(async (id: string) => {
-    // Dynamic import to avoid circular dependencies if any, though Service is clean
-    const { ProjectService } = await import('@/lib/services/ProjectService');
-    const loadedProj = await ProjectService.getProject(id);
-    if (loadedProj) {
-      setProject(loadedProj);
-      setActiveBlockId(loadedProj.activeBlockId);
-      setCurrentProjectId(loadedProj.id);
-    }
+    // Database loading disabled
+    console.warn("Database loading is currently disabled. ID:", id);
   }, []);
 
   const saveProject = useCallback(async (currentLayout?: MachineLayout) => {
     setIsSaving(true);
     try {
-      const { ProjectService } = await import('@/lib/services/ProjectService');
+      // Database saving disabled
+      console.warn("Database saving is currently disabled.");
 
-      const projectToSave = {
-        ...project,
-        activeBlockId, // Ensure current active block is saved
-        visualDesign: currentLayout ? { layout: currentLayout } : project.visualDesign
-      };
-
-      if (currentProjectId) {
-        // Update existing
-        projectToSave.id = currentProjectId;
-        await ProjectService.updateProject(projectToSave);
-      } else {
-        // Create new
-        const newId = await ProjectService.createProject(projectToSave);
-        if (newId) setCurrentProjectId(newId);
-      }
+      // We still update the local state for potential export/JSON download
+      setProject(prev => ({
+        ...prev,
+        activeBlockId,
+        visualDesign: currentLayout ? { layout: currentLayout } : prev.visualDesign
+      }));
     } catch (e) {
       console.error("Failed to save project", e);
       throw e;
     } finally {
       setIsSaving(false);
     }
-  }, [project, activeBlockId, currentProjectId]);
+  }, [activeBlockId]);
 
   const newProject = useCallback(() => {
     setProject(DEFAULT_PROJECT);

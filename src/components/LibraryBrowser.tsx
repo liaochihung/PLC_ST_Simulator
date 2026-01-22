@@ -1,6 +1,6 @@
 
 import React, { useEffect, useState } from 'react';
-import { LibraryService } from '@/lib/services/LibraryService';
+// import { LibraryService } from '@/lib/services/LibraryService';
 import { LibrarySummary, Library, FunctionBlockDefinition } from '@/lib/types/Library';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -24,18 +24,16 @@ export function LibraryBrowser({ onImport }: LibraryBrowserProps) {
 
     const loadLibraries = async () => {
         setLoading(true);
-        // Try to seed first (dev only)
-        await LibraryService.seedStandardLibrary();
-
-        const libs = await LibraryService.getPublicLibraries();
-        setLibraries(libs);
+        // Database fetching disabled
+        setLibraries([]);
         setLoading(false);
     };
 
     const handleViewLibrary = async (id: string) => {
         setDetailLoading(true);
-        const lib = await LibraryService.getLibraryDetails(id);
-        setSelectedLib(lib);
+        // Database fetching disabled
+        // const lib = await LibraryService.getLibraryDetails(id);
+        // setSelectedLib(lib);
         setDetailLoading(false);
     };
 

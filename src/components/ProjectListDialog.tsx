@@ -1,5 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { ProjectService, ProjectSummary } from '@/lib/services/ProjectService';
+// import { ProjectService, ProjectSummary } from '@/lib/services/ProjectService';
+interface ProjectSummary {
+    id: string;
+    name: string;
+    description: string | null;
+    updated_at: string;
+}
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -26,8 +32,8 @@ export function ProjectListDialog({ open, onOpenChange, onLoad }: ProjectListDia
     const loadProjects = async () => {
         setLoading(true);
         try {
-            const list = await ProjectService.getProjects();
-            setProjects(list);
+            // const list = await ProjectService.getProjects();
+            setProjects([]);
         } catch (e) {
             console.error(e);
         } finally {
@@ -41,7 +47,7 @@ export function ProjectListDialog({ open, onOpenChange, onLoad }: ProjectListDia
 
         setDeletingId(id);
         try {
-            await ProjectService.deleteProject(id);
+            // await ProjectService.deleteProject(id);
             setProjects(prev => prev.filter(p => p.id !== id));
         } catch (err) {
             console.error(err);
