@@ -2,7 +2,7 @@
 
 [繁體中文 (Traditional Chinese)](./README.zh-TW.md)
 
-A professional web-based IEC 61131-3 Structured Text (ST) PLC simulator. It supports 2D/3D machine animation visualization, specifically designed for automation equipment like rotary indexing modules, vibratory feeders, and multi-station machines.
+A web-based IEC 61131-3 Structured Text (ST) PLC simulator. It supports 2D/3D machine animation visualization, specifically designed for automation equipment like rotary indexing modules, vibratory feeders, and multi-station machines.
 
 ## 📸 Screenshots
 
